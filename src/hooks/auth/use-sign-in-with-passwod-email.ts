@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import axiosInstance from "@/lib/axiosInstance"; // Thay thế bằng cách gọi API của bạn
 
 interface Options {
-  onSuccess?: (data: any) => void; // Hàm được gọi khi đăng nhập thành công
+  onSuccess?: (data: object) => void; // Hàm được gọi khi đăng nhập thành công
   onError?: (error: Error) => void; // Hàm được gọi khi có lỗi
   onSettled?: () => void; // Hàm được gọi sau khi kết thúc dù thành công hay lỗi
   throwError?: boolean; // Cho phép ném lỗi lên nếu true
@@ -31,9 +31,10 @@ export const useLoginWithPasswordEmail = () => {
           username,
           password,
         }); // Thay thế bằng đường dẫn thực tế của API bạn
+        console.log("yooo test res ", res);
         axiosInstance.defaults.headers.common[
           "Authorization"
-        ] = `Bearer ${res.data.token}`;
+        ] = `Bearer ${res.data.access_token}`;
 
         setData(res.data);
         setStatus("success");
@@ -54,8 +55,61 @@ export const useLoginWithPasswordEmail = () => {
     []
   );
 
+  const signUp = useCallback(
+    async (
+      fullName: string,
+      username: string,
+      password: string,
+      confirmPassword: string,
+      email: string,
+      gender: string,
+      options?: Options
+    ) => {
+      try {
+        setData(null);
+        setError(null);
+        setStatus("pending");
+  
+        // Chuẩn bị body dữ liệu với các trường đầy đủ
+        const body = {
+          fullName,
+          username,
+          password,
+          confirmPassword,
+          email,
+          gender,
+        };
+  
+        // Gửi request với body đầy đủ
+        const res = await axiosInstance.post("/auth/signup", body);
+  
+        console.log("Response data: ", res);
+  
+        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+  
+        setData(res.data);
+        setStatus("success");
+        options?.onSuccess?.(res.data);
+        return res.data;
+      } catch (error) {
+        setStatus("error");
+        setError(error as Error);
+        options?.onError?.(error as Error);
+        if (options?.throwError) {
+          throw error;
+        }
+      } finally {
+        setStatus("settled");
+        options?.onSettled?.();
+      }
+    },
+    []
+  );
+  
+
   return {
     login,
+    signUp,
     data,
     error,
     isError,

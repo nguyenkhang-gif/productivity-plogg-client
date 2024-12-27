@@ -11,7 +11,7 @@ import { Input } from "../ui/input";
 import { Separator } from "@radix-ui/react-separator";
 import { useLoginWithPasswordEmail } from "@/hooks/auth/use-sign-in-with-passwod-email";
 export const SignInCard = () => {
-  const { login, isError, isPending, isSettled } = useLoginWithPasswordEmail();
+  const { login} = useLoginWithPasswordEmail();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,6 +25,9 @@ export const SignInCard = () => {
         console.log(data);
       },
     });
+
+
+    console.log(res,"ress");
   };
   return (
     <Card className="w-full h-full p-8">

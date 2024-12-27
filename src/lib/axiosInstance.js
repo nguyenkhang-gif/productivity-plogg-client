@@ -1,11 +1,13 @@
 import axios from "axios";
 
+// Tạo instance axios
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api", // URL API gốc
   timeout: 10000, // Thời gian chờ request
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // Quan trọng: Đảm bảo rằng yêu cầu đi kèm với cookie
 });
 
 // Xử lý request
@@ -19,22 +21,6 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Xử lý response
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response.data;
-  },
-  (error) => {
-    if (error.response) {
-      // Xử lý lỗi từ server
-      console.error("API Error:", error.response.data);
-    } else {
-      console.error("Network Error:", error.message);
-    }
     return Promise.reject(error);
   }
 );
