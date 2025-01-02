@@ -1,36 +1,48 @@
-import axios from "@/lib/axiosInstance";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { cookies } from "next/headers";
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   try {
-    const allCookies = await cookies();
-    
+    // Lấy tất cả cookies từ request
+    const cookieHeaders = request.headers.get("cookie") || "";
 
-    // Tạo một đối tượng headers mới và thêm cookies vào đó
-    const headers: Record<string, string> = {};
-    allCookies.getAll().forEach((cookie) => {
-      headers[`Cookie`] = `${cookie.name}=${cookie.value}`;
-    });
+    // Tạo headers mới với cookie từ request
+    const headers: Record<string, string> = {
+      Cookie: cookieHeaders,
+    };
 
     // Gửi yêu cầu refresh token và gắn cookies vào headers
-    const res = await axios.post("/auth/refresh-token", {}, { headers });
-    console.log(res.data,"handle datat ");
-    // Giả sử API trả về một cookie mới, chúng ta sẽ gán cookie này vào response
-    const response = NextResponse.next();
-    // return NextResponse.redirect(new URL("/", request.url));
-  
-    return response;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`,
+      {
+        method: "POST",
+        headers,
+      }
+    );
 
+    if (res.ok) {
+      console.log("Handle data successfully.");
+      const response = NextResponse.next();
+
+      // Nếu cần set cookie mới từ API response:
+      const setCookieHeader = res.headers.get("set-cookie");
+      if (setCookieHeader) {
+        response.headers.set("set-cookie", setCookieHeader);
+      }
+
+      return response;
+    }
+
+    console.log("Failed to refresh token, redirecting...");
+    return NextResponse.redirect(new URL("/auth", request.url));
   } catch (err) {
-    console.log("Error in middleware:", err);
+    console.error("Error in middleware:", err);
     return NextResponse.redirect(new URL("/auth", request.url));
   }
 }
 
-// See "Matching Paths" below to learn more
+// Matching paths
 export const config = {
   matcher: ["/"],
 };
