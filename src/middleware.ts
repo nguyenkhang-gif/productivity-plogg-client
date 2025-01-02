@@ -30,7 +30,8 @@ export async function middleware(request: NextRequest) {
       if (setCookieHeader) {
         response.headers.set("set-cookie", setCookieHeader);
       }
-
+      console.log("Set cookie header:", setCookieHeader);
+      
       return response;
     }
 
