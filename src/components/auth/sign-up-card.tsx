@@ -10,6 +10,7 @@ import {
 import { Input } from "../ui/input";
 import { Separator } from "@radix-ui/react-separator";
 import { useLoginWithPasswordEmail } from "@/hooks/auth/use-sign-in-with-passwod-email";
+import axiosInstance from "@/lib/axiosInstance";
 
 export const SignUpCard = () => {
   const { signUp, isPending } = useLoginWithPasswordEmail();
@@ -42,17 +43,17 @@ export const SignUpCard = () => {
     }
 
     try {
-      // const res = await axios.post("/auth/refresh-token");
-      // console.log(res);
+      const res = await axiosInstance.post("/auth/refresh-token");
+      console.log(res);
 
-      await signUp(
-        formData.fullName,
-        formData.username,
-        formData.email,
-        formData.password,
-        formData.password,
-        formData.gender
-      );
+      // await signUp(
+      //   formData.fullName,
+      //   formData.username,
+      //   formData.email,
+      //   formData.password,
+      //   formData.password,
+      //   formData.gender
+      // );
     } catch (error) {
       console.error("Sign up failed:", error);
       setErrorMessage("Failed to sign up. Please try again.");
