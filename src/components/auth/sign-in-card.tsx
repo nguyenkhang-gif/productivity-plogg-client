@@ -10,8 +10,10 @@ import {
 import { Input } from "../ui/input";
 import { Separator } from "@radix-ui/react-separator";
 import { useLoginWithPasswordEmail } from "@/hooks/auth/use-sign-in-with-passwod-email";
+import { useRouter } from "next/navigation";
 export const SignInCard = () => {
-  const { login} = useLoginWithPasswordEmail();
+  const router = useRouter();
+  const { login } = useLoginWithPasswordEmail();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -21,14 +23,16 @@ export const SignInCard = () => {
       onError: (error) => {
         console.log(error);
       },
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: () => {
+        console.log("login success");
+        router.replace("/");
       },
     });
 
-
-    console.log(res,"ress");
+    console.log(res, "ress");
   };
+  
+  
   return (
     <Card className="w-full h-full p-8">
       <CardHeader className="px-0 pt-0">

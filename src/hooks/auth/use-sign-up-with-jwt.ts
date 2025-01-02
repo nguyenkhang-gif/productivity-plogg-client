@@ -8,7 +8,7 @@ interface Options {
   throwError?: boolean; // Cho phép ném lỗi lên nếu true
 }
 
-export const useLoginWithPasswordEmail = () => {
+export const useSignUpWithJwt = () => {
   const [data, setData] = useState<ResponseType | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [status, setStatus] = useState<
@@ -20,18 +20,15 @@ export const useLoginWithPasswordEmail = () => {
   const isSuccess = useMemo(() => status === "success", [status]);
   const isSettled = useMemo(() => status === "settled", [status]);
 
-  const login = useCallback(
-    async (username: string, password: string, options?: Options) => {
+  const signUpWithJwt = useCallback(
+    async (token: string, options?: Options) => {
       try {
         setData(null);
         setError(null);
         setStatus("pending");
 
-        const res = await axiosInstance.post("/auth/login", {
-          username,
-          password,
-        }); // Thay thế bằng đường dẫn thực tế của API bạn
-        console.log("yooo test res ", res);
+        // Chuẩn bị body dữ liệu với các trường đầy đủ
+        const res = await axiosInstance.post("/auth/auth-with-jwt", { token });
 
         // Lưu token vào localStorage
         localStorage.setItem("token", res.data.access_token);
@@ -44,60 +41,10 @@ export const useLoginWithPasswordEmail = () => {
         setData(res.data);
         setStatus("success");
         options?.onSuccess?.(res.data);
-        return res.data;
-      } catch (error) {
-        setStatus("error");
-        setError(error as Error);
-        options?.onError?.(error as Error);
-        if (options?.throwError) {
-          throw error;
-        }
-      } finally {
-        setStatus("settled");
-        options?.onSettled?.();
-      }
-    },
-    []
-  );
-
-  const signUp = useCallback(
-    async (
-      fullName: string,
-      username: string,
-      email: string,
-      password: string,
-      confirmPassword: string,
-      gender: string,
-      options?: Options
-    ) => {
-      try {
-        setData(null);
-        setError(null);
-        setStatus("pending");
-
-        // Chuẩn bị body dữ liệu với các trường đầy đủ
-        const body = {
-          fullName,
-          username,
-          password,
-          confirmPassword,
-          email,
-          gender,
-        };
-
-        // Gửi request với body đầy đủ
-        const res = await axiosInstance.post("/auth/signup", body);
-
-        console.log("Response data: ", res);
-
-        axiosInstance.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${res.data.token}`;
-
-        setData(res.data);
-        setStatus("success");
-        options?.onSuccess?.(res.data);
-        return res.data;
+        // setData(res.data);
+        // setStatus("success");
+        // options?.onSuccess?.(res.data);
+        // return res.data;
       } catch (error) {
         setStatus("error");
         setError(error as Error);
@@ -114,8 +61,7 @@ export const useLoginWithPasswordEmail = () => {
   );
 
   return {
-    login,
-    signUp,
+    signUpWithJwt,
     data,
     error,
     isError,
