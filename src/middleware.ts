@@ -11,7 +11,8 @@ export async function middleware(request: NextRequest) {
     const headers: Record<string, string> = {
       Cookie: cookieHeaders,
     };
-
+    
+    console.log("Set cookie header:", headers);
     // Gửi yêu cầu refresh token và gắn cookies vào headers
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`,
