@@ -13,7 +13,7 @@ import { useLoginWithPasswordEmail } from "@/hooks/auth/use-sign-in-with-passwod
 import axiosInstance from "@/lib/axiosInstance";
 
 export const SignUpCard = () => {
-  // const { signUp, isPending } = useLoginWithPasswordEmail();
+  const {  isPending } = useLoginWithPasswordEmail();
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
