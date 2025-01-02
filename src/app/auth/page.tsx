@@ -1,21 +1,20 @@
 "use client";
+
 import { AuthScreen } from "@/components/auth/auth-screen";
 import { useSignUpWithJwt } from "@/hooks/auth/use-sign-up-with-jwt";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
+import { Suspense } from "react";
 
-const Page = () => {
+const PageContent = () => {
   const count = useSelector((state: RootState) => state.counter.count);
   console.log("count pls", count);
 
   const querys = useSearchParams();
 
   const { signUpWithJwt } = useSignUpWithJwt();
-  // if (token) {
-  //   handleLoginWithJwt(token);
-  // }
 
   const router = useRouter();
   useEffect(() => {
@@ -27,7 +26,6 @@ const Page = () => {
         },
         onSuccess: (data) => {
           console.log(data, "data");
-          // querys.delete("jwt");
         },
       });
       router.replace("/");
@@ -37,5 +35,11 @@ const Page = () => {
 
   return <AuthScreen />;
 };
+
+const Page = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <PageContent />
+  </Suspense>
+);
 
 export default Page;
