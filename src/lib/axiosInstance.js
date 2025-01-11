@@ -16,11 +16,11 @@ const axiosInstance = axios.create({
 // Xử lý request
 axiosInstance.interceptors.request.use(
   (config) => {
-    console.log("debug 1: config ",process.env.NODE_ENV)
+    console.log("debug 1: config ", process.env.NODE_ENV);
     // Thêm token nếu cần
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
-      console.log("debug 2: token ")
+      console.log("debug 2: token ");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -28,11 +28,25 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    
+    throw new Error(error);
     return Promise.reject(error);
   }
 );
-
+axiosInstance.interceptors.response.use(
+  (response) => {
+    // Kiểm tra và lấy cookie từ header của response nếu có
+    const cookies = response.headers['set-cookie'];
+    if (cookies && cookies.length > 0) {
+      cookies.forEach(cookie => {
+        document.cookie = cookie;  // Lưu cookie vào client
+      });
+    }
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // axiosInstance.interceptors.response.use(
 //   (response) => response,

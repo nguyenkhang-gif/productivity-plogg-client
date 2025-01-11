@@ -4,7 +4,7 @@ import { AuthScreen } from "@/components/auth/auth-screen";
 import { useSignUpWithJwt } from "@/hooks/auth/use-sign-up-with-jwt";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
-import { RootState } from "@/lib/store";
+import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { Suspense } from "react";
 

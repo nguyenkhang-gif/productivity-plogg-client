@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Định nghĩa kiểu dữ liệu cho UserState
 export interface UserState {
-  _id: string;
   fullName: string;
   gender: string;
   username: string;
@@ -14,7 +13,6 @@ export interface UserState {
 
 // Khởi tạo giá trị ban đầu (initial state)
 const initialUserState: UserState = {
-  _id: "",
   fullName: "",
   gender: "",
   username: "",

@@ -1,4 +1,5 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+import userReducer from "./user";
 
 // Định nghĩa kiểu dữ liệu cho state
 interface CounterState {
@@ -12,7 +13,7 @@ const initialState: CounterState = {
 
 // Tạo slice
 const counterSlice = createSlice({
-  name: 'counter',
+  name: "counter",
   initialState,
   reducers: {
     increment: (state) => {
@@ -31,9 +32,10 @@ export const { increment, decrement } = counterSlice.actions;
 const store = configureStore({
   reducer: {
     counter: counterSlice.reducer,
+    user: userReducer,
   },
 });
 
-export type RootState = ReturnType<typeof store.getState>;  // Định nghĩa kiểu dữ liệu cho RootState
+export type RootState = ReturnType<typeof store.getState>; // Định nghĩa kiểu dữ liệu cho RootState
 
 export default store;
