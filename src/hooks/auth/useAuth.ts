@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
   const handleAuth = async () => {
@@ -26,7 +25,6 @@ export const useAuth = () => {
       }
     } catch (e) {
       console.error("Authentication failed, redirecting to /auth", e);
-      setIsAuthenticated(false);
       router.push("/auth");
     } finally {
       setLoading(false);
