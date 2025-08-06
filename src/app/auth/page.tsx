@@ -10,7 +10,6 @@ import { Suspense } from "react";
 
 const PageContent = () => {
   const count = useSelector((state: RootState) => state.counter.count);
-  console.log("count pls", count);
 
   const querys = useSearchParams();
 

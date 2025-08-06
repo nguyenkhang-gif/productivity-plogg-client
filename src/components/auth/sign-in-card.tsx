@@ -16,11 +16,13 @@ export const SignInCard = () => {
   const { login } = useLoginWithPasswordEmail();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(email, password);
     const res = login(email, password, {
       onError: (error) => {
+        setErrorMessage("INvalid user or password")
         console.log(error);
       },
       onSuccess: () => {
@@ -72,6 +74,9 @@ export const SignInCard = () => {
           </Button>
         </form>
         <Separator />
+        {errorMessage && (
+          <p className="text-red-500 text-sm">{errorMessage}</p>
+        )}
       </CardContent>
     </Card>
   );

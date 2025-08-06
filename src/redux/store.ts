@@ -1,5 +1,6 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import userReducer from "./user";
+import chapterReducer from "./epub"
 
 // Định nghĩa kiểu dữ liệu cho state
 interface CounterState {
@@ -33,6 +34,7 @@ const store = configureStore({
   reducer: {
     counter: counterSlice.reducer,
     user: userReducer,
+    chapters: chapterReducer,
   },
 });
 

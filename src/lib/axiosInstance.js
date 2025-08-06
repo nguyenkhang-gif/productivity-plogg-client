@@ -81,5 +81,20 @@ axiosInstance.interceptors.response.use(
 //     return Promise.reject(error);
 //   }
 // );
+// NOTE: pending feature for feature
+// const message = async (service, endpoint, method = "GET", data = {}) => {
+//   const url = `/${service}/${endpoint}`;
+//   try {
+//     const response = await axiosInstance({
+//       method,
+//       url,
+//       data: method !== "GET" ? data : {},
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error("API Error:", error);
+//     throw error;
+//   }
+// };
 
 export default axiosInstance;

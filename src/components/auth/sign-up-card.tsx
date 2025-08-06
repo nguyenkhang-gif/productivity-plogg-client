@@ -13,7 +13,7 @@ import { useLoginWithPasswordEmail } from "@/hooks/auth/use-sign-in-with-passwod
 import axiosInstance from "@/lib/axiosInstance";
 
 export const SignUpCard = () => {
-  const {  isPending } = useLoginWithPasswordEmail();
+  const {  isPending,signUp } = useLoginWithPasswordEmail();
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -43,20 +43,26 @@ export const SignUpCard = () => {
     }
 
     try {
-      const res = await axiosInstance.post("/auth/refresh-token");
-      console.log(res);
+      console.log("submit this",formData);
+      
+      // const res = await axiosInstance.post("/auth/refresh-token");
+      // console.log(res);
 
-      // await signUp(
-      //   formData.fullName,
-      //   formData.username,
-      //   formData.email,
-      //   formData.password,
-      //   formData.password,
-      //   formData.gender
-      // );
+      await signUp(
+        formData.fullName,
+        formData.username,
+        formData.email,
+        formData.password,
+        formData.password,
+        formData.gender
+      );
+
+
+
+      
     } catch (error) {
-      console.error("Sign up failed:", error);
       setErrorMessage("Failed to sign up. Please try again.");
+      console.error("Sign up failed:", error);
     }
   };
 
@@ -134,6 +140,7 @@ export const SignUpCard = () => {
           {errorMessage && (
             <p className="text-red-500 text-sm">{errorMessage}</p>
           )}
+
 
           <Button
             type="submit"
