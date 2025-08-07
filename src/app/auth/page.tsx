@@ -32,6 +32,8 @@ const PageContent = () => {
     if (token) handleLoginWithJwt(token);
   }, [router, signUpWithJwt, querys]);
 
+  useEffect(()=>{},[])
+
   return <AuthScreen />;
 };
 

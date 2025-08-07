@@ -11,30 +11,39 @@ import { Input } from "../ui/input";
 import { Separator } from "@radix-ui/react-separator";
 import { useLoginWithPasswordEmail } from "@/hooks/auth/use-sign-in-with-passwod-email";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+
 export const SignInCard = () => {
   const router = useRouter();
   const { login } = useLoginWithPasswordEmail();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage(null);
+    
     console.log(email, password);
     const res = login(email, password, {
       onError: (error) => {
-        setErrorMessage("INvalid user or password")
+        setErrorMessage("Invalid user or password");
         console.log(error);
+        setIsLoading(false);
       },
       onSuccess: () => {
         console.log("login success");
         router.replace("/");
+        setIsLoading(false);
       },
     });
 
     console.log(res, "ress");
   };
-  
-  
+
   return (
     <Card className="w-full h-full p-8">
       <CardHeader className="px-0 pt-0">
@@ -44,33 +53,53 @@ export const SignInCard = () => {
       <CardContent className="space-y-5 px-0 pb-0">
         <form className="space-y-2.5" onSubmit={handleSubmitForm}>
           <Input
-            disabled={false}
+            disabled={isLoading}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
             }}
             placeholder="Email"
-            type="username"
+            type="text"
             required
           />
-          <Input
-            disabled={false}
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            placeholder="Password"
-            type="password"
-            required
-          />
+          <div className="relative">
+            <Input
+              disabled={isLoading}
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              placeholder="Password"
+              type={showPassword ? "text" : "password"}
+              required
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
 
           <Button
-            type={"submit"}
-            className="w-full "
+            type="submit"
+            className="w-full"
             size="lg"
-            disabled={false}
+            disabled={isLoading}
           >
-            Continue
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Loading...
+              </>
+            ) : (
+              "Continue"
+            )}
           </Button>
         </form>
         <Separator />

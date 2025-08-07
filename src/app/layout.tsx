@@ -33,7 +33,10 @@ export default function RootLayout({
       >
         <StoreProvider>
           <Navbar />
+          <div className="pt-20 h-full">
+
           {children}
+          </div>
         </StoreProvider>
         <Toaster />
       </body>

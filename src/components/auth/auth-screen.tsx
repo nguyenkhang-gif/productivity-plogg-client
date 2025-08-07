@@ -13,7 +13,7 @@ export const AuthScreen = () => {
 
   return (
     <div className="h-full flex items-center justify-center relative">
-      <div className="absolute inset-0 bg-white bg-opacity-30 z-0"></div>
+      <div className="h-full absolute inset-0 z-0"></div>
       <div className="md:h-auto md:w-[420px] z-10 relative">
         {signState === "signin" ? <SignInCard /> : <SignUpCard />}
         

@@ -229,7 +229,7 @@ export default function ChapterList() {
         }}
       />
       
-      <div className="w-[90%] mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <div className="w-[90%] mx-auto p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4 text-center">Chapter List</h1>
         <div className="flex flex-col mb-4">
           <Input
