@@ -2,9 +2,13 @@
 // import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import StoreProvider from "./redux-provider";
+import StoreProvider from "../core/providers/redux-provider";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/layouts/Navbar";
+import { cn } from "@/core/lib/utils";
+import { usePathname } from "next/navigation";
+import Script from "next/script";
+import DefaultLayout from "@/@layouts/defaultLayout/";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,17 +30,38 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+
   return (
     <html lang="en">
+      <Script
+        src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"
+        strategy="afterInteractive"
+      />
+      <Script
+        src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"
+        strategy="afterInteractive"
+      />
+      <Script
+        src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.2/dist/browser/pixi.min.js"
+        strategy="afterInteractive"
+      />
+      <Script
+        src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js"
+        strategy="afterInteractive"
+      />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <StoreProvider>
-          <Navbar />
-          <div className="pt-20 h-full">
-
-          {children}
-          </div>
+          {/* <Navbar />
+          <div
+            className={cn("pt-20 h-full", {
+              "pt-16": pathname.split("/").includes("meetings"),
+            })}
+          > */}
+          <DefaultLayout>{children}</DefaultLayout>
+          {/* </div> */}
         </StoreProvider>
         <Toaster />
       </body>

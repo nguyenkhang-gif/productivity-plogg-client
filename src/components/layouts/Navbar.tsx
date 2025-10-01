@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Linkedin,
@@ -11,9 +11,11 @@ import {
   User,
   LogIn,
   LogOut,
+  Sun,
+  Moon,
 } from "lucide-react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/core/redux/store";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
@@ -23,9 +25,25 @@ export default function Navbar() {
     name: "",
   }); // State for user profile
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For dropdown menu
-  const router = useRouter()
+  const [theme, setTheme] = useState("dark"); // Theme state
+  const router = useRouter();
   const user = useSelector((state: RootState) => state.user);
-  console.log("user info", user);
+  const dispatch = useDispatch();
+
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    setTheme(savedTheme);
+    document.documentElement.classList.toggle("dark", savedTheme === "dark");
+  }, []);
+
+  // Toggle theme
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -38,25 +56,49 @@ export default function Navbar() {
 
   // Temporary login function
   const handleLogin = () => {
-    router.push("/auth")
-    // setIsLoggedIn(true);
-
-    // setUserProfile({ name: "User Name" }); // Mock user profile
+    router.push("/auth");
     setIsDropdownOpen(false);
   };
 
   // Temporary logout function
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setUserProfile(null);
+    setUserProfile({ name: "" });
     setIsDropdownOpen(false);
   };
 
+  useEffect(() => {
+    if (user) {
+      setIsLoggedIn(true);
+      setUserProfile({ name: user.name || "User Name" }); // Update with actual user data
+    } else {
+      setIsLoggedIn(false);
+      setUserProfile({ name: "" });
+    }
+  }, [user]);
+
   return (
-    <nav className="bg-black text-white p-4 shadow-md w-full fixed z-10">
+    <nav
+      className={`p-4 shadow-md w-full fixed z-10 ${
+        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+      }`}
+    >
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="text-2xl font-bold">KPro</div>
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          aria-label="Toggle theme"
+        >
+          {theme === "dark" ? (
+            <Sun className="w-6 h-6" />
+          ) : (
+            <Moon className="w-6 h-6" />
+          )}
+        </button>
 
         {/* Burger Button for Mobile */}
         <button
@@ -69,15 +111,27 @@ export default function Navbar() {
 
         {/* Navigation Links - Desktop */}
         <div className="hidden md:flex space-x-6 items-center">
-          <Link href="/" className="hover:text-gray-300 transition-colors">
+          <Link
+            href="/"
+            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+          >
             Home
           </Link>
-          <Link href="/epub" className="hover:text-gray-300 transition-colors">
+          <Link
+            href="/meetings/home"
+            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+          >
+            Yoom
+          </Link>
+          <Link
+            href="/epub"
+            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+          >
             Epub Gen
           </Link>
           <Link
             href="/projects"
-            className="hover:text-gray-300 transition-colors"
+            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
           >
             Projects
           </Link>
@@ -90,26 +144,26 @@ export default function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Linkedin className="text-2xl hover:text-gray-300 transition-colors" />
+            <Linkedin className="text-2xl hover:text-gray-300 dark:hover:text-gray-400 transition-colors" />
           </a>
           <a
             href="https://www.facebook.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Facebook className="text-2xl hover:text-gray-300 transition-colors" />
+            <Facebook className="text-2xl hover:text-gray-300 dark:hover:text-gray-400 transition-colors" />
           </a>
           <a
             href="https://www.instagram.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Instagram className="text-2xl hover:text-gray-300 transition-colors" />
+            <Instagram className="text-2xl hover:text-gray-300 dark:hover:text-gray-400 transition-colors" />
           </a>
           <div className="relative">
             <button
               onClick={toggleDropdown}
-              className="flex items-center space-x-2 hover:text-gray-300 transition-colors"
+              className="flex items-center space-x-2 hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
               aria-label="User menu"
             >
               <User className="text-2xl" />
@@ -117,19 +171,27 @@ export default function Navbar() {
               {!isLoggedIn && <span>Account</span>}
             </button>
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-20">
+              <div
+                className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg z-20 ${
+                  theme === "dark"
+                    ? "bg-gray-800 text-white"
+                    : "bg-white text-black"
+                }`}
+              >
                 {isLoggedIn ? (
                   <>
                     <Link
                       href="/profile"
-                      className="block px-4 py-2 hover:bg-gray-200 transition-colors"
+                      className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                       onClick={toggleDropdown}
                     >
                       Profile
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-200 transition-colors flex items-center space-x-2"
+                      class
+                      blue
+                      className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
                     >
                       <LogOut className="w-5 h-5" />
                       <span>Logout</span>
@@ -138,7 +200,7 @@ export default function Navbar() {
                 ) : (
                   <button
                     onClick={handleLogin}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-200 transition-colors flex items-center space-x-2"
+                    className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
                   >
                     <LogIn className="w-5 h-5" />
                     <span>Login</span>
@@ -152,25 +214,36 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-black text-white p-4">
+        <div
+          className={`md:hidden p-4 ${
+            theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+          }`}
+        >
           <div className="flex flex-col space-y-4">
             <Link
               href="/"
-              className="hover:text-gray-300 transition-colors"
+              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
               onClick={toggleMenu}
             >
               Home
             </Link>
             <Link
+              href="/meetings/home"
+              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+              onClick={toggleMenu}
+            >
+              Yoom
+            </Link>
+            <Link
               href="/epub"
-              className="hover:text-gray-300 transition-colors"
+              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
               onClick={toggleMenu}
             >
               Epub Gen
             </Link>
             <Link
               href="/projects"
-              className="hover:text-gray-300 transition-colors"
+              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
               onClick={toggleMenu}
             >
               Projects
@@ -178,7 +251,7 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={toggleDropdown}
-                className="flex items-center space-x-2 hover:text-gray-300 transition-colors"
+                className="flex items-center space-x-2 hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
                 aria-label="User menu"
               >
                 <User className="text-2xl" />
@@ -186,12 +259,18 @@ export default function Navbar() {
                 {!isLoggedIn && <span>Account</span>}
               </button>
               {isDropdownOpen && (
-                <div className="mt-2 w-full bg-white text-black rounded-md shadow-lg">
+                <div
+                  className={`mt-2 w-full rounded-md shadow-lg ${
+                    theme === "dark"
+                      ? "bg-gray-800 text-white"
+                      : "bg-white text-black"
+                  }`}
+                >
                   {isLoggedIn ? (
                     <>
                       <Link
                         href="/profile"
-                        className="block px-4 py-2 hover:bg-gray-200 transition-colors"
+                        className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                         onClick={() => {
                           toggleDropdown();
                           toggleMenu();
@@ -204,7 +283,7 @@ export default function Navbar() {
                           handleLogout();
                           toggleMenu();
                         }}
-                        className="w-full text-left px-4 py-2 hover:bg-gray-200 transition-colors flex items-center space-x-2"
+                        className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
                       >
                         <LogOut className="w-5 h-5" />
                         <span>Logout</span>
@@ -216,7 +295,7 @@ export default function Navbar() {
                         handleLogin();
                         toggleMenu();
                       }}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-200 transition-colors flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
                     >
                       <LogIn className="w-5 h-5" />
                       <span>Login</span>
@@ -232,7 +311,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 onClick={toggleMenu}
               >
-                <Linkedin className="text-2xl hover:text-gray-300 transition-colors" />
+                <Linkedin className="text-2xl hover:text-gray-300 dark:hover:text-gray-400 transition-colors" />
               </a>
               <a
                 href="https://www.facebook.com"
@@ -240,7 +319,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 onClick={toggleMenu}
               >
-                <Facebook className="text-2xl hover:text-gray-300 transition-colors" />
+                <Facebook className="text-2xl hover:text-gray-300 dark:hover:text-gray-400 transition-colors" />
               </a>
               <a
                 href="https://www.instagram.com"
@@ -248,7 +327,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 onClick={toggleMenu}
               >
-                <Instagram className="text-2xl hover:text-gray-300 transition-colors" />
+                <Instagram className="text-2xl hover:text-gray-300 dark:hover:text-gray-400 transition-colors" />
               </a>
             </div>
           </div>

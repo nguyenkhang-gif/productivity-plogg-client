@@ -12,14 +12,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Bot, Search, Loader2 } from "lucide-react";
-import { Chapter, addChapter, chapterFormatI } from "@/redux/epub";
-import { RootState } from "@/redux/store";
+import { Chapter, addChapter, chapterFormatI } from "@/core/redux/epub";
+import { RootState } from "@/core/redux/store";
 import { ChapterListItem } from "@/components/epub/Chapter/ChapterListItem";
-import { useAskAiWithUrl } from "@/hooks/epub/use-ask-ai-with-url";
+import { useAskAiWithUrl } from "@/core/hooks/epub/use-ask-ai-with-url";
 import AskAiPopup from "@/components/epub/AskAIPopup";
-import { useCreateEpub } from "@/hooks/epub/use-create-epub";
-import { useGetEpubFormatList } from "@/hooks/epub/use-get-epub-format-list";
-import { useParseChapter } from "@/hooks/epub/use-parse-chapter";
+import { useCreateEpub } from "@/core/hooks/epub/use-create-epub";
+import { useGetEpubFormatList } from "@/core/hooks/epub/use-get-epub-format-list";
+import { useParseChapter } from "@/core/hooks/epub/use-parse-chapter";
 import ChapterDetailModel from "@/components/epub/Chapter/ChapterDetailModel";
 import GenerateEpubModal from "@/components/epub/GenergrateEpubModal";
 

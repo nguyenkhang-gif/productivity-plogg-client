@@ -9,8 +9,8 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { Separator } from "@radix-ui/react-separator";
-import { useLoginWithPasswordEmail } from "@/hooks/auth/use-sign-in-with-passwod-email";
-import axiosInstance from "@/lib/axiosInstance";
+import { useLoginWithPasswordEmail } from "@/core/hooks/auth/use-sign-in-with-passwod-email";
+import axiosInstance from "@/core/lib/axiosInstance";
 
 export const SignUpCard = () => {
   const {  isPending,signUp } = useLoginWithPasswordEmail();

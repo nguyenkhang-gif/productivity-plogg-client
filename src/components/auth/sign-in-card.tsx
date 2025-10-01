@@ -9,7 +9,7 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { Separator } from "@radix-ui/react-separator";
-import { useLoginWithPasswordEmail } from "@/hooks/auth/use-sign-in-with-passwod-email";
+import { useLoginWithPasswordEmail } from "@/core/hooks/auth/use-sign-in-with-passwod-email";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
@@ -27,7 +27,6 @@ export const SignInCard = () => {
     setIsLoading(true);
     setErrorMessage(null);
     
-    console.log(email, password);
     const res = login(email, password, {
       onError: (error) => {
         setErrorMessage("Invalid user or password");
@@ -40,8 +39,6 @@ export const SignInCard = () => {
         setIsLoading(false);
       },
     });
-
-    console.log(res, "ress");
   };
 
   return (

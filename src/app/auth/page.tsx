@@ -1,15 +1,14 @@
 "use client";
 
 import { AuthScreen } from "@/components/auth/auth-screen";
-import { useSignUpWithJwt } from "@/hooks/auth/use-sign-up-with-jwt";
+import { useSignUpWithJwt } from "@/core/hooks/auth/use-sign-up-with-jwt";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/core/redux/store";
 import { useSelector } from "react-redux";
 import { Suspense } from "react";
 
 const PageContent = () => {
-  const count = useSelector((state: RootState) => state.counter.count);
 
   const querys = useSearchParams();
 
@@ -25,6 +24,7 @@ const PageContent = () => {
         },
         onSuccess: (data) => {
           console.log(data, "data");
+          
         },
       });
       router.replace("/");

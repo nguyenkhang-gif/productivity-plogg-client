@@ -3,8 +3,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Trash2, Pencil } from "lucide-react";
 // import { toggleChapter, deleteChapter } from '../features/chapters/chaptersSlice'
-import { toggleChapter, deleteChapter } from "@/redux/epub";
-import { Chapter } from "@/redux/epub";
+import { toggleChapter, deleteChapter } from "@/core/redux/epub";
+import { Chapter } from "@/core/redux/epub";
 // interface Chapter {
 //   id: number;
 //   text?: string;
