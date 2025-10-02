@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import axiosInstance from "@/core/lib/axiosInstance"; // Thay thế bằng cách gọi API của bạn
-import { useDispatch } from "react-redux";
-import { resetToDefault } from "@/core/redux/user";
+// import { useDispatch } from "react-redux";
+// import { resetToDefault } from "@/core/redux/user";
 
 interface Options {
   onSuccess?: (data: object) => void; // Hàm được gọi khi đăng nhập thành công
@@ -16,7 +16,7 @@ export const useLoginWithPasswordEmail = () => {
   const [status, setStatus] = useState<
     "success" | "error" | "settled" | "pending" | null
   >(null);
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   const isPending = useMemo(() => status === "pending", [status]);
   const isError = useMemo(() => status === "error", [status]);

@@ -26,8 +26,8 @@ export const SignInCard = () => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage(null);
-    
-    const res = login(email, password, {
+
+    login(email, password, {
       onError: (error) => {
         setErrorMessage("Invalid user or password");
         console.log(error);
@@ -100,9 +100,7 @@ export const SignInCard = () => {
           </Button>
         </form>
         <Separator />
-        {errorMessage && (
-          <p className="text-red-500 text-sm">{errorMessage}</p>
-        )}
+        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
       </CardContent>
     </Card>
   );

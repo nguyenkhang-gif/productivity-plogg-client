@@ -4,11 +4,12 @@ import { useEffect, useRef } from "react";
 export default function Live2DModel() {
   const canvasRef = useRef(null);
   const modelRef = useRef(null); // Sử dụng useRef để lưu model thay vì state
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const windowRef = window as any;
   useEffect(() => {
     const checkScripts = () => {
-      if (typeof window.PIXI !== "undefined" && window.PIXI.live2d) {
-        const PIXI = window.PIXI;
+      if (typeof windowRef.PIXI !== "undefined" && windowRef.PIXI.live2d) {
+        const PIXI = windowRef.PIXI;
         const canvas = document.querySelector("#live2d-canvas"); // Sử dụng querySelector
         const app = new PIXI.Application({
           view: canvas,
@@ -19,13 +20,14 @@ export default function Live2DModel() {
 
         PIXI.live2d.Live2DModel.from(
           "/models/hiyori/runtime/hiyori_free_t08.model3.json"
-        ).then((loadedModel) => {
-          const scaleX = (window.innerWidth * 1.4) / loadedModel.width;
-          const scaleY = (window.innerHeight * 1.4) / loadedModel.height;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ).then((loadedModel: any) => {
+          const scaleX = (windowRef.innerWidth * 1.4) / loadedModel.width;
+          const scaleY = (windowRef.innerHeight * 1.4) / loadedModel.height;
           loadedModel.scale.x = scaleX;
           loadedModel.scale.y = scaleY;
-          loadedModel.x = window.innerWidth - loadedModel.width + 800;
-          loadedModel.y = window.innerHeight - loadedModel.height + 600;
+          loadedModel.x = windowRef.innerWidth - loadedModel.width + 800;
+          loadedModel.y = windowRef.innerHeight - loadedModel.height + 600;
 
           app.stage.addChild(loadedModel);
           console.log(loadedModel);
@@ -57,10 +59,11 @@ export default function Live2DModel() {
       const motionJson = await response.json();
 
       // Chạy motion (loop = false, priority = NORMAL)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (model as any).motion(
         motionJson,
         false,
-        window.PIXI.live2d.MotionPriority.NORMAL
+        windowRef.PIXI.live2d.MotionPriority.NORMAL
       );
 
       console.log("Motion played");

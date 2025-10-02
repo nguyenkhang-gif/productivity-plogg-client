@@ -11,7 +11,7 @@ import React, { useState } from "react";
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
 const MeetingRoom = () => {
-  const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
+  const [layout, ] = useState<CallLayoutType>("speaker-left");
   const [showParticipants, setShowParticipants] = useState(false);
   const router = useRouter()
 

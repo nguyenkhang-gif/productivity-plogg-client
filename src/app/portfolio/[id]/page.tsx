@@ -1,7 +1,4 @@
 "use client";
-import { useParams } from "next/navigation";
-import { RootState } from "@/core/redux/store";
-import { useSelector } from "react-redux";
 import PortfolioUserOverview from "@/components/portfolio/PortfolioUserOverview";
 import AboutMeSection from "@/components/portfolio/AboutMeSection";
 const tempUserPropData = {
@@ -22,8 +19,8 @@ const aboutMePropsData = {
 };
 
 export default function Page() {
-  const { id } = useParams<{ id: string }>();
-  const user = useSelector((data: RootState) => data.user);
+  // const { id } = useParams<{ id: string }>();
+  // const user = useSelector((data: RootState) => data.user);
 
   return (
     <div className="w-full">

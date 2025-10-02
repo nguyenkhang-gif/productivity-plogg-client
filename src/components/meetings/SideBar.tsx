@@ -1,7 +1,6 @@
 "use client";
 import { sideBarLinks } from "@/constants";
 import { cn } from "@/core/lib/utils";
-import { Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";

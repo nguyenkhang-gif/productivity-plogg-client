@@ -1,13 +1,12 @@
 import React from "react";
 
 const AboutMeSection = ({
-  desciptions,
+  descriptions,
   imgUrl,
 }: {
   descriptions: string;
   imgUrl: string;
 }) => {
-  console.log(desciptions);
 
   return (
     <section className="fade-in w-auto p-8 flex flex-col items-center relative rounded-3xl md:bg-gray-50 dark:md:bg-slate-800 md:mx-10 text-default mb-20 md:mb-2">
@@ -18,7 +17,7 @@ const AboutMeSection = ({
         <div className="w-full">
           <img src={imgUrl} alt="" />
         </div>
-        <div className="w-full"></div>
+        <div className="w-full">{descriptions}</div>
       </div>
     </section>
   );

@@ -13,13 +13,9 @@ export default function DefaultLayout({
   const pathname = usePathname();
   const userInfo = useSelector((state: RootState) => state.user);
 
-
-  console.log("userInfo in layout: ");
-  console.log("userInfo in layout: ", userInfo);
-  
   return (
     <>
-      <Navbar />
+      {userInfo._id && <Navbar />}
       <div
         className={cn("pt-20 h-full", {
           "pt-16": pathname.split("/").includes("meetings"),

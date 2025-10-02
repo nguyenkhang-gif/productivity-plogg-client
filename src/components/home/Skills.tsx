@@ -19,7 +19,7 @@ const Skills = () => {
     { name: "Graphic Design", percentage: 88 },
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, ] = useState(0);
 
   const getCircleDasharray = (percentage: number) => {
     const radius = 45;
@@ -28,15 +28,15 @@ const Skills = () => {
     return { circumference, dashoffset };
   };
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 3 >= skills.length ? 0 : prev + 3));
-  };
+  // const nextSlide = () => {
+  //   setCurrentIndex((prev) => (prev + 3 >= skills.length ? 0 : prev + 3));
+  // };
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) =>
-      prev - 3 < 0 ? Math.max(0, skills.length - 3) : prev - 3
-    );
-  };
+  // const prevSlide = () => {
+  //   setCurrentIndex((prev) =>
+  //     prev - 3 < 0 ? Math.max(0, skills.length - 3) : prev - 3
+  //   );
+  // };
 
   const visibleSkills = skills.slice(currentIndex, currentIndex + 3);
 
@@ -45,7 +45,7 @@ const Skills = () => {
       <div className="container mx-auto text-center ">
         <h2 className="text-4xl font-bold mb-4">Skills</h2>
         <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-          been the industry's standard dummy text.
+          been the industry`s standard dummy text.
         </p>
         <div className="relative">
           <div className="flex justify-center gap-12 flex-wrap transition-all duration-500 ease-in-out">

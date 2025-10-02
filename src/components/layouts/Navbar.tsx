@@ -14,7 +14,7 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useRouter } from "next/navigation";
 
@@ -28,7 +28,6 @@ export default function Navbar() {
   const [theme, setTheme] = useState("dark"); // Theme state
   const router = useRouter();
   const user = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
 
   // Load theme from localStorage on mount
   useEffect(() => {
@@ -70,7 +69,7 @@ export default function Navbar() {
   useEffect(() => {
     if (user) {
       setIsLoggedIn(true);
-      setUserProfile({ name: user.name || "User Name" }); // Update with actual user data
+      setUserProfile({ name: user.username || "User Name" }); // Update with actual user data
     } else {
       setIsLoggedIn(false);
       setUserProfile({ name: "" });
@@ -189,8 +188,6 @@ export default function Navbar() {
                     </Link>
                     <button
                       onClick={handleLogout}
-                      class
-                      blue
                       className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
                     >
                       <LogOut className="w-5 h-5" />

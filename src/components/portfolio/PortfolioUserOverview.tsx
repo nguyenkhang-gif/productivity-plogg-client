@@ -1,4 +1,4 @@
-import { Circle, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import React from "react";
 
 type User = {
@@ -22,7 +22,7 @@ const PortfolioUserOverview = ({ user }: PortfolioUserOverviewProps) => {
       <div className="w-full h-72 mt-10 md:text-left md:mt-2 ">
         <div>
           <h1 className="text-3xl text-black dark:text-white my-3">
-            Hi, I'm <span className="font-bold">{user.name}</span>
+            Hi, I`m <span className="font-bold">{user.name}</span>
           </h1>
           <p className=" ">{user.desciptions}</p>
         </div>

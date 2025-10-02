@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { use } from "react"; // React 19+
 import { useGetCallById } from "@/core/hooks/meetings/useGetCallById";
 import {
   Call,
@@ -21,7 +20,7 @@ export default function RoomDetailsPage({
   const client = useStreamVideoClient();
 
   const [currentCallId, setCurrentCallId] = useState<string | null>(null);
-  const [values, setValues] = useState({
+  const [values, ] = useState({
     dateTime: new Date(),
     description: "",
     link: "",
