@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
     process.env.NODE_ENV === "development"
       ? "http://localhost:8000/api"
       : process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api", // URL API gốc
-  timeout: 10000, // Thời gian chờ request
+  timeout: 120*1000, // Thời gian chờ request
   headers: {
     "Content-Type": "application/json",
   },

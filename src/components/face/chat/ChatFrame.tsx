@@ -5,9 +5,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useAskAiWithSound } from "@/core/hooks/aiChat/useAskAiWithSound";
+import {
+  // useAskAiWithSound,
+  useAskAiWithSoundAndAction,
+} from "@/core/hooks/aiChat/useAskAiWithSound";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useClearAiContext } from "@/core/hooks/aiChat/useClearAiContext";
 
 // Hàm parse nội dung tin nhắn để tách text và code
 const parseMessageContent = (text: string) => {
@@ -17,12 +21,10 @@ const parseMessageContent = (text: string) => {
   let lastIndex = 0;
   let match;
 
-  // Tìm tất cả các khối code
   while ((match = codeBlockRegex.exec(text)) !== null) {
     const startIndex = match.index;
     const endIndex = codeBlockRegex.lastIndex;
 
-    // Thêm text trước khối code (nếu có)
     if (startIndex > lastIndex) {
       parts.push({
         type: "text",
@@ -30,17 +32,15 @@ const parseMessageContent = (text: string) => {
       });
     }
 
-    // Thêm khối code
     parts.push({
       type: "code",
       content: match[2].trim(),
-      language: match[1] || "javascript", // Mặc định là javascript nếu không có ngôn ngữ
+      language: match[1] || "javascript",
     });
 
     lastIndex = endIndex;
   }
 
-  // Thêm phần text còn lại (nếu có)
   if (lastIndex < text.length) {
     parts.push({
       type: "text",
@@ -48,7 +48,6 @@ const parseMessageContent = (text: string) => {
     });
   }
 
-  // Nếu không có khối code, toàn bộ là text
   if (parts.length === 0) {
     parts.push({
       type: "text",
@@ -62,8 +61,10 @@ const parseMessageContent = (text: string) => {
 const ChatFrame = () => {
   const [inputText, setInputText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null); // Thêm ref cho phần tử cuối danh sách tin nhắn
   const messages = useSelector((state: RootState) => state.aiChat.messages);
-  const { ask: askAi, isPending } = useAskAiWithSound();
+  const { ask: askAi, isPending } = useAskAiWithSoundAndAction();
+  const { clear } = useClearAiContext();
 
   // Handle sending messages
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
@@ -82,6 +83,13 @@ const ChatFrame = () => {
       textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
     }
   }, [inputText]);
+
+  // Auto-scroll to the latest message
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]); // Chạy lại mỗi khi messages thay đổi
 
   return (
     <div className="flex flex-col h-full bg-white/30 dark:bg-gray-900/30 backdrop-blur-md rounded-lg shadow-lg overflow-hidden border border-gray-200/50 dark:border-gray-800/50">
@@ -160,6 +168,8 @@ const ChatFrame = () => {
             </div>
           </div>
         ))}
+        {/* Phần tử rỗng để đánh dấu vị trí cuối cùng */}
+        <div ref={messagesEndRef} />
       </div>
       {/* Input area */}
       <div className="p-4 bg-transparent border-t border-gray-200/50 dark:border-gray-800/50">
@@ -179,6 +189,12 @@ const ChatFrame = () => {
             disabled={isPending}
           >
             {isPending ? "Sending..." : "Send"}
+          </Button>
+          <Button
+            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 active:scale-95 h-auto"
+            onClick={() => clear()}
+          >
+            {"Clear context"}
           </Button>
         </form>
       </div>

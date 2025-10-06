@@ -5,7 +5,7 @@ import store from "@/core/redux/store";
 import { useRouter } from "next/navigation";
 
 export const useAuth = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
