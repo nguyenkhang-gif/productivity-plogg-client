@@ -31,7 +31,8 @@ export default function Navbar() {
 
   // Load theme from localStorage on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "dark";
+    const savedTheme = localStorage.getItem("theme") ?? "dark";
+    
     setTheme(savedTheme);
     document.documentElement.classList.toggle("dark", savedTheme === "dark");
   }, []);
@@ -69,13 +70,14 @@ export default function Navbar() {
   useEffect(() => {
     if (user) {
       setIsLoggedIn(true);
-      setUserProfile({ name: user.username || "User Name" }); // Update with actual user data
+      // setUserProfile({ name: user.username || "User Name" }); // Update with actual user data
     } else {
       setIsLoggedIn(false);
-      setUserProfile({ name: "" });
+      // setUserProfile({ name: "" });
     }
   }, [user]);
 
+  if(!user._id) return null
   return (
     <nav
       className={`p-4 shadow-md w-full fixed z-10 ${

@@ -12,6 +12,7 @@ import { Separator } from "@radix-ui/react-separator";
 import { useLoginWithPasswordEmail } from "@/core/hooks/auth/use-sign-in-with-passwod-email";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useDispatch } from "react-redux";
 
 export const SignInCard = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ export const SignInCard = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,10 +35,12 @@ export const SignInCard = () => {
         console.log(error);
         setIsLoading(false);
       },
-      onSuccess: () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onSuccess: (data: any) => {
         console.log("login success");
         router.replace("/");
         setIsLoading(false);
+        dispatch({ type: "user/updateUser", payload: data?.user ?? {} });
       },
     });
   };
