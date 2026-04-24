@@ -43,12 +43,11 @@ const AskAiPopup = memo(function AskAiPopup({
   // console.log("Rendering AskAiPopup");
 
   const handleConfirm = () => {
-    console.log("Confirmed");
+    // console.log("Confirmed");
     onclickButtonTwo?.();
     // setIsOpen(false);
   };
   const handleOpenChange = (open: boolean) => {
-    console.log(open, "Dialog open state changed");
     setIsOpen(open);
     if (!open && onClose) {
       onClose();

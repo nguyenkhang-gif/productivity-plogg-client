@@ -14,26 +14,6 @@ interface Message {
   sender: "user" | "bot";
 }
 
-// async function handleGenerateTTS(text: string) {
-//   const res = await fetch("/api/tts", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       text,
-//     }),
-//   });
-
-//   if (!res.ok) {
-//     console.error("TTS error:", await res.json());
-//     return;
-//   }
-
-//   const blob = await res.blob();
-//   const url = URL.createObjectURL(blob);
-
-//   const audio = new Audio(url);
-//   audio.play();
-// }
 async function handleGenerateGoogleTTS(text: string, lang = "en") {
   const res = await fetch("/api/google-tts", {
     method: "POST",
@@ -55,26 +35,6 @@ async function handleGenerateGoogleTTS(text: string, lang = "en") {
   const audio = new Audio(url);
   audio.play();
 }
-// async function handleGenerateGeminiTTS(text: string, lang = "en") {
-//   const res = await fetch("/api/gemini-tts", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       text,
-//     }),
-//   });
-
-//   if (!res.ok) {
-//     console.error("TTS error:", await res.json());
-//     return;
-//   }
-
-//   const blob = await res.blob();
-//   const url = URL.createObjectURL(blob);
-
-//   const audio = new Audio(url);
-//   audio.play();
-// }
 
 export const useAskAiWithSound = () => {
   const dispatch = useDispatch();

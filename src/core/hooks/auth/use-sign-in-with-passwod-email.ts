@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import axiosInstance from "@/core/lib/axiosInstance"; // Thay thế bằng cách gọi API của bạn
+import { ENDPOINTS } from "@/core/endpoints";
 // import { useDispatch } from "react-redux";
 // import { resetToDefault } from "@/core/redux/user";
 
@@ -30,8 +31,8 @@ export const useLoginWithPasswordEmail = () => {
         setError(null);
         setStatus("pending");
 
-        const res = await axiosInstance.post("/auth/login", {
-          username,
+        const res = await axiosInstance.post(ENDPOINTS.AUTH.LOGIN, {
+          identifier:username,
           password,
         }); // Thay thế bằng đường dẫn thực tế của API bạn
 

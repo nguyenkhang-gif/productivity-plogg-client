@@ -30,8 +30,6 @@ export default function Live2DModel() {
           loadedModel.y = windowRef.innerHeight - loadedModel.height + 600;
 
           app.stage.addChild(loadedModel);
-          console.log(loadedModel);
-
           modelRef.current = loadedModel; // Lưu model vào useRef
 
           setInterval(() => {

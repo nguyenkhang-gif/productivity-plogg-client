@@ -18,10 +18,10 @@ const PageContent = () => {
     const handleLoginWithJwt = async (token: string) => {
       await signUpWithJwt(token, {
         onError: (error) => {
-          console.log(error);
+          // console.log(error);
         },
         onSuccess: (data) => {
-          console.log(data, "data");
+          // console.log(data, "data");
           
         },
       });

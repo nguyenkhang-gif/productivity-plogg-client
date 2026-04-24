@@ -9,7 +9,8 @@ export interface UserState {
   email: string;
   memberShip: string;
   role: string;
-  _id:string
+  _id: string;
+  token: string | null;
 }
 
 // Khởi tạo giá trị ban đầu (initial state)
@@ -21,7 +22,8 @@ const initialUserState: UserState = {
   email: "",
   memberShip: "",
   role: "",
-  _id:""
+  _id: "",
+  token: null,
 };
 
 // Tạo slice cho user

@@ -8,7 +8,7 @@ interface StoreProviderProps {
   children: ReactNode;
 }
 
-const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
+const AuthLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { loading } = useAuth();
 
   if (loading) {
@@ -26,7 +26,16 @@ const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
         Loading...
       </div>
     );
-  }else return <Provider store={store}>{children}</Provider>; // Render nội dung sau khi xác thực
+  }
+  return <>{children}</>;
+};
+
+const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
+  return (
+    <Provider store={store}>
+      <AuthLoader>{children}</AuthLoader>
+    </Provider>
+  );
 };
 
 export default StoreProvider;

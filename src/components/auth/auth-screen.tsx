@@ -12,17 +12,24 @@ export const AuthScreen = () => {
   };
 
   return (
-    <div className="h-full flex items-center justify-center relative">
-      <div className="h-full absolute inset-0 z-0"></div>
-      <div className="md:h-auto md:w-[420px] z-10 relative">
+    <div className="min-h-screen w-full auth-background flex items-center justify-center p-4">
+      {/* Animated floating orbs */}
+      <div className="floating-orb floating-orb-1" />
+      <div className="floating-orb floating-orb-2" />
+      <div className="floating-orb floating-orb-3" />
+      
+      {/* Auth card container */}
+      <div className="w-full max-w-md z-10 auth-card-animate">
         {signState === "signin" ? <SignInCard /> : <SignUpCard />}
         
-        <div className="text-center mt-4">
+        <div className="text-center mt-6">
           <button 
             onClick={toggleSignState} 
-            className="text-white underline"
+            className="auth-toggle-btn text-sm font-medium px-4 py-2"
           >
-            {signState === "signin" ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+            {signState === "signin" 
+              ? "Don't have an account? Sign up" 
+              : "Already have an account? Sign in"}
           </button>
         </div>
       </div>

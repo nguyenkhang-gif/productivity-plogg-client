@@ -19,7 +19,11 @@ interface ChapterListItemProps {
   onEdit: (chapter: Chapter) => void;
 }
 
-export function ChapterListItem({ chapter, index,onEdit }: ChapterListItemProps) {
+export function ChapterListItem({
+  chapter,
+  index,
+  onEdit,
+}: ChapterListItemProps) {
   const dispatch = useDispatch();
 
   return (
@@ -39,7 +43,7 @@ export function ChapterListItem({ chapter, index,onEdit }: ChapterListItemProps)
             }`}
             style={{ width: "100%" }}
           >
-            {chapter.info.title.length?chapter.info.title: index}
+            {chapter.info.title.length ? chapter.info.title : index}
           </label>
         </div>
         <div>

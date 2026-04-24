@@ -27,7 +27,6 @@ export const useGetEpubFormatList = () => {
 
       // Chuẩn bị body dữ liệu với các trường đầy đủ
       const res = await axiosInstance.post("/epub/get-user-epub", {});
-      console.log("res", res.data);
       setData(res.data);
       setStatus("success");
       options?.onSuccess?.(res.data);

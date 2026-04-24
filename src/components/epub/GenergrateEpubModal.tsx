@@ -40,9 +40,6 @@ export default function GenerateEpubModal() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Handle form submission here
-    console.log("Author Name:", authorName);
-    console.log("Book Title:", bookTitle);
-    console.log("Chapters:", chapters);
     const data = {
       options: {
         title: bookTitle,
@@ -62,9 +59,9 @@ export default function GenerateEpubModal() {
           });
           window.open(url, "_blank"); // Mở link trong tab mới
         } catch (e) {
-          console.log("errrr or taos", e);
+          // console.log("errrr or taos", e);
         }
-        console.log("Success fully generate Epub:", url);
+        // console.log("Success fully generate Epub:", url);
       },
       onError: (error) => {
         console.error("Error:", error);
@@ -126,7 +123,6 @@ export default function GenerateEpubModal() {
                         onClick={(e) => {
                           e.stopPropagation(); // Ngăn sự kiện lan lên form
                           e.preventDefault(); // Ngăn việc submit form
-                          console.log("handle delete");
                         }}
                         className="text-red-500 hover:text-red-700"
                       >

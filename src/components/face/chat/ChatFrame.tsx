@@ -64,7 +64,7 @@ const ChatFrame = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null); // Thêm ref cho phần tử cuối danh sách tin nhắn
   const messages = useSelector((state: RootState) => state.aiChat.messages);
   const { ask: askAi, isPending } = useAskAiWithSoundAndAction();
-  const { clear } = useClearAiContext();
+  const { clear,isPending:isClearPending } = useClearAiContext();
 
   // Handle sending messages
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
@@ -186,12 +186,13 @@ const ChatFrame = () => {
           <Button
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 active:scale-95 h-auto"
-            disabled={isPending}
-          >
+            disabled={isPending||isClearPending}
+            >
             {isPending ? "Sending..." : "Send"}
           </Button>
           <Button
             className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 active:scale-95 h-auto"
+            disabled={isPending||isClearPending}
             onClick={() => clear()}
           >
             {"Clear context"}

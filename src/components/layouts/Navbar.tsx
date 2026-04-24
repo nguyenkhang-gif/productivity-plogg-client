@@ -17,6 +17,7 @@ import {
 import {  useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useRouter } from "next/navigation";
+import { log } from "console";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false); // For mobile menu
@@ -31,7 +32,7 @@ export default function Navbar() {
 
   // Load theme from localStorage on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") ?? "dark";
+    const savedTheme = localStorage? localStorage.getItem("theme") : "dark";
     
     setTheme(savedTheme);
     document.documentElement.classList.toggle("dark", savedTheme === "dark");
@@ -76,8 +77,9 @@ export default function Navbar() {
       // setUserProfile({ name: "" });
     }
   }, [user]);
+  console.log(user)
 
-  if(!user._id) return null
+  if(!user._id.length) return null
   return (
     <nav
       className={`p-4 shadow-md w-full fixed z-10 ${

@@ -42,7 +42,6 @@ const ChapterDetailModel = memo(function ChapterDetailModel({
   // console.log("Rendering AskAiPopup");
 
   const handleConfirm = () => {
-    console.log("Confirmed");
     onclickButtonTwo?.();
     // setIsOpen(false);
   };

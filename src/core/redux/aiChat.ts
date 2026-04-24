@@ -10,6 +10,7 @@ interface ChatState {
   messages: Message[];
   loading: boolean;
   error: string | null;
+  conversationId?: string;
   aiInfo: {
     name: string;
   };
