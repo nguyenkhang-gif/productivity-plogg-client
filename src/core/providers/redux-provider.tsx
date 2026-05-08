@@ -1,4 +1,5 @@
-// src/components/StoreProvider.tsx
+"use client";
+
 import React, { ReactNode } from "react";
 import { Provider } from "react-redux";
 import store from "@/core/redux/store";
@@ -8,32 +9,16 @@ interface StoreProviderProps {
   children: ReactNode;
 }
 
-const AuthLoader: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { loading } = useAuth();
-
-  if (loading) {
-    // Hiển thị loading khi đang xử lý
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          fontSize: "1.5rem",
-        }}
-      >
-        Loading...
-      </div>
-    );
-  }
+// Trigger useAuth bên trong Provider để khởi tạo session restore
+const AuthBootstrap: React.FC<{ children: ReactNode }> = ({ children }) => {
+  useAuth();
   return <>{children}</>;
 };
 
 const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
   return (
     <Provider store={store}>
-      <AuthLoader>{children}</AuthLoader>
+      <AuthBootstrap>{children}</AuthBootstrap>
     </Provider>
   );
 };

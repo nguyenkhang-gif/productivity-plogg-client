@@ -4,7 +4,7 @@ import axios from "axios";
 const axiosInstance = axios.create({
   baseURL:
     process.env.NODE_ENV === "development"
-      ? "http://localhost:8000/api"
+      ?  process.env.NEXT_PUBLIC_API_URL 
       : process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api", // URL API gốc
   timeout: 120*1000, // Thời gian chờ request
   headers: {
@@ -16,10 +16,8 @@ const axiosInstance = axios.create({
 // Xử lý request
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Thêm token nếu cần
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
-      console.log("debug 2: token ");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -27,7 +25,6 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    throw new Error(error);
     return Promise.reject(error);
   }
 );

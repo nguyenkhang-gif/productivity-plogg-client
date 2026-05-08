@@ -23,7 +23,7 @@ const PortfolioUserOverview = ({ user }: PortfolioUserOverviewProps) => {
       <div className="w-full mt-10 md:text-left md:mt-2 flex-1">
         <div>
           <h1 className="text-4xl text-black dark:text-white my-3">
-            Hi, I'm <span className="font-bold text-primary">{user.name}</span>
+            Hi, I&apos;m <span className="font-bold text-primary">{user.name}</span>
           </h1>
           <h2 className="text-2xl text-slate-600 dark:text-slate-400 font-medium mb-4">{user.role}</h2>
         </div>

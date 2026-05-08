@@ -9,9 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Bot, Search, Loader2 } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { ChapterListItem } from "@/components/epub/Chapter/ChapterListItem";
-import AskAiPopup from "@/components/epub/AskAIPopup";
 import ChapterDetailModel from "@/components/epub/Chapter/ChapterDetailModel";
 import GenerateEpubModal from "@/components/epub/GenergrateEpubModal";
 import { useEpubChapterList } from "@/core/hooks/epub/use-epub-chapter-list";
@@ -27,7 +26,6 @@ export default function ChapterList() {
     selectedDetailChapter,
     formatedArray,
     filteredChapters,
-    aiResponse,
 
     // State setters
     setNewChapter,
@@ -36,11 +34,8 @@ export default function ChapterList() {
 
     // Actions
     handleAddChapter,
-    handleCreateEpub,
-    handleCancelCreateEpub,
     handleEditChapter,
     handleCloseDetailChapter,
-    askAI,
   } = useEpubChapterList();
 
   return (
@@ -106,34 +101,6 @@ export default function ChapterList() {
                 "Add"
               )}
             </Button>
-            <AskAiPopup
-              title={
-                aiResponse?.chapterInfo?.title ?? "Chapter 1: The Beginning"
-              }
-              content={
-                aiResponse?.chapterInfo?.content ??
-                "In a world where technology and magic intertwine, a young programmer discovers an ancient artifact that changes everything..."
-              }
-              isLoading={isLoading}
-              isNotFound={false}
-              buttonOneText={"cancel"}
-              buttonTwoText={"add"}
-              onclickButtonOne={handleCancelCreateEpub}
-              onclickButtonTwo={handleCreateEpub}
-              onClose={() => {
-                console.log("close dasljlkdsajlkdajlkdsalkjdlaskjdasdj");
-              }}
-              triggerButton={
-                <Button
-                  onClick={askAI}
-                  className="flex-1 mx-2 bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-white"
-                  disabled={isLoading}
-                >
-                  <Bot className="mr-2 h-4 w-4" />
-                  Ask AI
-                </Button>
-              }
-            ></AskAiPopup>
             <GenerateEpubModal></GenerateEpubModal>
           </div>
         </div>

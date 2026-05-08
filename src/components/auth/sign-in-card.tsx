@@ -2,20 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { 
-  Eye, 
-  EyeOff, 
-  Loader2, 
-  User, // Thay Mail bằng User để phù hợp với Username/Email
-  Lock 
-} from "lucide-react";
+import { Eye, EyeOff, Loader2, User, Lock } from "lucide-react";
 
 import { useLoginWithPasswordEmail } from "@/core/hooks/auth/use-sign-in-with-passwod-email";
 
 export const SignInCard = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { login } = useLoginWithPasswordEmail();
 
   // State
@@ -33,15 +25,13 @@ export const SignInCard = () => {
     // Lưu ý: Tên hàm login từ hook có thể vẫn giữ là login(email, password) 
     // nhưng ta truyền identifier vào tham số đầu tiên.
     login(identifier, password, {
-      onError: (error) => {
+      onError: () => {
         setErrorMessage("Thông tin đăng nhập không chính xác");
         setIsLoading(false);
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onSuccess: (data: any) => {
+      onSuccess: () => {
         setIsLoading(false);
-        dispatch({ type: "user/updateUser", payload: data?.user ?? {} });
-        router.replace("/");
+        router.replace("/posts");
       },
     });
   };

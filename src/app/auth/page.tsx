@@ -17,20 +17,13 @@ const PageContent = () => {
     const token = querys.get("jwt");
     const handleLoginWithJwt = async (token: string) => {
       await signUpWithJwt(token, {
-        onError: (error) => {
-          // console.log(error);
-        },
-        onSuccess: (data) => {
-          // console.log(data, "data");
-          
-        },
+        onError: () => {},
+        onSuccess: () => {},
       });
       router.replace("/");
     };
     if (token) handleLoginWithJwt(token);
   }, [router, signUpWithJwt, querys]);
-
-  useEffect(()=>{},[])
 
   return <AuthScreen />;
 };

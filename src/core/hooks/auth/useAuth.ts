@@ -1,57 +1,49 @@
-import { useEffect, useState } from "react";
+import { useEffect, useCallback } from "react";
 import axiosInstance from "@/core/lib/axiosInstance";
-// import store from "@/core/redux/store"; // Removed direct store import
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/core/redux/store";
-import { updateUser, resetToDefault } from "@/core/redux/user";
+import { AppDispatch, RootState } from "@/core/redux/store";
+import { setCredentials, setAuthLoading, logout } from "@/core/redux/user";
 
 export const useAuth = () => {
-  const [loading, setLoading] = useState(true); // Start loading as true
   const router = useRouter();
-  const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
+  const { profile, token, isAuth, isLoading } = useSelector(
+    (state: RootState) => state.user
+  );
 
-  const logout = () => {
-    dispatch(resetToDefault());
+  const signOut = useCallback(() => {
+    dispatch(logout());
     localStorage.removeItem("token");
     router.push("/auth");
-  };
+  }, [dispatch, router]);
 
+  // Chỉ chạy một lần khi app mount để khôi phục session từ localStorage
   useEffect(() => {
-    const handleAuth = async () => {
+    const restoreSession = async () => {
+      const storedToken = localStorage.getItem("token");
+      if (!storedToken) {
+        dispatch(setAuthLoading(false));
+        return;
+      }
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            setLoading(false);
-            return;
-        }
-
-        // Optional: Refresh token logic if needed, or just validate current token
-        // For now keeping existing logic structure but improving it
-        // const { data } = await axiosInstance.post("/auth/refresh-token");
-        // if (data.access_token) {
-        //   localStorage.setItem("token", data.access_token);
-        // }
-
-        // const profileResponse = await axiosInstance.post("/auth/profile");
-        // if (profileResponse.data) {
-        //   dispatch(updateUser({ ...profileResponse.data, token: data.access_token || token }));
-        // }
-      } catch (e) {
-        // console.error("Authentication failed, redirecting to /auth", e);
-        logout(); // Use logout to clean up
-      } finally {
-        setLoading(false);
+        const { data } = await axiosInstance.get("/auth/profile");
+        dispatch(setCredentials({ profile: data, token: storedToken }));
+      } catch {
+        dispatch(logout());
+        localStorage.removeItem("token");
       }
     };
-    handleAuth();
-  }, [dispatch]); // Added dispatch dependency
 
-  return { 
-      loading, 
-      logout, 
-      user,
-      isAuthenticated: !!user.token || !!localStorage.getItem("token") // Fallback to localStorage for initial load
+    restoreSession();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return {
+    profile,
+    token,
+    isAuth,
+    isLoading,
+    signOut,
   };
 };

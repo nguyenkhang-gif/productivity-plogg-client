@@ -13,27 +13,26 @@ import {
   LogOut,
   Sun,
   Moon,
+  Users,
 } from "lucide-react";
-import {  useSelector } from "react-redux";
-import { RootState } from "@/core/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/core/redux/store";
+import { logout } from "@/core/redux/user";
+import { selectPendingCount } from "@/core/redux/friendship";
 import { useRouter } from "next/navigation";
-import { log } from "console";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false); // For mobile menu
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State for login status
-  const [userProfile, setUserProfile] = useState<{ name: string }>({
-    name: "",
-  }); // State for user profile
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // For dropdown menu
-  const [theme, setTheme] = useState("dark"); // Theme state
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [theme, setTheme] = useState("dark");
   const router = useRouter();
-  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
+  const { profile, isAuth, isLoading } = useSelector((state: RootState) => state.user);
+  const pendingCount = useSelector(selectPendingCount);
 
   // Load theme from localStorage on mount
   useEffect(() => {
-    const savedTheme = localStorage? localStorage.getItem("theme") : "dark";
-    
+    const savedTheme = localStorage.getItem("theme") ?? "dark";
     setTheme(savedTheme);
     document.documentElement.classList.toggle("dark", savedTheme === "dark");
   }, []);
@@ -48,38 +47,27 @@ export default function Navbar() {
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-    setIsDropdownOpen(false); // Close dropdown when toggling mobile menu
+    setIsDropdownOpen(false);
   };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Temporary login function
   const handleLogin = () => {
     router.push("/auth");
     setIsDropdownOpen(false);
   };
 
-  // Temporary logout function
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserProfile({ name: "" });
+    dispatch(logout());
+    localStorage.removeItem("token");
+    router.push("/auth");
     setIsDropdownOpen(false);
   };
 
-  useEffect(() => {
-    if (user) {
-      setIsLoggedIn(true);
-      // setUserProfile({ name: user.username || "User Name" }); // Update with actual user data
-    } else {
-      setIsLoggedIn(false);
-      // setUserProfile({ name: "" });
-    }
-  }, [user]);
-  console.log(user)
-
-  if(!user._id.length) return null
+  if (isLoading) return null;
+  if (!isAuth) return null;
   return (
     <nav
       className={`p-4 shadow-md w-full fixed z-10 ${
@@ -115,16 +103,10 @@ export default function Navbar() {
         {/* Navigation Links - Desktop */}
         <div className="hidden md:flex space-x-6 items-center">
           <Link
-            href="/"
+            href="/posts"
             className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
           >
-            Home
-          </Link>
-          <Link
-            href="/meetings/home"
-            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-          >
-            Yoom
+            Posts
           </Link>
           <Link
             href="/epub"
@@ -137,6 +119,18 @@ export default function Navbar() {
             className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
           >
             Projects
+          </Link>
+          <Link
+            href="/portfolio"
+            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+          >
+            Portfolio
+          </Link>
+          <Link
+            href="/upload"
+            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+          >
+            Files
           </Link>
         </div>
 
@@ -169,9 +163,16 @@ export default function Navbar() {
               className="flex items-center space-x-2 hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
               aria-label="User menu"
             >
-              <User className="text-2xl" />
-              {isLoggedIn && <span>{userProfile?.name || "Profile"}</span>}
-              {!isLoggedIn && <span>Account</span>}
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold overflow-hidden flex-shrink-0">
+                {profile.profilePic ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={profile.profilePic} alt={profile.fullName} className="w-full h-full object-cover" />
+                ) : (
+                  profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
+                )}
+              </div>
+              {isAuth && <span>{profile.username || "Profile"}</span>}
+              {!isAuth && <span>Account</span>}
             </button>
             {isDropdownOpen && (
               <div
@@ -181,14 +182,27 @@ export default function Navbar() {
                     : "bg-white text-black"
                 }`}
               >
-                {isLoggedIn ? (
+                {isAuth ? (
                   <>
                     <Link
                       href="/profile"
                       className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                      onClick={toggleDropdown}
+                      onClick={() => setIsDropdownOpen(false)}
                     >
                       Profile
+                    </Link>
+                    <Link
+                      href="/friends"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <Users className="w-4 h-4" />
+                      <span>Bạn bè</span>
+                      {pendingCount > 0 && (
+                        <span className="ml-auto min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                          {pendingCount > 99 ? "99+" : pendingCount}
+                        </span>
+                      )}
                     </Link>
                     <button
                       onClick={handleLogout}
@@ -222,18 +236,11 @@ export default function Navbar() {
         >
           <div className="flex flex-col space-y-4">
             <Link
-              href="/"
+              href="/posts"
               className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
               onClick={toggleMenu}
             >
-              Home
-            </Link>
-            <Link
-              href="/meetings/home"
-              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-              onClick={toggleMenu}
-            >
-              Yoom
+              Posts
             </Link>
             <Link
               href="/epub"
@@ -249,15 +256,36 @@ export default function Navbar() {
             >
               Projects
             </Link>
+            <Link
+              href="/portfolio"
+              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+              onClick={toggleMenu}
+            >
+              Portfolio
+            </Link>
+            <Link
+              href="/upload"
+              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+              onClick={toggleMenu}
+            >
+              Files
+            </Link>
             <div className="relative">
               <button
                 onClick={toggleDropdown}
                 className="flex items-center space-x-2 hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
                 aria-label="User menu"
               >
-                <User className="text-2xl" />
-                {isLoggedIn && <span>{userProfile?.name || "Profile"}</span>}
-                {!isLoggedIn && <span>Account</span>}
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold overflow-hidden flex-shrink-0">
+                  {profile.profilePic ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={profile.profilePic} alt={profile.fullName} className="w-full h-full object-cover" />
+                  ) : (
+                    profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
+                  )}
+                </div>
+                {isAuth && <span>{profile.username || "Profile"}</span>}
+                {!isAuth && <span>Account</span>}
               </button>
               {isDropdownOpen && (
                 <div
@@ -267,17 +295,27 @@ export default function Navbar() {
                       : "bg-white text-black"
                   }`}
                 >
-                  {isLoggedIn ? (
+                  {isAuth ? (
                     <>
                       <Link
                         href="/profile"
                         className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                        onClick={() => {
-                          toggleDropdown();
-                          toggleMenu();
-                        }}
+                        onClick={() => { toggleDropdown(); toggleMenu(); }}
                       >
                         Profile
+                      </Link>
+                      <Link
+                        href="/friends"
+                        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        onClick={() => { toggleDropdown(); toggleMenu(); }}
+                      >
+                        <Users className="w-4 h-4" />
+                        <span>Bạn bè</span>
+                        {pendingCount > 0 && (
+                          <span className="ml-auto min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                            {pendingCount > 99 ? "99+" : pendingCount}
+                          </span>
+                        )}
                       </Link>
                       <button
                         onClick={() => {

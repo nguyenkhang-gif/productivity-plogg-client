@@ -1,11 +1,14 @@
 import { useState, useCallback, useMemo } from "react";
-import axiosInstance from "@/core/lib/axiosInstance"; // Thay thế bằng cách gọi API của bạn
+import { useDispatch } from "react-redux";
+import axiosInstance from "@/core/lib/axiosInstance";
+import { AppDispatch } from "@/core/redux/store";
+import { setCredentials } from "@/core/redux/user";
 
 interface Options {
-  onSuccess?: (data: object) => void; // Hàm được gọi khi đăng nhập thành công
-  onError?: (error: Error) => void; // Hàm được gọi khi có lỗi
-  onSettled?: () => void; // Hàm được gọi sau khi kết thúc dù thành công hay lỗi
-  throwError?: boolean; // Cho phép ném lỗi lên nếu true
+  onSuccess?: (data: object) => void;
+  onError?: (error: Error) => void;
+  onSettled?: () => void;
+  throwError?: boolean;
 }
 
 export const useSignUpWithJwt = () => {
@@ -14,6 +17,7 @@ export const useSignUpWithJwt = () => {
   const [status, setStatus] = useState<
     "success" | "error" | "settled" | "pending" | null
   >(null);
+  const dispatch = useDispatch<AppDispatch>();
 
   const isPending = useMemo(() => status === "pending", [status]);
   const isError = useMemo(() => status === "error", [status]);
@@ -27,37 +31,30 @@ export const useSignUpWithJwt = () => {
         setError(null);
         setStatus("pending");
 
-        // Chuẩn bị body dữ liệu với các trường đầy đủ
         const res = await axiosInstance.post("/auth/auth-with-jwt", { token });
 
-        // Lưu token vào localStorage
-        localStorage.setItem("token", res.data.access_token);
+        const accessToken = res.data.access_token;
+        localStorage.setItem("token", accessToken);
+        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 
-        // Gán token vào header mặc định của axiosInstance
-        axiosInstance.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${res.data.access_token}`;
+        // Fetch profile và cập nhật Redux ngay — trước khi onSuccess/navigate
+        const { data: profile } = await axiosInstance.get("/auth/profile");
+        dispatch(setCredentials({ profile, token: accessToken }));
 
         setData(res.data);
         setStatus("success");
         options?.onSuccess?.(res.data);
-        // setData(res.data);
-        // setStatus("success");
-        // options?.onSuccess?.(res.data);
-        // return res.data;
       } catch (error) {
         setStatus("error");
         setError(error as Error);
         options?.onError?.(error as Error);
-        if (options?.throwError) {
-          throw error;
-        }
+        if (options?.throwError) throw error;
       } finally {
         setStatus("settled");
         options?.onSettled?.();
       }
     },
-    []
+    [dispatch]
   );
 
   return {

@@ -153,7 +153,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return new NextResponse(audioBuffer, {
+    return new NextResponse(new Uint8Array(audioBuffer), {
       status: 200,
       headers: {
         "Content-Type": "audio/wav",

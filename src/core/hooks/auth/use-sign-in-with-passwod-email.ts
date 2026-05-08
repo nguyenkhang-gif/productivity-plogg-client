@@ -1,14 +1,15 @@
 import { useState, useCallback, useMemo } from "react";
-import axiosInstance from "@/core/lib/axiosInstance"; // Thay thế bằng cách gọi API của bạn
+import { useDispatch } from "react-redux";
+import axiosInstance from "@/core/lib/axiosInstance";
 import { ENDPOINTS } from "@/core/endpoints";
-// import { useDispatch } from "react-redux";
-// import { resetToDefault } from "@/core/redux/user";
+import { AppDispatch } from "@/core/redux/store";
+import { setCredentials } from "@/core/redux/user";
 
 interface Options {
-  onSuccess?: (data: object) => void; // Hàm được gọi khi đăng nhập thành công
-  onError?: (error: Error) => void; // Hàm được gọi khi có lỗi
-  onSettled?: () => void; // Hàm được gọi sau khi kết thúc dù thành công hay lỗi
-  throwError?: boolean; // Cho phép ném lỗi lên nếu true
+  onSuccess?: (data: object) => void;
+  onError?: (error: Error) => void;
+  onSettled?: () => void;
+  throwError?: boolean;
 }
 
 export const useLoginWithPasswordEmail = () => {
@@ -17,7 +18,7 @@ export const useLoginWithPasswordEmail = () => {
   const [status, setStatus] = useState<
     "success" | "error" | "settled" | "pending" | null
   >(null);
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>();
 
   const isPending = useMemo(() => status === "pending", [status]);
   const isError = useMemo(() => status === "error", [status]);
@@ -32,17 +33,17 @@ export const useLoginWithPasswordEmail = () => {
         setStatus("pending");
 
         const res = await axiosInstance.post(ENDPOINTS.AUTH.LOGIN, {
-          identifier:username,
+          identifier: username,
           password,
-        }); // Thay thế bằng đường dẫn thực tế của API bạn
+        });
 
-        // Lưu token vào localStorage
-        localStorage.setItem("token", res.data.access_token);
+        const token = res.data.access_token;
+        localStorage.setItem("token", token);
+        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-        // Gán token vào header mặc định của axiosInstance
-        axiosInstance.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${res.data.access_token}`;
+        // Fetch profile và cập nhật Redux ngay — trước khi onSuccess/navigate
+        const { data: profile } = await axiosInstance.get("/auth/profile");
+        dispatch(setCredentials({ profile, token }));
 
         setData(res.data);
         setStatus("success");
@@ -52,15 +53,13 @@ export const useLoginWithPasswordEmail = () => {
         setStatus("error");
         setError(error as Error);
         options?.onError?.(error as Error);
-        if (options?.throwError) {
-          throw error;
-        }
+        if (options?.throwError) throw error;
       } finally {
         setStatus("settled");
         options?.onSettled?.();
       }
     },
-    []
+    [dispatch]
   );
 
   const signUp = useCallback(
@@ -78,24 +77,14 @@ export const useLoginWithPasswordEmail = () => {
         setError(null);
         setStatus("pending");
 
-        // Chuẩn bị body dữ liệu với các trường đầy đủ
-        const body = {
+        const res = await axiosInstance.post("/auth/signup", {
           fullName,
           username,
           password,
           confirmPassword,
           email,
           gender,
-        };
-
-        // Gửi request với body đầy đủ
-        const res = await axiosInstance.post("/auth/signup", body);
-
-        console.log("Response data: ", res);
-
-        axiosInstance.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${res.data.token}`;
+        });
 
         setData(res.data);
         setStatus("success");
@@ -105,9 +94,7 @@ export const useLoginWithPasswordEmail = () => {
         setStatus("error");
         setError(error as Error);
         options?.onError?.(error as Error);
-        if (options?.throwError) {
-          throw error;
-        }
+        if (options?.throwError) throw error;
       } finally {
         setStatus("settled");
         options?.onSettled?.();
@@ -115,9 +102,6 @@ export const useLoginWithPasswordEmail = () => {
     },
     []
   );
-  // const signOut = useCallback(async ()=>{
-  //   dispatch(resetToDefault())
-  // },[])
 
   return {
     login,

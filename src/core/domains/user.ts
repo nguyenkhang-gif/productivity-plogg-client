@@ -32,6 +32,7 @@ export class User {
   }
 
   public toSafeObject(): Omit<IUser, 'password'> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...safeUser } = this.data;
     return safeUser;
   }

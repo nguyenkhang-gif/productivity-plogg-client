@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// Định nghĩa kiểu dữ liệu cho UserState
-export interface UserState {
+export interface UserProfile {
   fullName: string;
   gender: string;
   username: string;
@@ -9,12 +8,18 @@ export interface UserState {
   email: string;
   memberShip: string;
   role: string;
-  _id: string;
-  token: string | null;
+  id: string;
+  isPrivate?: boolean;
 }
 
-// Khởi tạo giá trị ban đầu (initial state)
-const initialUserState: UserState = {
+export interface UserState {
+  profile: UserProfile;
+  token: string | null;
+  isAuth: boolean;
+  isLoading: boolean;
+}
+
+const initialProfile: UserProfile = {
   fullName: "",
   gender: "",
   username: "",
@@ -22,28 +27,52 @@ const initialUserState: UserState = {
   email: "",
   memberShip: "",
   role: "",
-  _id: "",
-  token: null,
+  id: "",
 };
 
-// Tạo slice cho user
+const initialUserState: UserState = {
+  profile: initialProfile,
+  token: null,
+  isAuth: false,
+  isLoading: true,
+};
+
 const userSlice = createSlice({
   name: "user",
   initialState: initialUserState,
   reducers: {
-    // Action để cập nhật tất cả thông tin người dùng
-    updateUser: (state, action: PayloadAction<UserState>) => {
-      return { ...state, ...action.payload }; // Cập nhật tất cả thông tin người dùng
+    setCredentials: (
+      state,
+      action: PayloadAction<{ profile: UserProfile; token: string }>
+    ) => {
+      state.profile = action.payload.profile;
+      state.token = action.payload.token;
+      state.isAuth = true;
+      state.isLoading = false;
     },
-    // Action để reset tất cả thông tin người dùng về giá trị mặc định
-    resetToDefault: () => {
-      return { ...initialUserState }; // Đặt lại state về giá trị ban đầu
+    setAuthLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
     },
+    logout: () => ({
+      profile: initialProfile,
+      token: null,
+      isAuth: false,
+      isLoading: false,
+    }),
+    updateProfile: (state, action: PayloadAction<Partial<UserProfile>>) => {
+      state.profile = { ...state.profile, ...action.payload };
+    },
+    // Keep for backward compatibility
+    resetToDefault: () => ({
+      profile: initialProfile,
+      token: null,
+      isAuth: false,
+      isLoading: false,
+    }),
   },
 });
 
-// Export actions để sử dụng trong component
-export const { updateUser, resetToDefault } = userSlice.actions;
+export const { setCredentials, setAuthLoading, logout, resetToDefault, updateProfile } =
+  userSlice.actions;
 
-// Export reducer để thêm vào store
 export default userSlice.reducer;
