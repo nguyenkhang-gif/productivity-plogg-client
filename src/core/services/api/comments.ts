@@ -3,6 +3,7 @@ import { Endpoints } from "../endpoints";
 
 export interface CreateCommentDto {
   content: string;
+  iconUrl?: string;
 }
 
 export interface UpdateCommentDto {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/core/redux/store";
 import { setIcons, removeIcon, setProvider, initProvider, CloudProvider } from "@/core/redux/upload";
@@ -44,21 +44,26 @@ export default function UploadPage() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<PendingFile[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<FileItem | null>(null);
+  const loadIdRef = useRef(0);
 
   useEffect(() => { dispatch(initProvider()); }, [dispatch]);
 
   const load = useCallback(async (bucket: Bucket, p: number) => {
+    const id = ++loadIdRef.current;
     setIsLoading(true);
     setError(null);
     try {
       const result = bucket === "files"
         ? await api.listFiles(p, LIMIT)
         : await api.listIcons(p, LIMIT);
+      if (id !== loadIdRef.current) return;
       setData(result);
       if (bucket === "icons") dispatch(setIcons(result));
     } catch {
+      if (id !== loadIdRef.current) return;
       setError("Không thể tải danh sách file.");
     } finally {
+      if (id !== loadIdRef.current) return;
       setIsLoading(false);
     }
   }, [api, dispatch]);
@@ -139,6 +144,7 @@ export default function UploadPage() {
     dispatch(setProvider(p));
     setPage(1);
     setData(EMPTY_DATA);
+    setIsLoading(true);
   };
 
   const currentProvider = PROVIDERS.find((p) => p.value === provider)!;
