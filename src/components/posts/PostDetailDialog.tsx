@@ -46,6 +46,7 @@ function CommentItem({
         ) : (
           comment.author?.fullName?.[0]?.toUpperCase() ?? "U"
         )}
+        <></>
       </div>
       <div className="flex-1 min-w-0">
         <div className="bg-white/[0.04] rounded-2xl rounded-tl-sm px-4 py-2.5">
