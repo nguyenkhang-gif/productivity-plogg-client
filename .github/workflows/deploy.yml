@@ -21,6 +21,10 @@ jobs:
       - name: Install & Build
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_STREAM_API_KEY: ${{ secrets.NEXT_PUBLIC_STREAM_API_KEY }}
+          NEXT_STREAM_API_SECRET_KEY: ${{ secrets.NEXT_STREAM_API_SECRET_KEY }}
+          NEXT_ELEVENLABS_API_KEY: ${{ secrets.NEXT_ELEVENLABS_API_KEY }}
+          NEXT_GEMINI_API_KEY: ${{ secrets.NEXT_GEMINI_API_KEY }}
         run: |
           npm install
           npm run build
