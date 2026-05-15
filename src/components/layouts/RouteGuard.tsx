@@ -21,7 +21,7 @@ export default function RouteGuard({ children }: { children: React.ReactNode }) 
   // Đang loading auth → chưa render gì
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen text-white/50">
+      <div className="flex items-center justify-center h-screen bg-black text-white/50">
         Loading...
       </div>
     );
