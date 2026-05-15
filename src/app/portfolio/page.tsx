@@ -19,7 +19,7 @@ const portfolioData = {
       "https://lh3.googleusercontent.com/a/ACg8ocJdWiIXRbvDWMs5aTL4nBQ3iKHTD_cR5fQd4f3YGVb86MvjmzBP=s1000",
   },
   summary:
-    "A full-stack developer with hands-on experience in modern JavaScript frameworks. Passionate about delivering scalable, data-driven, and intuitive user experiences. I specialize in building interactive web applications and optimizing bundler performance to ensure lightning-fast load times. Seeking to join a dynamic team where I can grow my technical expertise and contribute to impactful software solutions.",
+    "A full-stack developer with hands-on experience in modern JavaScript frameworks. Passionate about delivering scalable, data-driven, and intuitive user experiences. I specialize in building interactive web applications, optimizing bundler performance, and actively leveraging AI-powered tools to accelerate development workflows. Seeking to join a dynamic team where I can grow my technical expertise and contribute to impactful software solutions.",
   aboutMeImg:
     "https://storage.googleapis.com/productivity-blog-a.appspot.com/files%2Ftanaka-kun-english-dub-cast-list.png",
   education: [
@@ -68,7 +68,7 @@ const portfolioData = {
       role: "Front End Developer",
       company: "IES",
       location: "Tân Phú, HCM",
-      period: "July 2024 – April 2025",
+      period: "July 2025 – Present",
       projects: [
         {
           name: "ThingIQ",
@@ -78,8 +78,10 @@ const portfolioData = {
           highlights: [
             "Developed and maintained a responsive IoT dashboard using Vue.js with Vuex for state management.",
             "Integrated MQTT protocol to receive and display real-time data streams from IoT devices, including GPS trackers and vibration sensors.",
+            "Implemented Server-Sent Events (SSE) to push live device status updates and anomaly alerts from server to client without polling.",
             "Built interactive map views for live vehicle tracking and route visualization.",
             "Implemented fuel consumption monitoring and anomaly alert modules with real-time push notifications.",
+            "Automated data collection using Puppeteer for web scraping, enabling structured extraction of external data to enrich the IoT dataset.",
             "Translated Figma prototypes into pixel-perfect, fully responsive UI components.",
             "Collaborated with backend developers to integrate RESTful APIs and MQTT broker efficiently.",
           ],
@@ -88,6 +90,26 @@ const portfolioData = {
     },
   ],
   projects: [
+    {
+      name: "Wattpad to EPUB Converter",
+      status: "In Process",
+      description: "CLI Tool for Automated Wattpad Scraping and EPUB Generation",
+      teamSize: 1,
+      role: "Solo Developer",
+      techStack: "Node.js, Puppeteer, epub-gen",
+      links: [
+        {
+          label: "GitHub",
+          url: "https://github.com/nguyenkhang-gif/wattpad-to-epub-converter",
+        },
+      ],
+      highlights: [
+        "Built a two-step CLI workflow: a Puppeteer-based scraper extracts chapter content from Wattpad, then a generator packages the output into a valid EPUB file.",
+        "Implemented incremental scraping with resume support — if interrupted, previously scraped chapters are preserved and new chapters are appended without data loss.",
+        "Automated scroll-based lazy-load handling, scrolling 800px at a time with delay until hitting the navigation element or page bottom to ensure full content capture.",
+        "Parsed structured HTML (article.story-part, chapter titles, paragraphs) into clean EPUB chapters with custom metadata (title, author, cover image).",
+      ],
+    },
     {
       name: "Productivity Blog",
       status: "In Process",
@@ -128,11 +150,16 @@ const portfolioData = {
       "React Query (TanStack)",
     ],
     backend: ["NestJS", "ExpressJS"],
-    database: ["MySQL", "MongoDB"],
+    database: ["MySQL", "MongoDB", "Firebase", "Supabase"],
     tools: [
       "Git",
+      "AWS (EC2, S3)",
       "REST API",
       "WebSocket",
+      "MQTT",
+      "Server-Sent Events (SSE)",
+      "Puppeteer",
+      "Data Scraping",
       "Clean Architecture",
       "Design Patterns (MVC, Repository, Singleton, Observer)",
       "Optimize Bundler Performance (Webpack/Vite)",

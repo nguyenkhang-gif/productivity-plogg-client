@@ -183,6 +183,16 @@ body,
   background: #161925;
 }
 
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus,
+.auth-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #161925 inset !important;
+  -webkit-text-fill-color: white !important;
+  border-color: rgba(14, 120, 249, 0.5);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 /* Primary Button */
 .gradient-btn {
   background: #0E78F9;
