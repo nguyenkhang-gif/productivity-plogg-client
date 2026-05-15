@@ -1,14 +1,11 @@
 name: Deploy FE
-
 on:
   push:
     branches:
-      - release-2.1 # đổi thành tên nhánh của bạn
-
+      - release-2.1
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -35,15 +32,16 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ".next/"
-          target: "~/productivity-plogg-client/"
+          source: ".next/,public/,package.json,next.config.js"
+          target: "/home/ubuntu/productivity-plogg-client/"
 
-      - name: Restart PM2
+      - name: Install deps & Restart PM2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd ~/productivity-plogg-client
+            cd /home/ubuntu/productivity-plogg-client
+            npm install --omit=dev
             pm2 restart plog-frontend --update-env
