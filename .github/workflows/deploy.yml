@@ -26,7 +26,21 @@ jobs:
           npm install
           npm run build
 
-      - name: Copy .next to EC2
+      - name: Clean up EC2 before deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            rm -f ~/*.tar.gz
+            rm -rf ~/productivity-plogg-client/.next
+            rm -rf ~/productivity-plogg-client/node_modules
+            rm -rf ~/.npm
+            sudo rm -rf /tmp/*
+            df -h /dev/root
+
+      - name: Copy files to EC2
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -34,6 +48,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: ".next/,public/,package.json,next.config.js"
           target: "/home/ubuntu/productivity-plogg-client/"
+          overwrite: true
 
       - name: Install deps & Restart PM2
         uses: appleboy/ssh-action@master
@@ -45,3 +60,4 @@ jobs:
             cd /home/ubuntu/productivity-plogg-client
             npm install --omit=dev
             pm2 restart plog-frontend --update-env
+            pm2 logs plog-frontend --lines 20 --nostream
