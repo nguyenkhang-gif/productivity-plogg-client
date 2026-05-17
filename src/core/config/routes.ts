@@ -21,6 +21,7 @@ export const routes: RouteConfig[] = [
 
   // Public: ai cũng xem được
   { path: "/portfolio", access: "public" },
+  { path: "/projects", access: "public" },
 
   // Private: phải login
   { path: "/", access: "private", exact: true },

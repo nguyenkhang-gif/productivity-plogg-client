@@ -13,7 +13,7 @@ type EducationSectionProps = {
 
 const EducationSection = ({ education }: EducationSectionProps) => {
   return (
-    <section className="fade-in w-full p-8 flex flex-col items-center relative rounded-3xl md:bg-white dark:md:bg-slate-900 text-default mb-10 border border-slate-200 dark:border-slate-800 shadow-sm">
+    <section className="fade-in w-full px-5 py-6 md:p-8 flex flex-col items-center relative rounded-3xl md:bg-white dark:md:bg-slate-900 text-default mb-10 border border-slate-200 dark:border-slate-800 shadow-sm">
       <div className="flex items-center gap-2 mb-8 self-start">
         <GraduationCap className="text-primary" />
         <h2 className="text-2xl font-bold">Education</h2>

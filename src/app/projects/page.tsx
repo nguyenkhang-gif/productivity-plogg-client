@@ -1,0 +1,172 @@
+"use client";
+
+import React from "react";
+import { FolderCode, Users, Briefcase, Code2, ExternalLink, Github, ArrowRight } from "lucide-react";
+import Link from "next/link";
+
+type ProjectLink = {
+  label: string;
+  url: string;
+  icon?: "external" | "github";
+};
+
+type Project = {
+  name: string;
+  status: "In Process" | "Completed";
+  description: string;
+  teamSize: number;
+  role: string;
+  techStack: string[];
+  links: ProjectLink[];
+  highlights: string[];
+  detailPath: string;
+};
+
+const projects: Project[] = [
+  {
+    name: "Productivity Blog",
+    detailPath: "/projects/productivity-blog",
+    status: "In Process",
+    description:
+      "A full-stack productivity and social platform featuring real-time chat, post feeds, file uploads, EPUB generation, and AI integrations — built to showcase and iterate on new features.",
+    teamSize: 1,
+    role: "Full-Stack Developer",
+    techStack: ["Next.js 15", "TypeScript", "Node.js", "Socket.IO", "MongoDB", "Redux Toolkit", "TanStack Query", "Cloudinary", "AWS EC2"],
+    links: [
+      { label: "Website", url: "http://knnpb.duckdns.org/posts", icon: "external" },
+    ],
+    highlights: [
+      "Architected a full-stack app with Next.js App Router, React Query + Redux Toolkit for layered state management.",
+      "Implemented real-time chat with Socket.IO — singleton connection with auto-reconnect up to 5 times.",
+      "Built a dual-provider file upload system supporting both backend storage and Cloudinary CDN.",
+      "Integrated Google Gemini AI and ElevenLabs TTS for AI-powered features via Next.js API routes.",
+      "Deployed frontend on AWS EC2 with PM2, backend on Render — CI/CD via manual SCP deploy workflow.",
+      "Implemented JWT-based auth with SSO-style ?jwt= param flow and route-level access control guard.",
+    ],
+  },
+  {
+    name: "Manga Downloader & EPUB/CBZ Converter",
+    detailPath: "/projects/manga-downloader",
+    status: "In Process",
+    description:
+      "Full-stack tool for downloading manga chapters and packaging them into EPUB or CBZ files, with a Web UI, real-time progress tracking, and an in-browser CBZ reader.",
+    teamSize: 1,
+    role: "Solo Developer",
+    techStack: ["Node.js", "Puppeteer", "Express", "Sharp", "epub-gen"],
+    links: [
+      { label: "GitHub", url: "https://github.com/nguyenkhang-gif/wattpad-to-epub-converter", icon: "github" },
+    ],
+    highlights: [
+      "Built a full pipeline — headless browser scraping with Puppeteer, image compression via Sharp, and packaging into both EPUB and CBZ formats.",
+      "Developed an Express-based Web UI with real-time progress bars and color-coded live logs streamed from the running process.",
+      "Automated scroll-based lazy-load handling and chapter URL parsing directly from the manga index page, enabling one-click full-series downloads.",
+      "Implemented a browser-based CBZ reader with fit-width/fit-height/webtoon modes, keyboard and touch-swipe navigation, and mobile-friendly layout.",
+      "Supported split-volume exports via a configurable sections array, allowing large series to be packaged into multiple named EPUB volumes.",
+    ],
+  },
+];
+
+const statusColors: Record<Project["status"], string> = {
+  "In Process": "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  Completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+};
+
+export default function ProjectsPage() {
+  return (
+    <div className="w-full max-w-5xl mx-auto px-4 py-10">
+      {/* Header */}
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-2">
+          <FolderCode className="text-primary dark:text-blue-400 w-7 h-7" />
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Projects</h1>
+        </div>
+        <p className="text-slate-500 dark:text-slate-300 text-lg">
+          Personal projects I&apos;ve built and maintained.
+        </p>
+        <div className="mt-4">
+          <Link
+            href="/portfolio"
+            className="text-sm text-blue-500 dark:text-blue-400 hover:underline"
+          >
+            ← Back to Portfolio
+          </Link>
+        </div>
+      </div>
+
+      {/* Projects list */}
+      <div className="space-y-8">
+        {projects.map((proj, index) => (
+          <div
+            key={index}
+            className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm"
+          >
+            {/* Title row */}
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{proj.name}</h2>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[proj.status]}`}>
+                    {proj.status}
+                  </span>
+                </div>
+                <p className="text-slate-600 dark:text-slate-400">{proj.description}</p>
+              </div>
+              <div className="flex flex-wrap gap-2 shrink-0">
+                {proj.links.map((link, lIndex) => (
+                  <a
+                    key={lIndex}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition-colors text-sm font-medium text-slate-700 dark:text-slate-200"
+                  >
+                    {link.icon === "github" ? <Github size={14} /> : <ExternalLink size={14} />}
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Meta */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-sm text-slate-600 dark:text-slate-400">
+              <div className="flex items-center gap-2">
+                <Users size={16} className="text-primary shrink-0" />
+                <span>Team: {proj.teamSize === 1 ? "Solo" : `${proj.teamSize} members`}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Briefcase size={16} className="text-primary shrink-0" />
+                <span>{proj.role}</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Code2 size={16} className="text-primary shrink-0 mt-0.5" />
+                <span>{proj.techStack.join(", ")}</span>
+              </div>
+            </div>
+
+            {/* Highlights */}
+            <div className="mb-6">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
+                Highlights
+              </h3>
+              <ul className="space-y-2">
+                {proj.highlights.map((h, hIndex) => (
+                  <li key={hIndex} className="flex items-start gap-2 text-slate-600 dark:text-slate-400 text-sm">
+                    <span className="text-primary mt-1.5 shrink-0">▸</span>
+                    {h}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <Link
+              href={proj.detailPath}
+              className="inline-flex items-center gap-1 text-sm text-blue-500 dark:text-blue-300 hover:underline font-medium"
+            >
+              View details <ArrowRight size={14} />
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

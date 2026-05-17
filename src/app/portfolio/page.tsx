@@ -91,12 +91,15 @@ const portfolioData = {
   ],
   projects: [
     {
-      name: "Wattpad to EPUB Converter",
+      name: "Manga Downloader & EPUB/CBZ Converter",
+      detailPath: "/projects/manga-downloader",
+      demoImg: "https://res.cloudinary.com/dsr4rajwm/image/upload/v1779000053/a6b87ddd-a565-423a-a887-6b7515d0b88f.png",
       status: "In Process",
-      description: "CLI Tool for Automated Wattpad Scraping and EPUB Generation",
+      description:
+        "Full-stack tool for downloading manga chapters and packaging them into EPUB or CBZ files, with a Web UI, real-time progress tracking, and an in-browser CBZ reader.",
       teamSize: 1,
       role: "Solo Developer",
-      techStack: "Node.js, Puppeteer, epub-gen",
+      techStack: "Node.js, Puppeteer, Express, Sharp, epub-gen",
       links: [
         {
           label: "GitHub",
@@ -104,25 +107,24 @@ const portfolioData = {
         },
       ],
       highlights: [
-        "Built a two-step CLI workflow: a Puppeteer-based scraper extracts chapter content from Wattpad, then a generator packages the output into a valid EPUB file.",
-        "Implemented incremental scraping with resume support — if interrupted, previously scraped chapters are preserved and new chapters are appended without data loss.",
-        "Automated scroll-based lazy-load handling, scrolling 800px at a time with delay until hitting the navigation element or page bottom to ensure full content capture.",
-        "Parsed structured HTML (article.story-part, chapter titles, paragraphs) into clean EPUB chapters with custom metadata (title, author, cover image).",
+        "Built a full pipeline — headless browser scraping with Puppeteer, image compression via Sharp, and packaging into both EPUB and CBZ formats.",
+        "Developed an Express-based Web UI with real-time progress bars and color-coded live logs streamed from the running process.",
+        "Automated scroll-based lazy-load handling and chapter URL parsing directly from the manga index page, enabling one-click full-series downloads.",
+        "Implemented a browser-based CBZ reader with fit-width/fit-height/webtoon modes, keyboard and touch-swipe navigation, and mobile-friendly layout.",
+        "Supported split-volume exports via a configurable sections array, allowing large series to be packaged into multiple named EPUB volumes.",
       ],
     },
     {
       name: "Productivity Blog",
+      detailPath: "/projects/productivity-blog",
+      demoImg: "",
       status: "In Process",
       description: "Productivity and Feature Showcase Platform",
       teamSize: 1,
       role: "Full-Stack Developer",
       techStack: "ReactJS, TypeScript, Node.js, Socket.IO, MongoDB",
       links: [
-        { label: "Website", url: "https://productivity-blog.onrender.com" },
-        {
-          label: "New Version",
-          url: "https://productivity-plogg-client.vercel.app/auth",
-        },
+        { label: "Website", url: "http://knnpb.duckdns.org/posts" },
       ],
       highlights: [
         "Designed to enhance user productivity and demonstrate new features under development.",
@@ -170,12 +172,11 @@ const portfolioData = {
 
 export default function Page() {
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-10 space-y-10">
+    <div className="w-full max-w-6xl mx-auto px-3 md:px-4 py-6 md:py-10 space-y-6 md:space-y-10">
       <PortfolioUserOverview user={portfolioData.header} />
 
       <AboutMeSection
         descriptions={portfolioData.summary}
-        imgUrl={portfolioData.aboutMeImg}
       />
 
       <EducationSection education={portfolioData.education} />

@@ -1,5 +1,6 @@
 import Navbar from "@/components/layouts/Navbar";
 import RouteGuard from "@/components/layouts/RouteGuard";
+import TitleManager from "@/components/layouts/TitleManager";
 import UserChatBubble from "@/components/chat/UserChatBubble";
 import { cn } from "@/core/lib/utils";
 import { usePathname } from "next/navigation";
@@ -16,6 +17,7 @@ export default function DefaultLayout({
 
   return (
     <RouteGuard>
+      <TitleManager />
       {!isAuthPage && <Navbar />}
       <div className={cn("h-full", { "pt-20": !isAuthPage, "pt-0": isAuthPage })}>
         {children}

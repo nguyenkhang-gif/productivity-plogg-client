@@ -33,15 +33,15 @@ export default function PostDetailDialog({ post, open, onClose }: PostDetailDial
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogPortal>
         <DialogOverlay className="bg-black/70 backdrop-blur-sm" />
-        <DialogContent className="max-w-5xl w-full h-[90vh] p-0 bg-[#141824] border border-white/[0.06] rounded-2xl overflow-hidden flex flex-col gap-0 [&>button]:hidden">
+        <DialogContent className="max-w-full sm:max-w-5xl w-full h-full sm:h-[90vh] p-0 bg-[#141824] border-0 sm:border border-white/[0.06] rounded-none sm:rounded-2xl overflow-hidden flex flex-col gap-0 [&>button]:hidden">
           <VisuallyHidden.Root>
             <DialogTitle>Chi tiết bài viết</DialogTitle>
           </VisuallyHidden.Root>
 
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] flex-shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden">
+          <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-white/[0.06] flex-shrink-0">
+            <div className="flex items-center gap-2 md:gap-3 min-w-0">
+              <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden shrink-0">
                 {post.author?.profilePic ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={post.author.profilePic} alt={post.author.fullName} className="w-full h-full object-cover" />
@@ -49,42 +49,42 @@ export default function PostDetailDialog({ post, open, onClose }: PostDetailDial
                   post.author?.fullName?.[0]?.toUpperCase() ?? "U"
                 )}
               </div>
-              <div>
-                <p className="text-slate-100 text-sm font-semibold leading-tight">
+              <div className="min-w-0">
+                <p className="text-slate-100 text-sm font-semibold leading-tight truncate">
                   {post.author?.fullName ?? "Unknown"}
                 </p>
                 <span className="flex items-center gap-1 text-slate-500 text-xs">
                   <CalendarDays size={11} />
                   {new Date(post.createdAt).toLocaleDateString("vi-VN", {
                     day: "2-digit",
-                    month: "long",
+                    month: "short",
                     year: "numeric",
                   })}
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
               {isOwner && (
                 <button
                   onClick={() => { onClose(); router.push(`/create-post?edit=${post.id}`); }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-slate-700 hover:border-blue-500 text-slate-400 hover:text-blue-400 transition-colors"
+                  className="flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 text-xs rounded-lg border border-slate-700 hover:border-blue-500 text-slate-400 hover:text-blue-400 transition-colors"
                 >
-                  <Pencil size={13} /> Chỉnh sửa
+                  <Pencil size={13} /> <span className="hidden sm:inline">Chỉnh sửa</span>
                 </button>
               )}
               <button
                 onClick={onClose}
-                className="p-2 rounded-full hover:bg-white/5 text-slate-500 hover:text-slate-200 transition-colors"
+                className="p-1.5 md:p-2 rounded-full hover:bg-white/5 text-slate-500 hover:text-slate-200 transition-colors"
               >
                 <X size={18} />
               </button>
             </div>
           </div>
 
-          {/* Body: two-column layout */}
-          <div className="flex flex-1 overflow-hidden">
-            {/* Left: post content */}
-            <div className="flex-1 overflow-y-auto px-6 py-5 border-r border-white/[0.06]">
+          {/* Body: stack on mobile, two-column on md+ */}
+          <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-5 border-b md:border-b-0 md:border-r border-white/[0.06]">
               {post.imageUrls?.length > 0 && (
                 <div className={`grid gap-0.5 mb-5 rounded-xl overflow-hidden ${post.imageUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
                   {post.imageUrls.map((url, i) => (
@@ -116,8 +116,8 @@ export default function PostDetailDialog({ post, open, onClose }: PostDetailDial
               </div>
             </div>
 
-            {/* Right: comments */}
-            <div className="w-80 flex-shrink-0 flex flex-col px-4 py-5 overflow-hidden">
+            {/* Comments */}
+            <div className="w-full max-h-[40vh] md:max-h-none md:w-80 md:flex-shrink-0 flex flex-col px-4 py-4 md:py-5 overflow-hidden">
               <CommentSection postId={post.id} />
             </div>
           </div>
