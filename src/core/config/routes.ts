@@ -20,8 +20,10 @@ export const routes: RouteConfig[] = [
   { path: "/auth", access: "guest-only", exact: true },
 
   // Public: ai cũng xem được
+  { path: "/auth/callback", access: "public", exact: true },
   { path: "/portfolio", access: "public" },
   { path: "/projects", access: "public" },
+  { path: "/buttons", access: "public" },
 
   // Private: phải login
   { path: "/", access: "private", exact: true },
