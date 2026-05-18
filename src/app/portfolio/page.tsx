@@ -99,7 +99,7 @@ const portfolioData = {
         "Full-stack tool for downloading manga chapters and packaging them into EPUB or CBZ files, with a Web UI, real-time progress tracking, and an in-browser CBZ reader.",
       teamSize: 1,
       role: "Solo Developer",
-      techStack: "Node.js, Puppeteer, Express, Sharp, epub-gen",
+      techStack: ["Node.js", "Puppeteer", "Express", "Sharp", "epub-gen"],
       links: [
         {
           label: "GitHub",
@@ -122,7 +122,7 @@ const portfolioData = {
       description: "Productivity and Feature Showcase Platform",
       teamSize: 1,
       role: "Full-Stack Developer",
-      techStack: "ReactJS, TypeScript, Node.js, Socket.IO, MongoDB",
+      techStack: ["Next.js 15", "TypeScript", "Node.js", "Socket.IO", "MongoDB", "Redux Toolkit", "TanStack Query", "Cloudinary", "AWS EC2", "Clean Architecture", "CI/CD"],
       links: [
         { label: "Website", url: "http://knnpb.duckdns.org/posts" },
       ],

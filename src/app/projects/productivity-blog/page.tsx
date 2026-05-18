@@ -2,6 +2,21 @@
 
 import React from "react";
 import { ArrowLeft, ExternalLink, Code2, Users, Briefcase } from "lucide-react";
+
+const techColors: Record<string, string> = {
+  "Next.js 15": "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900",
+  "ReactJS": "bg-cyan-500 text-white",
+  "TypeScript": "bg-blue-600 text-white",
+  "Node.js": "bg-green-600 text-white",
+  "Socket.IO": "bg-slate-600 text-white",
+  "MongoDB": "bg-green-700 text-white",
+  "Redux Toolkit": "bg-purple-600 text-white",
+  "TanStack Query": "bg-red-500 text-white",
+  "Cloudinary": "bg-blue-500 text-white",
+  "AWS EC2": "bg-orange-500 text-white",
+  "Clean Architecture": "bg-teal-600 text-white",
+  "CI/CD": "bg-slate-500 text-white",
+};
 import Link from "next/link";
 
 const project = {
@@ -11,7 +26,7 @@ const project = {
     "A full-stack productivity and social platform featuring real-time chat, post feeds, file uploads, EPUB generation, and AI integrations — built to showcase and iterate on new features.",
   teamSize: 1,
   role: "Full-Stack Developer",
-  techStack: ["Next.js 15", "TypeScript", "Node.js", "Socket.IO", "MongoDB", "Redux Toolkit", "TanStack Query", "Cloudinary", "AWS EC2"],
+  techStack: ["Next.js 15", "TypeScript", "Node.js", "Socket.IO", "MongoDB", "Redux Toolkit", "TanStack Query", "Cloudinary", "AWS EC2", "Clean Architecture", "CI/CD"],
   links: [
     { label: "Website", url: "http://knnpb.duckdns.org/posts" },
   ],
@@ -67,18 +82,29 @@ export default function ProductivityBlogPage() {
       </div>
 
       {/* Meta */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-sm text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
-        <div className="flex items-center gap-2">
-          <Users size={16} className="text-primary" />
-          <span>Team: Solo</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Briefcase size={16} className="text-primary" />
-          <span>{project.role}</span>
+      <div className="mb-8 text-sm text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center gap-2">
+            <Users size={16} className="text-primary" />
+            <span>Team: Solo</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Briefcase size={16} className="text-primary" />
+            <span>{project.role}</span>
+          </div>
         </div>
         <div className="flex items-start gap-2">
           <Code2 size={16} className="text-primary shrink-0 mt-0.5" />
-          <span>{project.techStack.join(", ")}</span>
+          <div className="flex flex-wrap gap-1.5">
+            {project.techStack.map((tech) => (
+              <span
+                key={tech}
+                className={`text-xs px-2 py-0.5 rounded-full font-medium ${techColors[tech] ?? "bg-slate-400 text-white"}`}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 

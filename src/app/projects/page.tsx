@@ -31,7 +31,7 @@ const projects: Project[] = [
       "A full-stack productivity and social platform featuring real-time chat, post feeds, file uploads, EPUB generation, and AI integrations — built to showcase and iterate on new features.",
     teamSize: 1,
     role: "Full-Stack Developer",
-    techStack: ["Next.js 15", "TypeScript", "Node.js", "Socket.IO", "MongoDB", "Redux Toolkit", "TanStack Query", "Cloudinary", "AWS EC2"],
+    techStack: ["Next.js 15", "TypeScript", "Node.js", "Socket.IO", "MongoDB", "Redux Toolkit", "TanStack Query", "Cloudinary", "AWS EC2", "Clean Architecture", "CI/CD"],
     links: [
       { label: "Website", url: "http://knnpb.duckdns.org/posts", icon: "external" },
     ],
@@ -65,6 +65,25 @@ const projects: Project[] = [
     ],
   },
 ];
+
+const techColors: Record<string, string> = {
+  "Next.js 15": "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900",
+  "ReactJS": "bg-cyan-500 text-white",
+  "TypeScript": "bg-blue-600 text-white",
+  "Node.js": "bg-green-600 text-white",
+  "Socket.IO": "bg-slate-600 text-white",
+  "MongoDB": "bg-green-700 text-white",
+  "Redux Toolkit": "bg-purple-600 text-white",
+  "TanStack Query": "bg-red-500 text-white",
+  "Cloudinary": "bg-blue-500 text-white",
+  "AWS EC2": "bg-orange-500 text-white",
+  "Clean Architecture": "bg-teal-600 text-white",
+  "CI/CD": "bg-slate-500 text-white",
+  "Puppeteer": "bg-emerald-700 text-white",
+  "Express": "bg-gray-600 text-white",
+  "Sharp": "bg-indigo-500 text-white",
+  "epub-gen": "bg-gray-500 text-white",
+};
 
 const statusColors: Record<Project["status"], string> = {
   "In Process": "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
@@ -128,7 +147,7 @@ export default function ProjectsPage() {
             </div>
 
             {/* Meta */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-sm text-slate-600 dark:text-slate-400">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm text-slate-600 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <Users size={16} className="text-primary shrink-0" />
                 <span>Team: {proj.teamSize === 1 ? "Solo" : `${proj.teamSize} members`}</span>
@@ -137,9 +156,19 @@ export default function ProjectsPage() {
                 <Briefcase size={16} className="text-primary shrink-0" />
                 <span>{proj.role}</span>
               </div>
-              <div className="flex items-start gap-2">
-                <Code2 size={16} className="text-primary shrink-0 mt-0.5" />
-                <span>{proj.techStack.join(", ")}</span>
+            </div>
+
+            <div className="flex items-start gap-2 mb-6">
+              <Code2 size={16} className="text-primary shrink-0 mt-0.5" />
+              <div className="flex flex-wrap gap-1.5">
+                {proj.techStack.map((tech) => (
+                  <span
+                    key={tech}
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${techColors[tech] ?? "bg-slate-400 text-white"}`}
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
             </div>
 
