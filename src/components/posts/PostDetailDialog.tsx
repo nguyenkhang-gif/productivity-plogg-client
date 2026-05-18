@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import ReactMarkdown from "react-markdown";
-import { CalendarDays, Heart, Pencil, X } from "lucide-react";
+import { CalendarDays, Pencil, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import CommentSection from "./CommentSection";
+import ReactionButton from "./ReactionButton";
 
 interface PostDetailDialogProps {
   post: Post | null;
@@ -110,9 +111,8 @@ export default function PostDetailDialog({ post, open, onClose }: PostDetailDial
                 <ReactMarkdown>{post.content}</ReactMarkdown>
               </article>
 
-              <div className="flex items-center gap-1.5 mt-6 pt-4 border-t border-white/[0.05] text-slate-500 text-sm">
-                <Heart size={14} className="text-red-400/80" />
-                <span className="text-slate-400">{post.likesCount}</span>
+              <div className="mt-6 pt-4 border-t border-white/[0.05]">
+                <ReactionButton post={post} />
               </div>
             </div>
 

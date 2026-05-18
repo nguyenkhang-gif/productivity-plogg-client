@@ -7,17 +7,25 @@ export interface PostAuthor {
   profilePic?: string;
 }
 
+export type ReactionType = "like" | "love" | "haha" | "wow" | "sad" | "angry";
+
+export interface UserReaction {
+  type: ReactionType;
+  icon?: string;
+}
+
 export interface Post {
   id: string;
   authorId: string;
   author: PostAuthor;
   content: string;
   imageUrls: string[];
-  likesCount: number;
+  reactCount: number;
   commentCount: number;
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;
+  userReaction: UserReaction | null;
 }
 
 export interface PostState {
@@ -62,6 +70,19 @@ const postSlice = createSlice({
       state.posts = [];
       state.hasMore = true;
     },
+    reactPost: (
+      state,
+      action: PayloadAction<{ postId: string; reaction: UserReaction | null; reactCount?: number }>
+    ) => {
+      const { postId, reaction, reactCount } = action.payload;
+      const apply = (post: Post) => {
+        post.userReaction = reaction;
+        if (reactCount !== undefined) post.reactCount = reactCount;
+      };
+      const found = state.posts.find((p) => p.id === postId);
+      if (found) apply(found);
+      if (state.selectedPost?.id === postId) apply(state.selectedPost);
+    },
   },
 });
 
@@ -73,6 +94,7 @@ export const {
   removePost,
   setSelectedPost,
   resetPosts,
+  reactPost,
 } = postSlice.actions;
 
 export default postSlice.reducer;

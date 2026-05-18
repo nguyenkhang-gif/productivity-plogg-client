@@ -7,7 +7,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useGetPostById, useDeletePost } from "@/core/services/client/posts";
 import ReactMarkdown from "react-markdown";
-import { ArrowLeft, Trash2, Pencil, CalendarDays, Heart } from "lucide-react";
+import { ArrowLeft, Trash2, Pencil, CalendarDays } from "lucide-react";
+import ReactionButton from "@/components/posts/ReactionButton";
 
 export default function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -119,9 +120,8 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
         </article>
 
         {/* Footer */}
-        <div className="flex items-center gap-2 mt-8 pt-6 border-t border-slate-800 text-slate-400 text-sm">
-          <Heart size={16} className="text-red-400" />
-          <span>{post.likesCount} lượt thích</span>
+        <div className="mt-8 pt-6 border-t border-slate-800">
+          <ReactionButton post={post} />
         </div>
       </div>
     </div>

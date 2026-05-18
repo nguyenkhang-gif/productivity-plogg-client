@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { Post } from "@/core/redux/post";
-import { Heart, Trash2, Pencil, CalendarDays, MoreHorizontal, MessageCircle } from "lucide-react";
+import { Trash2, Pencil, CalendarDays, MoreHorizontal, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { useConstants } from "@/core/hooks/useConstants";
+import ReactionButton from "./ReactionButton";
 
 interface PostCardProps {
   post: Post;
@@ -139,10 +140,7 @@ export default function PostCard({ post, currentUserId, onDelete, onOpenDetail }
 
       {/* Footer */}
       <div className="flex items-center gap-4 px-5 py-3 border-t border-white/[0.05]">
-        <div className="flex items-center gap-1.5 text-slate-500 text-sm hover:text-red-400 transition-colors cursor-pointer select-none">
-          <Heart size={15} className="text-red-400/80" />
-          <span className="text-slate-400">{post.likesCount}</span>
-        </div>
+        <ReactionButton post={post} />
         <button
           onClick={() => onOpenDetail?.(post)}
           className="flex items-center gap-1.5 text-slate-500 text-sm hover:text-blue-400 transition-colors"

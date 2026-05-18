@@ -1,5 +1,6 @@
 import axiosInstance from "@/core/lib/axiosInstance";
 import { Endpoints } from "../endpoints";
+import { ReactionType } from "@/core/redux/post";
 
 export interface CreatePostDto {
   title?: string;
@@ -55,4 +56,12 @@ export const apiUpdatePost = async (id: string, body: UpdatePostDto) => {
 
 export const apiDeletePost = async (id: string) => {
   await axiosInstance.delete(Endpoints.POST_DELETE.replace(":id", id));
+};
+
+export const apiReactPost = async (postId: string, type: ReactionType, icon?: string) => {
+  const { data } = await axiosInstance.post(
+    Endpoints.POST_REACT.replace(":postId", postId),
+    { type, ...(icon ? { icon } : {}) }
+  );
+  return data;
 };

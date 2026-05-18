@@ -14,6 +14,7 @@ import {
   apiCreatePost,
   apiUpdatePost,
   apiDeletePost,
+  apiReactPost,
   CreatePostDto,
   UpdatePostDto,
 } from "../api/posts";
@@ -24,6 +25,9 @@ import {
   removePost,
   setSelectedPost,
   resetPosts,
+  reactPost,
+  ReactionType,
+  UserReaction,
 } from "@/core/redux/post";
 import { AppDispatch } from "@/core/redux/store";
 import { useConstants } from "@/core/hooks/useConstants";
@@ -120,6 +124,31 @@ export const useDeletePost = () => {
     onSuccess: (_, id) => {
       dispatch(removePost(id));
       queryClient.invalidateQueries({ queryKey: [FetchQueryKeys.POST_GET_ALL] });
+    },
+  });
+};
+
+export const useReactPost = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  return useMutation({
+    mutationFn: ({
+      postId,
+      type,
+    }: {
+      postId: string;
+      type: ReactionType;
+      prevReaction: UserReaction | null;
+      prevCount: number;
+    }) => apiReactPost(postId, type),
+    onSuccess: (data, { postId }) => {
+      const serverReaction: UserReaction | null = data.reaction
+        ? { type: data.reaction.type, icon: data.reaction.icon }
+        : null;
+      dispatch(reactPost({ postId, reaction: serverReaction }));
+    },
+    onError: (_, { postId, prevReaction, prevCount }) => {
+      dispatch(reactPost({ postId, reaction: prevReaction, reactCount: prevCount }));
     },
   });
 };

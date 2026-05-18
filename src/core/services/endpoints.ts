@@ -8,6 +8,7 @@ export enum Endpoints {
   POST_GET_BY_AUTHOR = "/posts/author/:authorId",
   POST_UPDATE = "/posts/:id",
   POST_DELETE = "/posts/:id",
+  POST_REACT = "/posts/:postId/react",
 
   COMMENT_GET_BY_POST = "/posts/:postId/comments",
   COMMENT_CREATE = "/posts/:postId/comments",
