@@ -141,7 +141,7 @@
         \LenToUnit{\paperwidth-2 cm-0 cm+0.05cm},
         \LenToUnit{\paperheight-1.0 cm}
     ){\vtop{{\null}\makebox[0pt][c]{
-        \small\color{gray}\textit{Last updated in September 2024}\hspace{\widthof{Last updated in September 2024}}
+        \small\color{gray}\textit{Last updated in May 2025}\hspace{\widthof{Last updated in May 2025}}
     }}}%
   }%
 }%
@@ -177,15 +177,15 @@
         \kern 5.0 pt%
         \AND%
         \kern 5.0 pt%
-        \mbox{\hrefWithoutArrow{tel:+89-68-751-248}{0902932998}}%
+        \mbox{\hrefWithoutArrow{tel:+84-90-293-2998}{0902932998}}%
         \kern 5.0 pt%
         \AND%
         \kern 5.0 pt%
-        \mbox{\hrefWithoutArrow{https://www.linkedin.com/in/khang-nguyễn-nguyên-46456b246/}{https://www.linkedin.com/in/khang-nguyễn-nguyên-46456b246/}}%
+        \mbox{\hrefWithoutArrow{https://www.linkedin.com/in/khang-nguyễn-nguyên-46456b246/}{linkedin.com/in/khang-nguyễn-nguyên-46456b246}}%
         \kern 5.0 pt%
         \AND%
         \kern 5.0 pt%
-        \mbox{\hrefWithoutArrow{https://github.com/nguyenkhang-gif}{https://github.com/nguyenkhang-gif}}%
+        \mbox{\hrefWithoutArrow{https://github.com/nguyenkhang-gif}{github.com/nguyenkhang-gif}}%
     \end{header}
 
     \vspace{5 pt - 0.3 cm}
@@ -195,13 +195,14 @@
 
         
         \begin{onecolentry}
-            A full-stack developer with hands-on experience in modern JavaScript frameworks. Passionate about delivering scalable and intuitive user experiences. I’m always eager to adapt to new technologies and master them as quickly as possible. Seeking to join a dynamic team where I can grow my technical expertise and contribute to impactful software solutions.
+            A full-stack developer with hands-on experience in modern JavaScript frameworks. Passionate about delivering scalable, data-driven, and intuitive user experiences. I specialize in building interactive web applications, optimizing bundler performance, and actively leveraging AI-powered tools to accelerate development workflows. Seeking to join a dynamic team where I can grow my technical expertise and contribute to impactful software solutions.
         \end{onecolentry}
+
     \section{Education}
 
         
        \begin{twocolentry}{
-            August 2021 – Present
+            August 2021 – June 2025
         }
             \textbf{Ho Chi Minh City University of Education} \\
             \textbf{Major}: Software Engineering
@@ -211,9 +212,7 @@
     
     \section{Experience}
 
-
-
-        
+        % --- PloggVN ---
        \begin{twocolentry}{
             July 2024 – April 2025
         }
@@ -240,7 +239,7 @@
         \vspace{0.2 cm}
         
         \begin{onecolentry}
-            \textbf{Project: Saby Restaurant Ordering Website} – \textbf{\href{https://saby-restaurant-rs5gdrzboq-uc.a.run.app/order/686764e3b609a9665ef11863?org=683560c99e39e629f1973017}{https://saby-restaurant-rs5gdrzboq-uc.a.run.app}}
+            \textbf{Project: Saby Restaurant Ordering Website} – \textbf{\href{https://saby-restaurant-rs5gdrzboq-uc.a.run.app}{https://saby-restaurant-rs5gdrzboq-uc.a.run.app}}
         
             An online food ordering platform for Saby restaurant, enabling customers to browse the menu, customize dishes, and place orders seamlessly across devices.
         
@@ -253,55 +252,75 @@
                 \end{highlights}
             \end{adjustwidth}
         \end{onecolentry}
+
+        \vspace{0.2 cm}
+
+        % --- IES ---
         \begin{twocolentry}{
-            July 2024 – April 2025
+            July 2025 – Present
         }
-            \textbf{Front End Developer },IES -- Tân Phú, HCM
+            \textbf{Front End Developer}, IES -- Tân Phú, HCM
         \end{twocolentry}
         
         \vspace{0.10 cm}
         \begin{onecolentry}
-            \textbf{Project: Synode} – \textbf{\href{https://www.synode.ai}{https://www.synode.ai}}
+            \textbf{Project: ThingIQ} – \textbf{\href{https://dash.thingiq.ai/}{https://dash.thingiq.ai/}}
         
-            A 3D product learning platform featuring interactive 3D models and built-in quizzes to help users understand and operate products effectively.
+            An IoT management platform for real-time tracking of vehicles, fuel consumption, route management, and anomaly detection. The system also integrates vibration sensor devices to collect data for training AI models that predict machinery anomalies.
             \begin{adjustwidth}{5mm}{0pt}
             
                 \begin{highlights}
-                    \item Developed and maintained scalable web applications using Vue.js \& Nuxt.js.
-                    \item Built a quiz system to assess and reinforce user understanding of product usage.
-                    \item Optimized API calls and data fetching strategies, reducing page load time by 30\%.
+                    \item Developed and maintained a responsive IoT dashboard using Vue.js with Vuex for state management.
+                    \item Integrated MQTT protocol to receive and display real-time data streams from IoT devices, including GPS trackers and vibration sensors.
+                    \item Implemented Server-Sent Events (SSE) to push live device status updates and anomaly alerts from server to client without polling.
+                    \item Built interactive map views for live vehicle tracking and route visualization.
+                    \item Implemented fuel consumption monitoring and anomaly alert modules with real-time push notifications.
+                    \item Automated data collection using Puppeteer for web scraping, enabling structured extraction of external data to enrich the IoT dataset.
                     \item Translated Figma prototypes into pixel-perfect, fully responsive UI components.
-                    \item Implemented state management with Vuex to manage user progress and interactions.
-                    \item Collaborated with backend developers to integrate RESTful APIs efficiently.
+                    \item Collaborated with backend developers to integrate RESTful APIs and MQTT broker efficiently.
                 \end{highlights}
             \end{adjustwidth}
         \end{onecolentry}
+
         \vspace{0.2 cm}
    
     \section{Projects}
 
-       \textbf{Productivity Blog --- In Process} – Productivity and Feature Showcase Platform \\
-\textbf{Team size:} 1 \quad
-\textbf{Role:} Full-Stack Developer \\
-\textbf{Tech Stack:} ReactJS, TypeScript, Node.js, Express, Socket.IO, MongoDB \\
-\textbf{Link Website: } \href{https://productivity-blog.onrender.com}{https://productivity-blog.onrender.com} \\
-\textbf{New Version: } \href{https://productivity-plogg-client.vercel.app/auth}{https://productivity-plogg-client.vercel.app/auth}
+        \textbf{Manga Downloader \& EPUB/CBZ Converter --- In Process} \\
+        \textbf{Team size:} 1 \quad
+        \textbf{Role:} Solo Developer \\
+        \textbf{Tech Stack:} Node.js, Puppeteer, Express, Sharp, epub-gen \\
+        \textbf{GitHub: } \href{https://github.com/nguyenkhang-gif/wattpad-to-epub-converter}{https://github.com/nguyenkhang-gif/wattpad-to-epub-converter}
 
-\begin{highlights}
-    \item Designed to enhance user productivity and demonstrate new features under development.
-    \item Developed backend with Node.js and Express, and persisted data using MongoDB.
-    \item Created frontend with React and TypeScript for type safety and maintainability.
-    \item Working on new features and improvements in a separate version hosted on Vercel.
-\end{highlights}
+        \begin{highlights}
+            \item Built a full pipeline — headless browser scraping with Puppeteer, image compression via Sharp, and packaging into both EPUB and CBZ formats.
+            \item Developed an Express-based Web UI with real-time progress bars and color-coded live logs streamed from the running process.
+            \item Automated scroll-based lazy-load handling and chapter URL parsing directly from the manga index page, enabling one-click full-series downloads.
+            \item Implemented a browser-based CBZ reader with fit-width/fit-height/webtoon modes, keyboard and touch-swipe navigation, and mobile-friendly layout.
+            \item Supported split-volume exports via a configurable sections array, allowing large series to be packaged into multiple named EPUB volumes.
+        \end{highlights}
 
+        \vspace{0.2 cm}
+
+        \textbf{Productivity Blog --- In Process} – Productivity and Feature Showcase Platform \\
+        \textbf{Team size:} 1 \quad
+        \textbf{Role:} Full-Stack Developer \\
+        \textbf{Tech Stack:} Next.js 15, TypeScript, Node.js, Socket.IO, MongoDB, Redux Toolkit, TanStack Query, Cloudinary, AWS EC2, Clean Architecture, CI/CD \\
+        \textbf{Link Website: } \href{http://knnpb.duckdns.org/posts}{http://knnpb.duckdns.org/posts}
+
+        \begin{highlights}
+            \item Designed to enhance user productivity and demonstrate new features under development.
+            \item Developed backend with Node.js and Express, and persisted data using MongoDB.
+            \item Created frontend with Next.js and TypeScript for type safety and maintainability.
+            \item Working on new features and improvements, deployed on AWS EC2 with CI/CD pipeline.
+        \end{highlights}
 
 
         
     \section{SKILLS}
-        \textbf{Languages:} JavaScript (Advanced), TypeScript (Advanced) \\
-        \textbf{Frontend:} ReactJS, NextJS, VueJS, NuxtJS, Threejs \\
+        \textbf{Languages:} JavaScript (Advanced), TypeScript (Advanced), Intermediate English reading and communication \\
+        \textbf{Frontend:} HTML, CSS, ReactJS, NextJS, VueJS, NuxtJS, Three.js, Chart.js, React Query (TanStack) \\
         \textbf{Backend:} NestJS, ExpressJS \\
-        \textbf{Database:} MySQL, MongoDB \\
-        \textbf{Tools/Other:} Git, REST API, WebSocket\\
-        \textbf{Languages:} Intermediate English reading and communication
+        \textbf{Database:} MySQL, MongoDB, Firebase, Supabase \\
+        \textbf{Tools/Other:} Git, AWS (EC2, S3), REST API, WebSocket, MQTT, Server-Sent Events (SSE), Puppeteer, Data Scraping, Clean Architecture, Design Patterns (MVC, Repository, Singleton, Observer), Optimize Bundler Performance (Webpack/Vite), Chrome DevTools Profiling
 \end{document}
