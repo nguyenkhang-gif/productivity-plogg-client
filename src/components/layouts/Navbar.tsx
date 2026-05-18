@@ -171,7 +171,7 @@ export default function Navbar() {
                   profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
                 )}
               </div>
-              {isAuth && <span>{profile.username || "Profile"}</span>}
+              {isAuth && <span>{profile.fullName || profile.username || "Profile"}</span>}
               {!isAuth && <span>Account</span>}
             </button>
             {isDropdownOpen && (
@@ -284,7 +284,7 @@ export default function Navbar() {
                     profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
                   )}
                 </div>
-                {isAuth && <span>{profile.username || "Profile"}</span>}
+                {isAuth && <span>{profile.fullName || profile.username || "Profile"}</span>}
                 {!isAuth && <span>Account</span>}
               </button>
               {isDropdownOpen && (
