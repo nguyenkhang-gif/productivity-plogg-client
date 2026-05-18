@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent white flash on initial load */
+html {
+  background: #111;
+}
+
 /* Mặc định (mobile light) */
 body {
-  background: white;
+  background: #111;
   font-family: Arial, Helvetica, sans-serif;
 }
 
