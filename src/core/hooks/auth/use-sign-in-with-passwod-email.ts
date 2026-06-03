@@ -1,9 +1,9 @@
 import { useState, useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import axiosInstance from "@/core/lib/axiosInstance";
-import { ENDPOINTS } from "@/core/endpoints";
 import { AppDispatch } from "@/core/redux/store";
 import { setCredentials } from "@/core/redux/user";
+import { tokenStore } from "@/core/auth/token-store";
 
 interface Options {
   onSuccess?: (data: object) => void;
@@ -26,24 +26,22 @@ export const useLoginWithPasswordEmail = () => {
   const isSettled = useMemo(() => status === "settled", [status]);
 
   const login = useCallback(
-    async (username: string, password: string, options?: Options) => {
+    async (identifier: string, password: string, options?: Options) => {
       try {
         setData(null);
         setError(null);
         setStatus("pending");
 
-        const res = await axiosInstance.post(ENDPOINTS.AUTH.LOGIN, {
-          identifier: username,
+        const res = await axiosInstance.post("/auth/login", {
+          identifier,
           password,
         });
 
-        const token = res.data.access_token;
-        localStorage.setItem("token", token);
-        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const { access_token, refresh_token } = res.data;
+        tokenStore.save(access_token, refresh_token);
 
-        // Fetch profile và cập nhật Redux ngay — trước khi onSuccess/navigate
         const { data: profile } = await axiosInstance.get("/auth/profile");
-        dispatch(setCredentials({ profile, token }));
+        dispatch(setCredentials({ profile, token: access_token }));
 
         setData(res.data);
         setStatus("success");
@@ -77,12 +75,12 @@ export const useLoginWithPasswordEmail = () => {
         setError(null);
         setStatus("pending");
 
-        const res = await axiosInstance.post("/auth/signup", {
+        const res = await axiosInstance.post("/auth/register", {
           fullName,
           username,
+          email,
           password,
           confirmPassword,
-          email,
           gender,
         });
 

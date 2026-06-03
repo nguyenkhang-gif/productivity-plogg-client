@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import { useDispatch } from "react-redux";
 import { Loader2 } from "lucide-react";
 import axiosInstance from "@/core/lib/axiosInstance";
 import { setCredentials } from "@/core/redux/user";
 import { AppDispatch } from "@/core/redux/store";
+import { tokenStore } from "@/core/auth/token-store";
 
 const CallbackContent = () => {
   const searchParams = useSearchParams();
@@ -19,23 +19,27 @@ const CallbackContent = () => {
     if (handled.current) return;
     handled.current = true;
 
-    const token = searchParams.get("token");
-    if (!token) {
+    const accessToken = searchParams.get("token");
+    const refreshToken = searchParams.get("refresh_token");
+
+    if (!accessToken || !refreshToken) {
       router.replace("/auth");
       return;
     }
 
+    // Xóa tokens khỏi URL ngay (tránh lộ trong browser history)
+    window.history.replaceState({}, "", "/auth/callback");
+
     const authenticate = async () => {
       try {
-        localStorage.setItem("token", token);
-        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        tokenStore.save(accessToken, refreshToken);
 
         const { data: profile } = await axiosInstance.get("/auth/profile");
-        dispatch(setCredentials({ profile, token }));
+        dispatch(setCredentials({ profile, token: accessToken }));
 
         router.replace("/posts");
       } catch {
-        localStorage.removeItem("token");
+        tokenStore.clear();
         router.replace("/auth");
       }
     };

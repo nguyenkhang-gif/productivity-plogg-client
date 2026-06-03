@@ -62,7 +62,10 @@ const userSlice = createSlice({
     updateProfile: (state, action: PayloadAction<Partial<UserProfile>>) => {
       state.profile = { ...state.profile, ...action.payload };
     },
-    // Keep for backward compatibility
+    // Cập nhật access token sau khi refresh — không cần fetch lại profile
+    updateToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
+    },
     resetToDefault: () => ({
       profile: initialProfile,
       token: null,
@@ -72,7 +75,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { setCredentials, setAuthLoading, logout, resetToDefault, updateProfile } =
+export const { setCredentials, setAuthLoading, logout, resetToDefault, updateProfile, updateToken } =
   userSlice.actions;
 
 export default userSlice.reducer;
