@@ -1,6 +1,6 @@
 import axiosInstance from "@/core/lib/axiosInstance";
 import { Endpoints } from "../endpoints";
-import { ReactionType } from "@/core/redux/post";
+import { ReactionType } from "@/core/types/post";
 
 export interface CreatePostDto {
   title?: string;

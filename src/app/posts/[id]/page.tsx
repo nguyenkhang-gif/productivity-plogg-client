@@ -14,9 +14,8 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
   const { id } = use(params);
   const router = useRouter();
   const { profile } = useSelector((state: RootState) => state.user);
-  const { selectedPost: post } = useSelector((state: RootState) => state.post);
 
-  const { isLoading, isError } = useGetPostById(id);
+  const { data: post, isLoading, isError } = useGetPostById(id);
   const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
 
   const handleDelete = () => {

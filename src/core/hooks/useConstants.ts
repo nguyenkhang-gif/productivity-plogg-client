@@ -1,7 +1,7 @@
 export const useConstants = () => {
   const Post = {
     COLLAPSE_THRESHOLD: 300, // ký tự tối đa trước khi hiện "Xem thêm"
-    PAGE_LIMIT: 10,          // số bài mỗi trang
+    PAGE_LIMIT: 20,          // số bài mỗi trang
     MAX_IMAGES: 4,           // số ảnh hiển thị tối đa trong 1 post
   };
 

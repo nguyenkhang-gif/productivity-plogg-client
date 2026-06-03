@@ -4,36 +4,51 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
-import { Post } from "@/core/redux/post";
+import { Post } from "@/core/types/post";
 import { useGetPostsFeed, useDeletePost } from "@/core/services/client/posts";
 import { PenSquare, Loader2 } from "lucide-react";
 import PostCard from "@/components/posts/PostCard";
 import PostDetailDialog from "@/components/posts/PostDetailDialog";
 
+const PRELOAD_BEFORE_END = 3; // bắt đầu load khi còn 3 post cuối chưa qua viewport
+
 export default function PostsPage() {
-  const { posts = [], hasMore } = useSelector((state: RootState) => state.post);
   const { profile } = useSelector((state: RootState) => state.user);
-  const loaderRef = useRef<HTMLDivElement>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [sort, setSort] = useState<"newest" | "oldest">("newest");
 
-  const sortedPosts = [...posts].sort((a, b) => {
-    const diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    return sort === "newest" ? -diff : diff;
-  });
-
   const {
+    data,
     isLoading,
     isError,
     isFetchingNextPage,
     fetchNextPage,
   } = useGetPostsFeed();
 
+  const posts: Post[] = data?.pages.flatMap((p) => p.posts) ?? [];
+  const hasMore = data?.pages.at(-1)?.hasMore ?? false;
+
+  // selectedPost luôn phản ánh state mới nhất từ RQ cache
+  const selectedPost = selectedPostId
+    ? (posts.find((p) => p.id === selectedPostId) ?? null)
+    : null;
+
+  const sortedPosts = [...posts].sort((a, b) => {
+    const diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    return sort === "newest" ? -diff : diff;
+  });
+
+  // index của post sẽ đặt sentinel (3 post trước cuối)
+  const sentinelIndex =
+    sortedPosts.length > PRELOAD_BEFORE_END
+      ? sortedPosts.length - PRELOAD_BEFORE_END - 1
+      : -1; // -1 = không đặt sentinel (ít hơn 3 post)
+
   const { mutate: deletePost } = useDeletePost();
 
-  // IntersectionObserver — tự load thêm khi scroll đến cuối
   useEffect(() => {
-    const el = loaderRef.current;
+    const el = sentinelRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
@@ -42,12 +57,12 @@ export default function PostsPage() {
           fetchNextPage();
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0 }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasMore, isFetchingNextPage, fetchNextPage]);
+  }, [hasMore, isFetchingNextPage, fetchNextPage, sortedPosts.length]);
 
   if (isLoading) {
     return (
@@ -70,7 +85,7 @@ export default function PostsPage() {
       <PostDetailDialog
         post={selectedPost}
         open={!!selectedPost}
-        onClose={() => setSelectedPost(null)}
+        onClose={() => setSelectedPostId(null)}
       />
       <div className="max-w-2xl mx-auto">
 
@@ -112,18 +127,26 @@ export default function PostsPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {sortedPosts.map((post) => (
-              <PostCard
+            {sortedPosts.map((post, index) => (
+              <div
                 key={post.id}
-                post={post}
-                currentUserId={profile.id}
-                onDelete={(id) => deletePost(id)}
-                onOpenDetail={setSelectedPost}
-              />
+                style={{ contentVisibility: "auto", containIntrinsicSize: "0 500px" }}
+              >
+                {/* Sentinel đặt ngay trước post thứ (length - 3) */}
+                {index === sentinelIndex && (
+                  <div ref={sentinelRef} aria-hidden />
+                )}
+                <PostCard
+                  post={post}
+                  currentUserId={profile.id}
+                  onDelete={(id) => deletePost(id)}
+                  onOpenDetail={(post) => setSelectedPostId(post.id)}
+                />
+              </div>
             ))}
 
-            {/* Trigger element cho IntersectionObserver */}
-            <div ref={loaderRef} className="flex justify-center py-6">
+            {/* Bottom: spinner hoặc end message */}
+            <div className="flex justify-center py-6">
               {isFetchingNextPage && (
                 <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
               )}

@@ -1,7 +1,7 @@
 "use client";
 
-import { useDispatch } from "react-redux";
 import { useInfiniteQuery, useMutation, useQueryClient } from "@/core/plugins/reactQuery";
+import { InfiniteData } from "@tanstack/react-query";
 import { FetchQueryKeys } from "../endpoints";
 import {
   apiGetComments,
@@ -11,74 +11,102 @@ import {
   CreateCommentDto,
   UpdateCommentDto,
 } from "../api/comments";
-import { appendComments, addComment, updateComment, removeComment } from "@/core/redux/comment";
-import { AppDispatch } from "@/core/redux/store";
+import { Comment } from "@/core/types/comment";
 
 const LIMIT = 20;
 
-export const useGetComments = (postId: string) => {
-  const dispatch = useDispatch<AppDispatch>();
+type CommentPage = { comments: Comment[]; hasMore: boolean; page: number; totalPages: number };
 
+export const useGetComments = (postId: string) => {
   return useInfiniteQuery({
     queryKey: [FetchQueryKeys.COMMENT_GET_BY_POST, postId],
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
-      const data = await apiGetComments(postId, pageParam as number, LIMIT);
-      const comments = data.items ?? data.data ?? data ?? [];
-      const total = data.pagination?.total ?? data.total ?? comments.length;
-      const hasMore = (pageParam as number) * LIMIT < total;
-
-      dispatch(appendComments({ postId, comments, hasMore }));
-      return { comments, hasMore, page: pageParam, total };
+      const page = pageParam as number;
+      const data = await apiGetComments(postId, page, LIMIT);
+      const comments: Comment[] = data.items ?? data.data ?? data ?? [];
+      const pagination = data.pagination ?? data;
+      const totalPages: number =
+        pagination.totalPages ??
+        Math.ceil((pagination.total ?? comments.length) / LIMIT);
+      const hasMore = page < totalPages;
+      return { comments, hasMore, page, totalPages } as CommentPage;
     },
     getNextPageParam: (lastPage) =>
-      lastPage.hasMore ? (lastPage.page as number) + 1 : undefined,
+      lastPage.hasMore ? lastPage.page + 1 : undefined,
     enabled: !!postId,
   });
 };
 
 export const useCreateComment = (postId: string) => {
-  const dispatch = useDispatch<AppDispatch>();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (body: CreateCommentDto) => apiCreateComment(postId, body),
-    onSuccess: (data) => {
-      dispatch(addComment(data));
-      queryClient.invalidateQueries({
-        queryKey: [FetchQueryKeys.COMMENT_GET_BY_POST, postId],
-      });
+    onSuccess: (newComment: Comment) => {
+      queryClient.setQueryData<InfiniteData<CommentPage>>(
+        [FetchQueryKeys.COMMENT_GET_BY_POST, postId],
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page, i) =>
+              i === 0
+                ? { ...page, comments: [newComment, ...page.comments] }
+                : page
+            ),
+          };
+        }
+      );
     },
   });
 };
 
 export const useUpdateComment = (postId: string) => {
-  const dispatch = useDispatch<AppDispatch>();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ id, body }: { id: string; body: UpdateCommentDto }) =>
       apiUpdateComment(postId, id, body),
-    onSuccess: (data) => {
-      dispatch(updateComment(data));
-      queryClient.invalidateQueries({
-        queryKey: [FetchQueryKeys.COMMENT_GET_BY_POST, postId],
-      });
+    onSuccess: (updatedComment: Comment) => {
+      queryClient.setQueryData<InfiniteData<CommentPage>>(
+        [FetchQueryKeys.COMMENT_GET_BY_POST, postId],
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              comments: page.comments.map((c) =>
+                c.id === updatedComment.id ? updatedComment : c
+              ),
+            })),
+          };
+        }
+      );
     },
   });
 };
 
 export const useDeleteComment = (postId: string) => {
-  const dispatch = useDispatch<AppDispatch>();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (commentId: string) => apiDeleteComment(postId, commentId),
     onSuccess: (_, commentId) => {
-      dispatch(removeComment({ postId, commentId }));
-      queryClient.invalidateQueries({
-        queryKey: [FetchQueryKeys.COMMENT_GET_BY_POST, postId],
-      });
+      queryClient.setQueryData<InfiniteData<CommentPage>>(
+        [FetchQueryKeys.COMMENT_GET_BY_POST, postId],
+        (old) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              comments: page.comments.filter((c) => c.id !== commentId),
+            })),
+          };
+        }
+      );
     },
   });
 };

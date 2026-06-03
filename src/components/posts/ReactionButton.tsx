@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Post, ReactionType, UserReaction, reactPost } from "@/core/redux/post";
+import { Post, ReactionType } from "@/core/types/post";
 import { useReactPost } from "@/core/services/client/posts";
-import { AppDispatch } from "@/core/redux/store";
 
 const REACTIONS: { type: ReactionType; emoji: string; label: string }[] = [
   { type: "like", emoji: "👍", label: "Thích" },
@@ -32,7 +30,6 @@ interface ReactionButtonProps {
 }
 
 export default function ReactionButton({ post }: ReactionButtonProps) {
-  const dispatch = useDispatch<AppDispatch>();
   const { mutate: react } = useReactPost();
   const [showPicker, setShowPicker] = useState(false);
 
@@ -62,20 +59,7 @@ export default function ReactionButton({ post }: ReactionButtonProps) {
 
   const handleReact = (type: ReactionType) => {
     setShowPicker(false);
-
-    const prevReaction: UserReaction | null = post.userReaction;
-    const prevCount = post.reactCount;
-    const isToggleOff = prevReaction?.type === type;
-
-    if (isToggleOff) {
-      dispatch(reactPost({ postId: post.id, reaction: null, reactCount: Math.max(0, prevCount - 1) }));
-    } else if (!prevReaction) {
-      dispatch(reactPost({ postId: post.id, reaction: { type }, reactCount: prevCount + 1 }));
-    } else {
-      dispatch(reactPost({ postId: post.id, reaction: { type }, reactCount: prevCount }));
-    }
-
-    react({ postId: post.id, type, prevReaction, prevCount });
+    react({ postId: post.id, type });
   };
 
   // --- Desktop hover ---

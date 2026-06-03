@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Post } from "@/core/redux/post";
+import { Post } from "@/core/types/post";
 import { Trash2, Pencil, CalendarDays, MoreHorizontal, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";

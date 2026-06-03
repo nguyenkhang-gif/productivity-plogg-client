@@ -1,94 +1,74 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/core/redux/store";
-import {
-  setFriends,
-  setReceived,
-  setSent,
-  setLoading,
-  acceptLocal,
-  removeFriendship,
-  removeByUserId,
-  upsertFriendship,
-  selectPendingCount,
-  selectFriendInfo,
-} from "@/core/redux/friendship";
+import { useCallback } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/core/redux/store";
 import { friendshipApi } from "@/core/services/api/friendships";
+import {
+  useGetFriends,
+  useGetReceivedRequests,
+  useGetSentRequests,
+  useSendFriendRequest,
+  useAcceptFriendRequest,
+  useRejectFriendRequest,
+  useUnfriend,
+  useBlockUser,
+} from "@/core/services/client/friendships";
 
 export function useFriendship() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { isAuth } = useSelector((state: RootState) => state.user);
-  const { friends, received, sent, isLoading } = useSelector(
-    (state: RootState) => state.friendship
-  );
-  const pendingCount = useSelector(selectPendingCount);
+  const currentUserId = useSelector((s: RootState) => s.user.profile.id);
 
-  useEffect(() => {
-    if (!isAuth) return;
+  const { data: friends = [], isLoading: loadingFriends } = useGetFriends();
+  const { data: received = [], isLoading: loadingReceived } = useGetReceivedRequests();
+  const { data: sent = [], isLoading: loadingSent } = useGetSentRequests();
 
-    dispatch(setLoading(true));
-    Promise.all([
-      friendshipApi.getFriends(),
-      friendshipApi.getReceivedRequests(),
-      friendshipApi.getSentRequests(),
-    ])
-      .then(([friendsData, receivedData, sentData]) => {
-        dispatch(setFriends(friendsData));
-        dispatch(setReceived(receivedData));
-        dispatch(setSent(sentData));
-      })
-      .finally(() => dispatch(setLoading(false)));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuth]);
+  const isLoading = loadingFriends || loadingReceived || loadingSent;
+  const pendingCount = received.length;
+
+  const { mutateAsync: sendRequestMutation } = useSendFriendRequest();
+  const { mutateAsync: acceptMutation } = useAcceptFriendRequest();
+  const { mutateAsync: rejectMutation } = useRejectFriendRequest();
+  const { mutateAsync: unfriendMutation } = useUnfriend();
+  const { mutateAsync: blockMutation } = useBlockUser();
 
   const sendRequest = useCallback(
-    async (friendId: string) => {
-      const friendship = await friendshipApi.sendRequest(friendId);
-      dispatch(upsertFriendship(friendship));
-      // Thêm vào sent list vì upsertFriendship không biết phân loại
-      dispatch(setSent([...sent, friendship]));
-    },
-    [dispatch, sent]
+    (friendId: string) => sendRequestMutation(friendId),
+    [sendRequestMutation]
   );
 
   const acceptRequest = useCallback(
-    async (id: string) => {
-      const friendship = await friendshipApi.acceptRequest(id);
-      dispatch(acceptLocal(friendship));
-    },
-    [dispatch]
+    (id: string) => acceptMutation(id),
+    [acceptMutation]
   );
 
   const rejectRequest = useCallback(
-    async (id: string) => {
-      await friendshipApi.rejectRequest(id);
-      dispatch(removeFriendship(id));
-    },
-    [dispatch]
+    (id: string) => rejectMutation(id),
+    [rejectMutation]
   );
 
   const unfriend = useCallback(
-    async (friendId: string) => {
-      await friendshipApi.unfriend(friendId);
-      dispatch(removeByUserId(friendId));
-    },
-    [dispatch]
+    (friendId: string) => unfriendMutation(friendId),
+    [unfriendMutation]
   );
 
   const block = useCallback(
-    async (friendId: string) => {
-      const friendship = await friendshipApi.block(friendId);
-      dispatch(removeByUserId(friendId));
-      dispatch(upsertFriendship(friendship));
-    },
-    [dispatch]
+    (friendId: string) => blockMutation(friendId),
+    [blockMutation]
   );
 
   const getFriendInfo = useCallback(
-    (userId: string) => selectFriendInfo(userId)({ friendship: { friends, received, sent, isLoading } } as RootState),
-    [friends, received, sent, isLoading]
+    (userId: string) => {
+      const match = friends.find(
+        (f) => f.userId === userId || f.friendId === userId
+      );
+      return match?.friendInfo;
+    },
+    [friends]
+  );
+
+  const searchUsers = useCallback(
+    (q: string) => friendshipApi.searchUsers(q),
+    []
   );
 
   return {
@@ -97,11 +77,13 @@ export function useFriendship() {
     sent,
     isLoading,
     pendingCount,
+    currentUserId,
     sendRequest,
     acceptRequest,
     rejectRequest,
     unfriend,
     block,
     getFriendInfo,
+    searchUsers,
   };
 }

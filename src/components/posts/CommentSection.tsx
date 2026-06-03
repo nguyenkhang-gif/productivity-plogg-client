@@ -4,24 +4,22 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useGetComments, useCreateComment } from "@/core/services/client/comments";
+import { Comment } from "@/core/types/comment";
 import FilePicker from "@/components/upload/FilePicker";
 import { ImagePlus, Loader2, Send, X } from "lucide-react";
 import CommentItem from "./CommentItem";
 
 export default function CommentSection({ postId }: { postId: string }) {
   const { profile } = useSelector((state: RootState) => state.user);
-  const commentsByPostId = useSelector((state: RootState) => state.comment.byPostId);
-  const hasMoreByPostId = useSelector((state: RootState) => state.comment.hasMoreByPostId);
-  const comments = commentsByPostId[postId] ?? [];
-  const hasMore = hasMoreByPostId[postId] ?? false;
+  const { data, isLoading, isFetchingNextPage, fetchNextPage } = useGetComments(postId);
+  const comments: Comment[] = data?.pages.flatMap((p) => p.comments) ?? [];
+  const hasMore = data?.pages.at(-1)?.hasMore ?? false;
 
   const [text, setText] = useState("");
   const [iconUrl, setIconUrl] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
-
-  const { isLoading, isFetchingNextPage, fetchNextPage } = useGetComments(postId);
   const { mutate: createComment, isPending: isPosting } = useCreateComment(postId);
 
   useEffect(() => {
@@ -33,11 +31,11 @@ export default function CommentSection({ postId }: { postId: string }) {
           fetchNextPage();
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.1 }
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasMore, isFetchingNextPage, fetchNextPage]);
+  }, [hasMore, isFetchingNextPage, fetchNextPage, comments.length]);
 
   const handleSubmit = () => {
     const trimmed = text.trim();

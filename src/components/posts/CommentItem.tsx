@@ -1,6 +1,6 @@
 "use client";
 
-import { Comment } from "@/core/redux/comment";
+import { Comment } from "@/core/types/comment";
 import { useDeleteComment } from "@/core/services/client/comments";
 import { Trash2 } from "lucide-react";
 

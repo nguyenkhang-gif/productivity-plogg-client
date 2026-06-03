@@ -2,7 +2,7 @@
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
-import { Post } from "@/core/redux/post";
+import { Post } from "@/core/types/post";
 import {
   Dialog,
   DialogContent,

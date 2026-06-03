@@ -7,8 +7,6 @@ import ReactMarkdown from "react-markdown";
 import { Send, X, Eye, Edit3, Sparkles, Link as LinkIcon, Loader2, ClipboardPaste, Plus, FolderOpen } from "lucide-react";
 import FilePicker from "@/components/upload/FilePicker";
 import { useCreatePost, useUpdatePost, useGetPostById } from "@/core/services/client/posts";
-import { useSelector } from "react-redux";
-import { RootState } from "@/core/redux/store";
 import { useToast } from "@/core/hooks/use-toast";
 import "easymde/dist/easymde.min.css";
 
@@ -19,7 +17,7 @@ export default function CreatePostPage() {
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit"); // /create-post?edit=<id> = edit mode
 
-  const { selectedPost } = useSelector((state: RootState) => state.post);
+  const { data: editPost } = useGetPostById(editId ?? "");
 
   const [content, setContent] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -29,13 +27,12 @@ export default function CreatePostPage() {
   const [pickerTarget, setPickerTarget] = useState<"thumbnail" | "content" | null>(null);
 
   // Prefill khi ở edit mode
-  useGetPostById(editId ?? "");
   useEffect(() => {
-    if (editId && selectedPost?.id === editId) {
-      setContent(selectedPost.content);
-      setImageUrls(selectedPost.imageUrls ?? []);
+    if (editId && editPost?.id === editId) {
+      setContent(editPost.content);
+      setImageUrls(editPost.imageUrls ?? []);
     }
-  }, [editId, selectedPost]);
+  }, [editId, editPost]);
 
   const { toast } = useToast();
   const { mutate: createPost, isPending: isCreating } = useCreatePost();
