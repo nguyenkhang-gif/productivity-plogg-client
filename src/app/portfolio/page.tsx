@@ -122,7 +122,7 @@ const portfolioData = {
       description: "Productivity and Feature Showcase Platform",
       teamSize: 1,
       role: "Full-Stack Developer",
-      techStack: ["Next.js 15", "TypeScript", "Node.js", "Socket.IO", "MongoDB", "Redux Toolkit", "TanStack Query", "Cloudinary", "AWS EC2", "Clean Architecture", "CI/CD"],
+      techStack: ["Next.js 15", "TypeScript", "Node.js", "Socket.IO", "MongoDB", "Redux Toolkit", "TanStack Query", "Cloudinary", "AWS EC2", "Nginx", "OAuth", "Clean Architecture", "CI/CD"],
       links: [
         { label: "Website", url: "http://knnpb.duckdns.org/posts" },
       ],
@@ -156,6 +156,8 @@ const portfolioData = {
     tools: [
       "Git",
       "AWS (EC2, S3)",
+      "Nginx",
+      "OAuth 2.0",
       "REST API",
       "WebSocket",
       "MQTT",

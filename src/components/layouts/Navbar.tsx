@@ -15,10 +15,10 @@ import {
   Moon,
   Users,
 } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/core/redux/store";
-import { logout } from "@/core/redux/user";
-import { selectPendingCount } from "@/core/redux/friendship";
+import { useSelector } from "react-redux";
+import { RootState } from "@/core/redux/store";
+import { useAuth } from "@/core/hooks/auth/useAuth";
+import { useGetReceivedRequests } from "@/core/services/client/friendships";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
@@ -26,9 +26,10 @@ export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [theme, setTheme] = useState("dark");
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
+  const { signOut } = useAuth();
   const { profile, isAuth, isLoading } = useSelector((state: RootState) => state.user);
-  const pendingCount = useSelector(selectPendingCount);
+  const { data: receivedRequests } = useGetReceivedRequests();
+  const pendingCount = receivedRequests?.length ?? 0;
 
   // Load theme from localStorage on mount
   useEffect(() => {
@@ -60,10 +61,8 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
-    localStorage.removeItem("token");
-    router.push("/auth");
     setIsDropdownOpen(false);
+    signOut();
   };
 
   if (isLoading) return null;

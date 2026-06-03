@@ -305,14 +305,14 @@
         \textbf{Productivity Blog --- In Process} – Productivity and Feature Showcase Platform \\
         \textbf{Team size:} 1 \quad
         \textbf{Role:} Full-Stack Developer \\
-        \textbf{Tech Stack:} Next.js 15, TypeScript, Node.js, Socket.IO, MongoDB, Redux Toolkit, TanStack Query, Cloudinary, AWS EC2, Clean Architecture, CI/CD \\
+        \textbf{Tech Stack:} Next.js 15, TypeScript, Node.js, Socket.IO, MongoDB, Redux Toolkit, TanStack Query, Cloudinary, AWS EC2, Nginx, OAuth, Clean Architecture, CI/CD \\
         \textbf{Link Website: } \href{http://knnpb.duckdns.org/posts}{http://knnpb.duckdns.org/posts}
 
         \begin{highlights}
             \item Designed to enhance user productivity and demonstrate new features under development.
             \item Developed backend with Node.js and Express, and persisted data using MongoDB.
-            \item Created frontend with Next.js and TypeScript for type safety and maintainability.
-            \item Working on new features and improvements, deployed on AWS EC2 with CI/CD pipeline.
+            \item Created frontend with React and TypeScript for type safety and maintainability.
+            \item Working on new features and improvements in a separate version hosted on Vercel.
         \end{highlights}
 
 
@@ -322,5 +322,5 @@
         \textbf{Frontend:} HTML, CSS, ReactJS, NextJS, VueJS, NuxtJS, Three.js, Chart.js, React Query (TanStack) \\
         \textbf{Backend:} NestJS, ExpressJS \\
         \textbf{Database:} MySQL, MongoDB, Firebase, Supabase \\
-        \textbf{Tools/Other:} Git, AWS (EC2, S3), REST API, WebSocket, MQTT, Server-Sent Events (SSE), Puppeteer, Data Scraping, Clean Architecture, Design Patterns (MVC, Repository, Singleton, Observer), Optimize Bundler Performance (Webpack/Vite), Chrome DevTools Profiling
+        \textbf{Tools/Other:} Git, AWS (EC2, S3), Nginx, OAuth 2.0, REST API, WebSocket, MQTT, Server-Sent Events (SSE), Puppeteer, Data Scraping, Clean Architecture, Design Patterns (MVC, Repository, Singleton, Observer), Optimize Bundler Performance (Webpack/Vite), Chrome DevTools Profiling
 \end{document}

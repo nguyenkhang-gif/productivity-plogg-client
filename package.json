@@ -26,6 +26,8 @@
     "easymde": "^2.20.0",
     "epubjs": "^0.3.93",
     "google-tts-api": "^2.0.2",
+    "ioredis": "^5.11.0",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.468.0",
     "next": "15.1.0",
     "pixi-live2d-display": "^0.4.0",

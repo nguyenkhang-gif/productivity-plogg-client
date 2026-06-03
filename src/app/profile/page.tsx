@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useGetPostsByAuthor, useDeletePost } from "@/core/services/client/posts";
-import { Post } from "@/core/redux/post";
+import { Post } from "@/core/types/post";
 import PostCard from "@/components/posts/PostCard";
 import EditProfileDialog from "@/components/profile/EditProfileDialog";
 import ImagePreviewDialog from "@/components/ui/ImagePreviewDialog";
