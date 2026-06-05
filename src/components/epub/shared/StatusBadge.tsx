@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, Loader2 } from "lucide-react";
+import { CheckCircle2, Clock } from "lucide-react";
 
 interface StatusBadgeProps {
   status: string;

@@ -7,9 +7,6 @@ export interface EpubBuildOptions {
   chapters: { title: string; text: string }[];
 }
 
-function sanitizeFilename(name: string): string {
-  return name.replace(/[^\wÀ-ɏ\s-]/g, "").trim().replace(/\s+/g, "_") || "chapter";
-}
 
 function escapeXml(str: string): string {
   return str
