@@ -5,6 +5,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@/core/plugins/reactQuery";
+import { useSelector } from "react-redux";
+import { RootState } from "@/core/redux/store";
 import {
   storyContextsApi,
   CreateStoryContextDto,
@@ -13,9 +15,12 @@ import {
 import { FetchQueryKeys } from "@/core/services/endpoints";
 
 export function useGetStoryContexts(page = 1, limit = 20) {
+  const token = useSelector((s: RootState) => s.user.token);
+
   return useQuery({
     queryKey: [FetchQueryKeys.STORY_CONTEXT_LIST, page, limit],
     queryFn: () => storyContextsApi.list(page, limit),
+    enabled: !!token,
   });
 }
 
