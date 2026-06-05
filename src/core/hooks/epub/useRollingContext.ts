@@ -138,6 +138,16 @@ function buildPrompt(
 }
 
 function extractJson(text: string): string | null {
+  // Try markdown code block first (```json ... ``` or ``` ... ```)
+  const codeBlock = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (codeBlock) {
+    try {
+      JSON.parse(codeBlock[1]);
+      return codeBlock[1];
+    } catch { /* fall through */ }
+  }
+
+  // Fall back to raw { ... }
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");
   if (start === -1 || end === -1) return null;
@@ -177,6 +187,72 @@ function clearStorage(fileName: string) {
   } catch {
     // ignore
   }
+}
+
+// ── direct Gemini call (bypass /api/gemini to avoid Vercel timeout) ────────
+
+const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
+const GEMINI_MODEL = "gemma-4-31b-it";
+
+async function callGeminiDirect(
+  prompt: string,
+  apiKey: string,
+  signal: AbortSignal
+): Promise<Response> {
+  return fetch(
+    `${GEMINI_BASE}/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${apiKey}`,
+    {
+      method: "POST",
+      signal,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        systemInstruction: {
+          parts: [{ text: "Bạn chỉ được trả lời bằng tiếng Việt. Không dùng tiếng Anh." }],
+        },
+      }),
+    }
+  ).then(async (res) => {
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      throw new Error(`Gemini API error ${res.status}: ${err.error ?? res.statusText}`);
+    }
+
+    // Parse SSE stream → plain text stream
+    const encoder = new TextEncoder();
+    const readable = new ReadableStream({
+      async start(controller) {
+        const reader = res.body!.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+            for (const line of lines) {
+              if (!line.startsWith("data: ")) continue;
+              const raw = line.slice(6).trim();
+              if (raw === "[DONE]") continue;
+              try {
+                const json = JSON.parse(raw);
+                const text: string = json.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+                if (text) controller.enqueue(encoder.encode(text));
+              } catch { /* skip malformed chunk */ }
+            }
+          }
+        } finally {
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(readable, {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  });
 }
 
 // ── hook ───────────────────────────────────────────────────────────────────
@@ -308,20 +384,21 @@ export function useRollingContext(
         // Clear streaming buffer for this round
         setState((prev) => ({ ...prev, streamingText: "" }));
 
-        const res = await fetch("/api/gemini", {
-          method: "POST",
-          signal: ctrl.signal,
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({
-            prompt,
-            stream: true,
-            ...(config.apiKey ? { apiKey: config.apiKey } : {}),
-            systemInstruction: "Bạn chỉ được trả lời bằng tiếng Việt. Không dùng tiếng Anh.",
-          }),
-        });
+        const res = config.apiKey
+          ? await callGeminiDirect(prompt, config.apiKey, ctrl.signal)
+          : await fetch("/api/gemini", {
+              method: "POST",
+              signal: ctrl.signal,
+              headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify({
+                prompt,
+                stream: true,
+                systemInstruction: "Bạn chỉ được trả lời bằng tiếng Việt. Không dùng tiếng Anh.",
+              }),
+            });
 
         if (!res.ok) {
           const body = await res.json().catch(() => ({ error: res.statusText }));
@@ -349,7 +426,7 @@ export function useRollingContext(
         const newContext = extractJson(text);
 
         if (!newContext) {
-          throw new Error("Response không chứa JSON hợp lệ. Raw output:\n\n" + text.slice(0, 500));
+          throw new Error("Response không chứa JSON hợp lệ. Raw output:\n\n" + text);
         }
 
         context = newContext;
