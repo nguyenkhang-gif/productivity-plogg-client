@@ -29,7 +29,7 @@ export const routes: RouteConfig[] = [
   { path: "/", access: "private", exact: true },
   { path: "/create-post", access: "private" },
   { path: "/posts", access: "private" },
-  { path: "/epub", access: "private" },
+  { path: "/epub", access: "public" },
 
   { path: "/face-test", access: "private" },
   { path: "/profile", access: "private" },
