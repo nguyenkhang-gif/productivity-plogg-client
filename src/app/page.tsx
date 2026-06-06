@@ -1,5 +1,17 @@
-import { redirect } from "next/navigation";
+import {
+  AppFeaturesSection,
+  ContactSection,
+  HeroSection,
+  PersonalProjectsSection,
+} from "@/components/landing";
 
-export default function Home() {
-  redirect("/posts");
+export default function HomePage() {
+  return (
+    <main className="w-full">
+      <HeroSection />
+      <AppFeaturesSection />
+      <PersonalProjectsSection />
+      <ContactSection />
+    </main>
+  );
 }

@@ -1,9 +1,9 @@
 import Navbar from "@/components/layouts/Navbar";
 import RouteGuard from "@/components/layouts/RouteGuard";
 import TitleManager from "@/components/layouts/TitleManager";
+import { useLayoutVisibility } from "@/components/layouts/useLayoutVisibility";
 import UserChatBubble from "@/components/chat/UserChatBubble";
 import { cn } from "@/core/lib/utils";
-import { usePathname } from "next/navigation";
 import React from "react";
 
 export default function DefaultLayout({
@@ -11,18 +11,16 @@ export default function DefaultLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-  const isAuthPage = pathname.startsWith("/auth");
-  const isMeetingRoom = pathname.startsWith("/meetings/room");
+  const { hideNav, isAuthPage, isMeetingRoom, isGuestLanding } = useLayoutVisibility();
 
   return (
     <RouteGuard>
       <TitleManager />
-      {!isAuthPage && <Navbar />}
-      <div className={cn("h-full", { "pt-20": !isAuthPage, "pt-0": isAuthPage })}>
+      {!hideNav && <Navbar />}
+      <div className={cn("h-full", { "pt-20": !hideNav, "pt-0": hideNav })}>
         {children}
       </div>
-      {!isAuthPage && !isMeetingRoom && <UserChatBubble />}
+      {!isAuthPage && !isMeetingRoom && !isGuestLanding && <UserChatBubble />}
     </RouteGuard>
   );
 }
