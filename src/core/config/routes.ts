@@ -31,7 +31,6 @@ export const routes: RouteConfig[] = [
   { path: "/posts", access: "private" },
   { path: "/epub", access: "public" },
 
-  { path: "/face-test", access: "private" },
   { path: "/profile", access: "private" },
 ];
 

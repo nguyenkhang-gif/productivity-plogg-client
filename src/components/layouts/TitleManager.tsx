@@ -12,7 +12,6 @@ const PAGE_TITLES: Record<string, string> = {
   "/upload": "Files",
   "/portfolio": "Portfolio",
   "/auth": "Login",
-  "/face-test": "Face Test",
   "/cbz": "CBZ",
   "/projects": "Projects",
 };
