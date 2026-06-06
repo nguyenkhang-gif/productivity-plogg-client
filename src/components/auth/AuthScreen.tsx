@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { SignInCard } from "./sign-in-card";
-import { SignUpCard } from "./sign-up-card";
+import { SignInCard } from "./SignInCard";
+import { SignUpCard } from "./SignUpCard";
 
 export const AuthScreen = () => {
   const [signState, setSignState] = useState<"signin" | "signup">("signin");

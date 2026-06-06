@@ -2,7 +2,7 @@
 // import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import StoreProvider from "../core/providers/redux-provider";
+import StoreProvider from "../core/providers/ReduxProvider";
 import ReactQueryProvider from "@/core/providers/ReactQuery";
 import { Toaster } from "@/components/ui/toaster";
 // import Navbar from "@/components/layouts/Navbar";

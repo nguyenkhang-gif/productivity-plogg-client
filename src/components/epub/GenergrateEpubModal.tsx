@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
-import { useGenerateEpub } from "@/core/hooks/epub/use-generate-epub";
+import { useGenerateEpub } from "@/core/hooks/epub/useGenerateEpub";
 import { Card } from "../ui/card";
 import { Trash2 } from "lucide-react";
 import { useToast } from "@/core/hooks/use-toast";

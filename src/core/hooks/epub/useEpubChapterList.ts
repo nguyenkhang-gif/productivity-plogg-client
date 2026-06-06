@@ -2,8 +2,8 @@ import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Chapter, addChapter, chapterFormatI } from "@/core/redux/epub";
 import { RootState } from "@/core/redux/store";
-import { useGetEpubFormatList } from "@/core/hooks/epub/use-get-epub-format-list";
-import { useParseChapter } from "@/core/hooks/epub/use-parse-chapter";
+import { useGetEpubFormatList } from "@/core/hooks/epub/useGetEpubFormatList";
+import { useParseChapter } from "@/core/hooks/epub/useParseChapter";
 import { useGetAllEpub } from "@/core/services/client/epub";
 
 type Format = "web" | "phone" | "ebook" | "print" | string;

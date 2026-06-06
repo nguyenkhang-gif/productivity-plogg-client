@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useLoginWithPasswordEmail } from "@/core/hooks/auth/use-sign-in-with-passwod-email";
+import { useLoginWithPasswordEmail } from "@/core/hooks/auth/useSignInWithPasswordEmail";
 import { Eye, EyeOff, Loader2, Mail, Lock, User, AtSign } from "lucide-react";
 
 export const SignUpCard = () => {

@@ -1,7 +1,7 @@
 "use client";
 
-import { AuthScreen } from "@/components/auth/auth-screen";
-import { useSignUpWithJwt } from "@/core/hooks/auth/use-sign-up-with-jwt";
+import { AuthScreen } from "@/components/auth/AuthScreen";
+import { useSignUpWithJwt } from "@/core/hooks/auth/useSignUpWithJwt";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { Suspense } from "react";

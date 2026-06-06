@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2, User, Lock } from "lucide-react";
 
-import { useLoginWithPasswordEmail } from "@/core/hooks/auth/use-sign-in-with-passwod-email";
+import { useLoginWithPasswordEmail } from "@/core/hooks/auth/useSignInWithPasswordEmail";
 
 export const SignInCard = () => {
   const router = useRouter();
