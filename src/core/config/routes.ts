@@ -26,7 +26,7 @@ export const routes: RouteConfig[] = [
   { path: "/buttons", access: "public" },
 
   // Private: phải login
-  { path: "/", access: "private", exact: true },
+  { path: "/", access: "public", exact: true },
   { path: "/create-post", access: "private" },
   { path: "/posts", access: "private" },
   { path: "/epub", access: "public" },
@@ -37,7 +37,7 @@ export const routes: RouteConfig[] = [
 /** Default nếu path không khớp rule nào */
 const DEFAULT_ACCESS: RouteAccess = "private";
 
-const REDIRECT_WHEN_AUTHED = "/posts";
+const REDIRECT_WHEN_AUTHED = "/";
 const REDIRECT_WHEN_NOT_AUTHED = "/auth";
 
 function matchRoute(pathname: string): RouteAccess {

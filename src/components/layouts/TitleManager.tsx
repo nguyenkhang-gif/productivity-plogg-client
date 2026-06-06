@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 const PAGE_TITLES: Record<string, string> = {
+  "/": "Khang Nguyen",
   "/posts": "Posts",
   "/create-post": "Create Post",
   "/epub": "Epub Gen",
