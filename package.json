@@ -29,6 +29,7 @@
     "ioredis": "^5.11.0",
     "jszip": "^3.10.1",
     "lucide-react": "^0.468.0",
+    "mermaid": "^11.15.0",
     "next": "^15.1.12",
     "pixi-live2d-display": "^0.4.0",
     "pixi.js": "^6.5.10",
