@@ -45,6 +45,24 @@ const projects: Project[] = [
     ],
   },
   {
+    name: "Robot Fleet Dashboard",
+    detailPath: "/projects/robot-fleet",
+    status: "In Process",
+    description:
+      "Full-stack real-time robot telemetry dashboard with WebSocket streaming, MongoDB tiered storage, Redis pub/sub cluster fan-out, and a Next.js 15 Zustand-powered UI. Architecture audit score: FE 54/90 · BE 75/100.",
+    teamSize: 1,
+    role: "Full-Stack Developer",
+    techStack: ["Next.js 15", "TypeScript", "Node.js", "uWebSockets.js", "MongoDB", "Redis", "Zustand", "Clean Architecture"],
+    links: [],
+    highlights: [
+      "Implemented uWebSockets.js WebSocket server with BroadcastBuffer that coalesces telemetry and flushes every 5s.",
+      "Designed a 4-tier MongoDB Time Series storage (Raw → Minutely → Hourly → Daily) with cron-based rollup jobs.",
+      "Built Redis pub/sub cluster fan-out for multi-worker WebSocket broadcasting — IPC fallback when Redis is absent.",
+      "Applied Clean Architecture (Domain → Application → Adapters → Infrastructure) with zero-dependency domain layer.",
+      "Identified and documented 14 issues (4× P1 blockers, 7× P2, 3× P3) via full-stack architecture audit.",
+    ],
+  },
+  {
     name: "Manga Downloader & EPUB/CBZ Converter",
     detailPath: "/projects/manga-downloader",
     status: "In Process",
@@ -79,6 +97,9 @@ const techColors: Record<string, string> = {
   "AWS EC2": "bg-orange-500 text-white",
   "Clean Architecture": "bg-teal-600 text-white",
   "CI/CD": "bg-slate-500 text-white",
+  "uWebSockets.js": "bg-violet-700 text-white",
+  "Redis": "bg-red-600 text-white",
+  "Zustand": "bg-teal-500 text-white",
   "Puppeteer": "bg-emerald-700 text-white",
   "Express": "bg-gray-600 text-white",
   "Sharp": "bg-indigo-500 text-white",
@@ -114,9 +135,9 @@ export default function ProjectsPage() {
 
       {/* Projects list */}
       <div className="space-y-8">
-        {projects.map((proj, index) => (
+        {projects.map((proj) => (
           <div
-            key={index}
+            key={proj.name}
             className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm"
           >
             {/* Title row */}
@@ -131,9 +152,9 @@ export default function ProjectsPage() {
                 <p className="text-slate-600 dark:text-slate-400">{proj.description}</p>
               </div>
               <div className="flex flex-wrap gap-2 shrink-0">
-                {proj.links.map((link, lIndex) => (
+                {proj.links.map((link) => (
                   <a
-                    key={lIndex}
+                    key={link.url}
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -178,8 +199,8 @@ export default function ProjectsPage() {
                 Highlights
               </h3>
               <ul className="space-y-2">
-                {proj.highlights.map((h, hIndex) => (
-                  <li key={hIndex} className="flex items-start gap-2 text-slate-600 dark:text-slate-400 text-sm">
+                {proj.highlights.map((h) => (
+                  <li key={h} className="flex items-start gap-2 text-slate-600 dark:text-slate-400 text-sm">
                     <span className="text-primary mt-1.5 shrink-0">▸</span>
                     {h}
                   </li>
