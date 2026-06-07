@@ -24,11 +24,8 @@ export const useGetComments = (postId: string) => {
     queryFn: async ({ pageParam }) => {
       const page = pageParam as number;
       const data = await apiGetComments(postId, page, LIMIT);
-      const comments: Comment[] = data.items ?? data.data ?? data ?? [];
-      const pagination = data.pagination ?? data;
-      const totalPages: number =
-        pagination.totalPages ??
-        Math.ceil((pagination.total ?? comments.length) / LIMIT);
+      const comments = data.items;
+      const totalPages = data.pagination.totalPages;
       const hasMore = page < totalPages;
       return { comments, hasMore, page, totalPages } as CommentPage;
     },

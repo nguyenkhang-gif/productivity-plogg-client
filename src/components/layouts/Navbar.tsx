@@ -75,7 +75,9 @@ export default function Navbar() {
     >
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
-        <div className="text-2xl font-bold">KPro</div>
+        <Link href="/" className="text-2xl font-bold hover:opacity-80 transition-opacity">
+          KPro
+        </Link>
 
         {/* Theme Toggle Button */}
         <button

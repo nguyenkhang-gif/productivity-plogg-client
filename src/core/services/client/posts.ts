@@ -46,11 +46,8 @@ export const useGetPostsFeed = () => {
     queryFn: async ({ pageParam }) => {
       const page = pageParam as number;
       const data = await apiGetPosts(page, PostConstants.PAGE_LIMIT);
-      const posts: Post[] = data.items ?? data.data ?? data ?? [];
-      const pagination = data.pagination ?? data;
-      const totalPages: number =
-        pagination.totalPages ??
-        Math.ceil((pagination.total ?? posts.length) / PostConstants.PAGE_LIMIT);
+      const posts = data.items;
+      const totalPages = data.pagination.totalPages;
       const hasMore = page < totalPages;
       return { posts, hasMore, page, totalPages } as PageResult;
     },
@@ -69,12 +66,8 @@ export const useGetPostsByAuthor = (authorId: string) => {
     queryFn: async ({ pageParam }) => {
       const page = pageParam as number;
       const data = await apiGetPostsByAuthor(authorId, page, PostConstants.PAGE_LIMIT);
-      const posts: Post[] = data.items ?? data.data ?? data ?? [];
-      const pagination = data.pagination ?? data;
-      const total: number = pagination.total ?? posts.length;
-      const totalPages: number =
-        pagination.totalPages ??
-        Math.ceil(total / PostConstants.PAGE_LIMIT);
+      const posts = data.items;
+      const { total, totalPages } = data.pagination;
       const hasMore = page < totalPages;
       return { posts, hasMore, page, totalPages, total };
     },
@@ -89,7 +82,7 @@ export const useGetPostById = (id: string) => {
 
   return useQuery({
     queryKey: [FetchQueryKeys.POST_GET_BY_ID, id],
-    queryFn: () => apiGetPostById(id) as Promise<Post>,
+    queryFn: () => apiGetPostById(id),
     enabled: !!id,
     initialData: () => {
       const feedData = queryClient.getQueryData<InfiniteData<PageResult>>(
