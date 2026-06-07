@@ -35,8 +35,12 @@ export function TranslateMode({ pendingChapters = [], onPendingConsumed }: Trans
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const sessionKey = chapters.length
+    ? `tr_${chapters[0].title.slice(0, 20)}_${chapters.length}`
+    : null;
+
   const { state: trans, config, setConfig, run, abort, reset: resetTrans, getFileStatus } =
-    useTranslation(chapters, chapters.length ? "translate_session" : null);
+    useTranslation(chapters, sessionKey);
 
   const { data: ctxLibrary } = useGetStoryContexts(1, 50);
 

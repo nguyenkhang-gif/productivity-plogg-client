@@ -30,7 +30,7 @@ export function ContextLibrary() {
     );
   };
 
-  const count = data?.data?.length ?? 0;
+  const count = data?.pagination?.total ?? 0;
 
   return (
     <>

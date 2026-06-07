@@ -63,18 +63,20 @@ function storageKey(sessionId: string): string {
   return `epub_translate_${sessionId}`;
 }
 
-function loadProgress(sessionId: string): number {
+function loadProgress(sessionId: string): { nextIndex: number; results: TranslatedFile[] } {
   try {
     const raw = localStorage.getItem(storageKey(sessionId));
-    return raw ? (JSON.parse(raw).nextIndex ?? 0) : 0;
+    if (!raw) return { nextIndex: 0, results: [] };
+    const parsed = JSON.parse(raw);
+    return { nextIndex: parsed.nextIndex ?? 0, results: parsed.results ?? [] };
   } catch {
-    return 0;
+    return { nextIndex: 0, results: [] };
   }
 }
 
-function saveProgress(sessionId: string, nextIndex: number) {
+function saveProgress(sessionId: string, nextIndex: number, results: TranslatedFile[]) {
   try {
-    localStorage.setItem(storageKey(sessionId), JSON.stringify({ nextIndex }));
+    localStorage.setItem(storageKey(sessionId), JSON.stringify({ nextIndex, results }));
   } catch {}
 }
 
@@ -108,8 +110,8 @@ export function useTranslation(
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [state, setState] = useState<TranslationState>(() => {
-    const saved = sessionId ? loadProgress(sessionId) : 0;
-    return { ...defaultState(), nextIndex: saved };
+    const saved = sessionId ? loadProgress(sessionId) : { nextIndex: 0, results: [] };
+    return { ...defaultState(), nextIndex: saved.nextIndex, results: saved.results };
   });
 
   const [config, setConfig] = useState<TranslationConfig>({
@@ -214,15 +216,18 @@ export function useTranslation(
         };
 
         nextIndex += 1;
-        if (sessionId) saveProgress(sessionId, nextIndex);
 
-        setState((prev) => ({
-          ...prev,
-          nextIndex,
-          streamingText: "",
-          streamingName: "",
-          results: [...prev.results, translated],
-        }));
+        setState((prev) => {
+          const newResults = [...prev.results, translated];
+          if (sessionId) saveProgress(sessionId, nextIndex, newResults);
+          return {
+            ...prev,
+            nextIndex,
+            streamingText: "",
+            streamingName: "",
+            results: newResults,
+          };
+        });
 
         if (nextIndex < chapters.length && !ctrl.signal.aborted) {
           await new Promise<void>((resolve) => startCountdown(15, resolve));

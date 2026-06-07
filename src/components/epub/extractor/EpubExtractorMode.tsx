@@ -159,7 +159,7 @@ export function EpubExtractorMode({ onSendToContext }: EpubExtractorModeProps) {
               {state.chapters.map((ch, i) => (
                 <div
                   key={ch.index}
-                  className={`flex items-center gap-2 px-3 py-2.5 border-b border-gray-800 last:border-0 hover:bg-white/5 transition-colors ${
+                  className={`group flex items-center gap-2 px-3 py-2.5 border-b border-gray-800 last:border-0 hover:bg-white/5 transition-colors ${
                     previewIndex === i ? "bg-[#0E78F9]/10" : ""
                   }`}
                 >

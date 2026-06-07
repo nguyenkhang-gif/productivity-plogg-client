@@ -18,10 +18,12 @@ export function FileDropZone({
   label, sublabel, stats, onFiles,
 }: FileDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const dragCounterRef = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    dragCounterRef.current = 0;
     setIsDragging(false);
     if (e.dataTransfer.files.length) onFiles(e.dataTransfer.files);
   };
@@ -29,8 +31,9 @@ export function FileDropZone({
   return (
     <div
       onDrop={handleDrop}
-      onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-      onDragLeave={() => setIsDragging(false)}
+      onDragEnter={(e) => { e.preventDefault(); dragCounterRef.current += 1; setIsDragging(true); }}
+      onDragOver={(e) => { e.preventDefault(); }}
+      onDragLeave={() => { dragCounterRef.current -= 1; if (dragCounterRef.current === 0) setIsDragging(false); }}
       onClick={() => inputRef.current?.click()}
       className={`border-2 border-dashed rounded-xl px-6 py-5 cursor-pointer transition-colors flex items-center gap-4 ${
         isDragging
@@ -53,7 +56,10 @@ export function FileDropZone({
         accept={accept}
         multiple={multiple}
         className="hidden"
-        onChange={(e) => { if (e.target.files?.length) onFiles(e.target.files); }}
+        onChange={(e) => {
+          if (e.target.files?.length) onFiles(e.target.files);
+          e.target.value = "";
+        }}
       />
     </div>
   );

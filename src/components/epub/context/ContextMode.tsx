@@ -40,6 +40,10 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const sessionKey = chapters.length
+    ? `ctx_${chapters[0].title.slice(0, 20)}_${chapters.length}`
+    : null;
+
   const {
     state: rolling,
     config,
@@ -48,7 +52,7 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
     run,
     abort,
     reset: resetRolling,
-  } = useRollingContext(chapters, chapters.length ? "context_session" : null);
+  } = useRollingContext(chapters, sessionKey);
 
   const { mutateAsync: createCtxAsync, isPending: isSaving } = useCreateStoryContext();
 
