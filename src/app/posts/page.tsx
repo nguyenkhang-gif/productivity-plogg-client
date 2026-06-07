@@ -6,17 +6,23 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { Post } from "@/core/types/post";
 import { useGetPostsFeed, useDeletePost } from "@/core/services/client/posts";
-import { PenSquare, Loader2 } from "lucide-react";
+import { PenSquare, Loader2, X } from "lucide-react";
 import PostCard from "@/components/posts/PostCard";
+import PostSkeleton from "@/components/posts/PostSkeleton";
 import PostDetailDialog from "@/components/posts/PostDetailDialog";
+import LeftSidebar from "@/components/posts/sidebar/LeftSidebar";
+import RightSidebar from "@/components/posts/sidebar/RightSidebar";
+import { SortOrder } from "@/core/enums";
+import { styles } from "@/core/config/styles";
 
-const PRELOAD_BEFORE_END = 3; // bắt đầu load khi còn 3 post cuối chưa qua viewport
+const PRELOAD_BEFORE_END = 3;
 
 export default function PostsPage() {
   const { profile } = useSelector((state: RootState) => state.user);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
-  const [sort, setSort] = useState<"newest" | "oldest">("newest");
+  const [sort, setSort] = useState<SortOrder>(SortOrder.Newest);
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
 
   const {
     data,
@@ -29,28 +35,38 @@ export default function PostsPage() {
   const posts: Post[] = data?.pages.flatMap((p) => p.posts) ?? [];
   const hasMore = data?.pages.at(-1)?.hasMore ?? false;
 
-  // selectedPost luôn phản ánh state mới nhất từ RQ cache
   const selectedPost = selectedPostId
     ? (posts.find((p) => p.id === selectedPostId) ?? null)
     : null;
 
   const sortedPosts = [...posts].sort((a, b) => {
     const diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    return sort === "newest" ? -diff : diff;
+    return sort === SortOrder.Newest ? -diff : diff;
   });
 
-  // index của post sẽ đặt sentinel (3 post trước cuối)
+  const normalizeTag = (raw: unknown): string => {
+    if (typeof raw === "string") return raw;
+    if (raw && typeof raw === "object") {
+      const t = raw as Record<string, unknown>;
+      return String(t.slug ?? t.name ?? t.id ?? "");
+    }
+    return String(raw ?? "");
+  };
+
+  const filteredPosts = tagFilter
+    ? sortedPosts.filter((p) => p.tags?.some((raw) => normalizeTag(raw) === tagFilter))
+    : sortedPosts;
+
   const sentinelIndex =
-    sortedPosts.length > PRELOAD_BEFORE_END
-      ? sortedPosts.length - PRELOAD_BEFORE_END - 1
-      : -1; // -1 = không đặt sentinel (ít hơn 3 post)
+    filteredPosts.length > PRELOAD_BEFORE_END
+      ? filteredPosts.length - PRELOAD_BEFORE_END - 1
+      : -1;
 
   const { mutate: deletePost } = useDeletePost();
 
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !isFetchingNextPage) {
@@ -59,22 +75,13 @@ export default function PostsPage() {
       },
       { threshold: 0 }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasMore, isFetchingNextPage, fetchNextPage, sortedPosts.length]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-      </div>
-    );
-  }
+  }, [hasMore, isFetchingNextPage, fetchNextPage, filteredPosts.length]);
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh] text-slate-400">
+      <div className="flex items-center justify-center min-h-[60vh] text-text-muted">
         Không thể tải bài viết. Vui lòng thử lại.
       </div>
     );
@@ -87,75 +94,96 @@ export default function PostsPage() {
         open={!!selectedPost}
         onClose={() => setSelectedPostId(null)}
       />
-      <div className="max-w-2xl mx-auto">
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6 gap-3">
-          <h1 className="text-xl md:text-2xl font-bold text-white shrink-0">Bảng tin</h1>
-          <div className="flex items-center gap-2 flex-1 justify-end">
-            <div className="flex items-center bg-white/[0.04] border border-white/[0.08] rounded-xl overflow-hidden text-sm">
-              <button
-                onClick={() => setSort("newest")}
-                className={`px-2.5 md:px-3 py-1.5 transition-colors text-xs md:text-sm ${sort === "newest" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
-              >
-                Mới nhất
-              </button>
-              <button
-                onClick={() => setSort("oldest")}
-                className={`px-2.5 md:px-3 py-1.5 transition-colors text-xs md:text-sm ${sort === "oldest" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-slate-200"}`}
-              >
-                Cũ nhất
-              </button>
-            </div>
-            <Link
-              href="/create-post"
-              className="flex items-center gap-1.5 px-3 md:px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium text-xs md:text-sm transition-colors shrink-0"
-            >
-              <PenSquare size={14} /> <span className="hidden sm:inline">Viết bài</span><span className="sm:hidden">Viết</span>
-            </Link>
-          </div>
-        </div>
+      <div className="max-w-[1400px] mx-auto">
+        {/* 3-column grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_260px] gap-6 items-start">
+          <LeftSidebar posts={sortedPosts} />
 
-        {/* Feed */}
-        {posts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[40vh] gap-4 text-slate-500">
-            <PenSquare size={48} className="opacity-30" />
-            <p>Chưa có bài viết nào.</p>
-            <Link href="/create-post" className="text-blue-400 hover:underline text-sm">
-              Tạo bài viết đầu tiên →
-            </Link>
-          </div>
-        ) : (
+          {/* Center feed */}
           <div className="flex flex-col gap-4">
-            {sortedPosts.map((post, index) => (
-              <div
-                key={post.id}
-                style={{ contentVisibility: "auto", containIntrinsicSize: "0 500px" }}
-              >
-                {/* Sentinel đặt ngay trước post thứ (length - 3) */}
-                {index === sentinelIndex && (
-                  <div ref={sentinelRef} aria-hidden />
-                )}
-                <PostCard
-                  post={post}
-                  currentUserId={profile.id}
-                  onDelete={(id) => deletePost(id)}
-                  onOpenDetail={(post) => setSelectedPostId(post.id)}
-                />
+            {/* Header — h-14 so sidebars can offset by the same amount */}
+            <div className="flex items-center justify-between gap-3 h-14">
+              <h1 className="text-xl md:text-2xl font-bold text-text-primary shrink-0">Bảng tin</h1>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center bg-white/[0.04] border border-border rounded-xl overflow-hidden text-sm">
+                  <button
+                    onClick={() => setSort(SortOrder.Newest)}
+                    className={`px-2.5 md:px-3 py-1.5 transition-colors text-xs md:text-sm ${sort === SortOrder.Newest ? "bg-accent text-white" : `${styles.muted} hover:text-text-primary`}`}
+                  >
+                    Mới nhất
+                  </button>
+                  <button
+                    onClick={() => setSort(SortOrder.Oldest)}
+                    className={`px-2.5 md:px-3 py-1.5 transition-colors text-xs md:text-sm ${sort === SortOrder.Oldest ? "bg-accent text-white" : `${styles.muted} hover:text-text-primary`}`}
+                  >
+                    Cũ nhất
+                  </button>
+                </div>
+                <Link href="/create-post" className={styles.btnPrimary}>
+                  <PenSquare size={14} /> <span className="hidden sm:inline">Viết bài</span><span className="sm:hidden">Viết</span>
+                </Link>
               </div>
-            ))}
-
-            {/* Bottom: spinner hoặc end message */}
-            <div className="flex justify-center py-6">
-              {isFetchingNextPage && (
-                <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
-              )}
-              {!hasMore && posts.length > 0 && (
-                <p className="text-slate-600 text-sm">Đã xem hết bài viết</p>
-              )}
             </div>
+            {/* Active tag filter chip */}
+            {tagFilter && (
+              <div className="flex items-center gap-2">
+                <span className={`text-sm ${styles.muted}`}>Lọc theo:</span>
+                <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-accent-subtle text-accent-text">
+                  #{tagFilter}
+                  <button onClick={() => setTagFilter(null)} className="hover:text-accent-hover transition-colors">
+                    <X size={11} />
+                  </button>
+                </span>
+              </div>
+            )}
+
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => <PostSkeleton key={i} />)
+            ) : filteredPosts.length === 0 ? (
+              <div className="flex flex-col items-center justify-center min-h-[40vh] gap-4 text-text-muted">
+                <PenSquare size={48} className="opacity-30" />
+                <p>{tagFilter ? `Không có bài nào với tag #${tagFilter}` : "Chưa có bài viết nào."}</p>
+                {!tagFilter && (
+                  <Link href="/create-post" className={`${styles.link} text-sm`}>
+                    Tạo bài viết đầu tiên →
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <>
+                {filteredPosts.map((post, index) => (
+                  <div
+                    key={post.id}
+                    style={{ contentVisibility: "auto", containIntrinsicSize: "0 500px" }}
+                  >
+                    {index === sentinelIndex && <div ref={sentinelRef} aria-hidden />}
+                    <PostCard
+                      post={post}
+                      currentUserId={profile.id}
+                      onDelete={(id) => deletePost(id)}
+                      onOpenDetail={(p) => setSelectedPostId(p.id)}
+                      onTagClick={setTagFilter}
+                    />
+                  </div>
+                ))}
+
+                <div className="flex justify-center py-6">
+                  {isFetchingNextPage && <Loader2 className="w-6 h-6 text-accent animate-spin" />}
+                  {!hasMore && filteredPosts.length > 0 && (
+                    <p className={`${styles.muted} text-sm`}>Đã xem hết bài viết</p>
+                  )}
+                </div>
+              </>
+            )}
           </div>
-        )}
+
+          <RightSidebar
+            posts={sortedPosts}
+            onSelectPost={setSelectedPostId}
+            onTagClick={setTagFilter}
+          />
+        </div>
       </div>
     </div>
   );

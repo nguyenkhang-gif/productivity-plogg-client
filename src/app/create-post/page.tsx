@@ -4,7 +4,9 @@ import { useState, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
-import { Send, X, Eye, Edit3, Sparkles, Link as LinkIcon, Loader2, ClipboardPaste, Plus, FolderOpen } from "lucide-react";
+import { Send, X, Eye, Edit3, Sparkles, Link as LinkIcon, Loader2, ClipboardPaste, Plus, FolderOpen, Tag } from "lucide-react";
+import { PostCategory } from "@/core/enums";
+import { styles } from "@/core/config/styles";
 import FilePicker from "@/components/upload/FilePicker";
 import { useCreatePost, useUpdatePost, useGetPostById } from "@/core/services/client/posts";
 import { useToast } from "@/core/hooks/use-toast";
@@ -25,12 +27,19 @@ export default function CreatePostPage() {
   const [mode, setMode] = useState<"edit" | "preview">("edit");
   const [editorTab, setEditorTab] = useState<"rich" | "raw">("rich");
   const [pickerTarget, setPickerTarget] = useState<"thumbnail" | "content" | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [category, setCategory] = useState<PostCategory | null>(null);
 
   // Prefill khi ở edit mode
   useEffect(() => {
     if (editId && editPost?.id === editId) {
       setContent(editPost.content);
       setImageUrls(editPost.imageUrls ?? []);
+      setTags((editPost.tags ?? []).map((t) =>
+        typeof t === "string" ? t : (t as { slug?: string; name?: string }).slug ?? (t as { name?: string }).name ?? ""
+      ).filter(Boolean));
+      setCategory((editPost.category as PostCategory) ?? null);
     }
   }, [editId, editPost]);
 
@@ -76,7 +85,13 @@ export default function CreatePostPage() {
   const handleSubmit = () => {
     if (!content.trim()) return;
 
-    const body = { title: deriveTitle(content), content, imageUrls };
+    const body = {
+      title: deriveTitle(content),
+      content,
+      imageUrls,
+      tags: tags.length > 0 ? tags : undefined,
+      category: category ?? undefined,
+    };
 
     if (editId) {
       updatePost(
@@ -127,6 +142,72 @@ export default function CreatePostPage() {
         <div className="grid grid-cols-1 gap-8">
           {mode === "edit" ? (
             <div className="bg-card border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
+              {/* Category selector */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-text-muted">Danh mục</label>
+                <div className="flex flex-wrap gap-2">
+                  {(Object.values(PostCategory) as PostCategory[]).map((cat) => {
+                    const labels: Record<PostCategory, string> = {
+                      [PostCategory.Note]: "Ghi chú",
+                      [PostCategory.Achievement]: "Thành tích",
+                      [PostCategory.Question]: "Câu hỏi",
+                      [PostCategory.Tutorial]: "Hướng dẫn",
+                    };
+                    const active = category === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setCategory(active ? null : cat)}
+                        className={`px-3 py-1.5 rounded-xl text-sm font-medium border transition-colors ${
+                          active
+                            ? "bg-accent border-accent text-white"
+                            : "border-white/[0.08] text-text-muted hover:border-accent-text hover:text-text-primary"
+                        }`}
+                      >
+                        {labels[cat]}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Tag input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-text-muted flex items-center gap-1.5">
+                  <Tag size={13} /> Tags
+                </label>
+                <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-accent">
+                  <input
+                    type="text"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === ",") {
+                        e.preventDefault();
+                        const t = tagInput.trim().replace(/,/g, "");
+                        if (t && !tags.includes(t)) setTags((prev) => [...prev, t]);
+                        setTagInput("");
+                      }
+                    }}
+                    placeholder="Nhập tag rồi nhấn Enter..."
+                    className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-slate-600 outline-none"
+                  />
+                </div>
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {tags.map((tag) => (
+                      <span key={tag} className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-accent-subtle text-accent-text">
+                        #{tag}
+                        <button type="button" onClick={() => setTags((prev) => prev.filter((t) => t !== tag))}>
+                          <X size={10} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {/* Image URLs */}
               <div className="space-y-3">
                 <label className="text-sm font-medium text-slate-400">Ảnh thumbnail (URL)</label>

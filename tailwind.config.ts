@@ -19,6 +19,18 @@ export default {
 			card:             'var(--color-card)',
 			overlay:          'var(--color-overlay)',
 			modal:            'var(--color-modal)',
+
+			// Semantic text tokens — update CSS vars above to retheme
+			'text-primary':   'var(--color-text-primary)',
+			'text-secondary': 'var(--color-text-secondary)',
+			'text-muted':     'var(--color-text-muted)',
+			'accent-text':    'var(--color-accent-text)',
+			'accent-hover':   'var(--color-accent-hover)',
+			'accent-subtle':  'var(--color-accent-subtle)',
+			'accent-subtle-hover': 'var(--color-accent-subtle-hover)',
+			border:           'var(--color-border)',
+			'border-muted':   'var(--color-border-muted)',
+
 			dark:{
 				1:"#1C1F2E",
 				2:"#161925"

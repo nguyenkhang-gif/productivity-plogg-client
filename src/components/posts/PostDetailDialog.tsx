@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { Post } from "@/core/types/post";
@@ -16,6 +17,8 @@ import { CalendarDays, Pencil, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import CommentSection from "./CommentSection";
 import ReactionButton from "./ReactionButton";
+import { timeAgo } from "@/core/lib/timeAgo";
+import { apiViewPost } from "@/core/services/api/posts";
 
 interface PostDetailDialogProps {
   post: Post | null;
@@ -26,6 +29,16 @@ interface PostDetailDialogProps {
 export default function PostDetailDialog({ post, open, onClose }: PostDetailDialogProps) {
   const router = useRouter();
   const { profile } = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    if (!post || !open) return;
+    const key = `viewed_${post.id}`;
+    if (sessionStorage.getItem(key)) return;
+    if (post.author?.id === profile.id || post.authorId === profile.id) return;
+    apiViewPost(post.id).catch(() => {});
+    sessionStorage.setItem(key, "1");
+  }, [open, post?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!post) return null;
 
   const isOwner = post.author?.id === profile.id || post.authorId === profile.id;
@@ -54,13 +67,12 @@ export default function PostDetailDialog({ post, open, onClose }: PostDetailDial
                 <p className="text-slate-100 text-sm font-semibold leading-tight truncate">
                   {post.author?.fullName ?? "Unknown"}
                 </p>
-                <span className="flex items-center gap-1 text-slate-500 text-xs">
+                <span
+                  className="flex items-center gap-1 text-text-muted text-xs"
+                  title={new Date(post.createdAt).toLocaleString("vi-VN")}
+                >
                   <CalendarDays size={11} />
-                  {new Date(post.createdAt).toLocaleDateString("vi-VN", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {timeAgo(post.createdAt)}
                 </span>
               </div>
             </div>

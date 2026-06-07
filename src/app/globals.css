@@ -58,6 +58,23 @@ body,
     --color-card:           #141824;
     --color-overlay:        #1e2436;
     --color-modal:          #1a1f2e;
+
+    /* Semantic text colors */
+    --color-text-primary:   #f1f5f9;   /* slate-100 */
+    --color-text-secondary: #cbd5e1;   /* slate-300 */
+    --color-text-muted:     #64748b;   /* slate-500 */
+
+    /* Interactive / accent text — change this one value to retheme all links, tags, active states */
+    --color-accent-text:    #60a5fa;   /* blue-400 */
+    --color-accent-hover:   #93c5fd;   /* blue-300 */
+
+    /* Subtle accent fill — used for tag chips, badge backgrounds */
+    --color-accent-subtle:  rgba(59, 130, 246, 0.1);   /* blue-500/10 */
+    --color-accent-subtle-hover: rgba(59, 130, 246, 0.2); /* blue-500/20 */
+
+    /* Border */
+    --color-border:         rgba(255, 255, 255, 0.06);
+    --color-border-muted:   rgba(255, 255, 255, 0.05);
   }
 }
 

@@ -1,28 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Post, ReactionType } from "@/core/types/post";
+import { Post } from "@/core/types/post";
+import { ReactionType } from "@/core/enums";
 import { useReactPost } from "@/core/services/client/posts";
 
 const REACTIONS: { type: ReactionType; emoji: string; label: string }[] = [
-  { type: "like", emoji: "👍", label: "Thích" },
-  { type: "love", emoji: "❤️", label: "Yêu thích" },
-  { type: "haha", emoji: "😆", label: "Haha" },
-  { type: "wow", emoji: "😮", label: "Wow" },
-  { type: "sad", emoji: "😢", label: "Buồn" },
-  { type: "angry", emoji: "😡", label: "Tức giận" },
+  { type: ReactionType.Like,  emoji: "👍", label: "Thích" },
+  { type: ReactionType.Love,  emoji: "❤️", label: "Yêu thích" },
+  { type: ReactionType.Haha,  emoji: "😆", label: "Haha" },
+  { type: ReactionType.Wow,   emoji: "😮", label: "Wow" },
+  { type: ReactionType.Sad,   emoji: "😢", label: "Buồn" },
+  { type: ReactionType.Angry, emoji: "😡", label: "Tức giận" },
 ];
 
 const getEmoji = (type: ReactionType) =>
   REACTIONS.find((r) => r.type === type)?.emoji ?? "👍";
 
 const REACTION_COLORS: Record<ReactionType, string> = {
-  like: "text-blue-400",
-  love: "text-red-400",
-  haha: "text-yellow-400",
-  wow: "text-yellow-400",
-  sad: "text-blue-300",
-  angry: "text-orange-400",
+  [ReactionType.Like]:  "text-blue-400",
+  [ReactionType.Love]:  "text-red-400",
+  [ReactionType.Haha]:  "text-yellow-400",
+  [ReactionType.Wow]:   "text-yellow-400",
+  [ReactionType.Sad]:   "text-blue-300",
+  [ReactionType.Angry]: "text-orange-400",
 };
 
 interface ReactionButtonProps {
@@ -86,7 +87,7 @@ export default function ReactionButton({ post }: ReactionButtonProps) {
     if (!isLongPress.current) {
       // short tap → toggle current reaction or like
       e.preventDefault();
-      handleReact(post.userReaction?.type ?? "like");
+      handleReact(post.userReaction?.type ?? ReactionType.Like);
     }
   };
 
@@ -124,7 +125,7 @@ export default function ReactionButton({ post }: ReactionButtonProps) {
       )}
 
       <button
-        onClick={() => handleReact(currentReaction?.type ?? "like")}
+        onClick={() => handleReact(currentReaction?.type ?? ReactionType.Like)}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}

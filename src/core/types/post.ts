@@ -1,3 +1,7 @@
+import { PostCategory, ReactionType } from "@/core/enums";
+
+export type { PostCategory, ReactionType };
+
 export interface PostAuthor {
   id: string;
   fullName: string;
@@ -5,11 +9,15 @@ export interface PostAuthor {
   profilePic?: string;
 }
 
-export type ReactionType = "like" | "love" | "haha" | "wow" | "sad" | "angry";
-
 export interface UserReaction {
   type: ReactionType;
   icon?: string;
+}
+
+export interface PostTag {
+  id: string;
+  name: string;
+  slug: string;
 }
 
 export interface Post {
@@ -24,4 +32,8 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   userReaction: UserReaction | null;
+  tags?: (string | PostTag)[];
+  viewCount?: number;
+  isBookmarked?: boolean;
+  category?: PostCategory;
 }

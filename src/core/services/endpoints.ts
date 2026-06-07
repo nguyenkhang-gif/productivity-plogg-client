@@ -15,6 +15,10 @@ export enum Endpoints {
   POST_UPDATE = "/posts/:id",
   POST_DELETE = "/posts/:id",
   POST_REACT = "/posts/:postId/react",
+  POST_VIEW = "/posts/:id/view",
+  POST_BOOKMARK = "/posts/:id/bookmark",
+  POST_TRENDING = "/posts/trending",
+  POST_MY_STATS = "/posts/stats/me",
 
   COMMENT_GET_BY_POST = "/posts/:postId/comments",
   COMMENT_CREATE = "/posts/:postId/comments",
@@ -30,6 +34,8 @@ export enum FetchQueryKeys {
   POST_GET_ALL = "POST_GET_ALL",
   POST_GET_BY_ID = "POST_GET_BY_ID",
   POST_GET_BY_AUTHOR = "POST_GET_BY_AUTHOR",
+  POST_TRENDING = "POST_TRENDING",
+  POST_MY_STATS = "POST_MY_STATS",
 
   COMMENT_GET_BY_POST = "COMMENT_GET_BY_POST",
 

@@ -1,4 +1,6 @@
-export type FriendshipStatus = "pending" | "accepted" | "blocked";
+import { FriendshipStatus } from "@/core/enums";
+
+export type { FriendshipStatus };
 
 export interface FriendInfo {
   id: string;
