@@ -52,6 +52,12 @@ body,
     --color-surface:        #1C1F2E;
     --color-surface-raised: #161925;
     --color-accent:         #0E78F9;
+
+    /* App-wide dark palette */
+    --color-page:           #0b0f1a;
+    --color-card:           #141824;
+    --color-overlay:        #1e2436;
+    --color-modal:          #1a1f2e;
   }
 }
 

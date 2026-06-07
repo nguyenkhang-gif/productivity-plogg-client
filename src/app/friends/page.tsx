@@ -90,14 +90,14 @@ export default function FriendsPage() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-[#0b0f1a] text-slate-200 px-4 py-8">
+    <div className="min-h-screen bg-page text-slate-200 px-4 py-8">
       <div className="max-w-xl mx-auto">
         <h1 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
           <Users size={22} className="text-blue-400" /> Bạn bè
         </h1>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-[#141824] border border-white/[0.06] rounded-xl p-1 mb-6">
+        <div className="flex gap-1 bg-card border border-white/[0.06] rounded-xl p-1 mb-6">
           {TABS.map((t) => (
             <button
               key={t.key}
@@ -119,7 +119,7 @@ export default function FriendsPage() {
         {/* Search tab */}
         {tab === "search" && (
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2 bg-[#141824] border border-white/[0.08] rounded-xl px-4 py-3 focus-within:border-blue-500/50 transition-colors">
+            <div className="flex items-center gap-2 bg-card border border-white/[0.08] rounded-xl px-4 py-3 focus-within:border-blue-500/50 transition-colors">
               <Search size={16} className="text-slate-500 flex-shrink-0" />
               <input
                 autoFocus
@@ -138,7 +138,7 @@ export default function FriendsPage() {
                   const isFriend = friendIds.has(user.id);
                   const isPending = sentToIds.has(user.id);
                   return (
-                    <div key={user.id} className="flex items-center gap-3 bg-[#141824] border border-white/[0.06] rounded-xl px-4 py-3">
+                    <div key={user.id} className="flex items-center gap-3 bg-card border border-white/[0.06] rounded-xl px-4 py-3">
                       <Avatar name={user.fullName} profilePic={user.profilePic} />
                       <div className="flex-1 min-w-0">
                         <p className="text-slate-100 text-sm font-semibold truncate">{user.fullName}</p>
@@ -192,7 +192,7 @@ export default function FriendsPage() {
                 const info = f.friendInfo;
                 const otherId = f.userId === profile.id ? f.friendId : f.userId;
                 return (
-                  <div key={f.id} className="flex items-center gap-3 bg-[#141824] border border-white/[0.06] rounded-xl px-4 py-3">
+                  <div key={f.id} className="flex items-center gap-3 bg-card border border-white/[0.06] rounded-xl px-4 py-3">
                     <Avatar name={info?.fullName ?? "?"} profilePic={info?.profilePic} />
                     <div className="flex-1 min-w-0">
                       <p className="text-slate-100 text-sm font-semibold truncate">{info?.fullName ?? "—"}</p>
@@ -227,7 +227,7 @@ export default function FriendsPage() {
               {received.map((f) => {
                 const info = f.friendInfo;
                 return (
-                  <div key={f.id} className="flex items-center gap-3 bg-[#141824] border border-white/[0.06] rounded-xl px-4 py-3">
+                  <div key={f.id} className="flex items-center gap-3 bg-card border border-white/[0.06] rounded-xl px-4 py-3">
                     <Avatar name={info?.fullName ?? "?"} profilePic={info?.profilePic} />
                     <div className="flex-1 min-w-0">
                       <p className="text-slate-100 text-sm font-semibold truncate">{info?.fullName ?? "—"}</p>

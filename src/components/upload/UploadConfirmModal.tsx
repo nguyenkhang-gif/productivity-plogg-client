@@ -25,7 +25,7 @@ export default function UploadConfirmModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-      <div className="bg-[#1a1f2e] border border-white/[0.08] rounded-2xl w-full max-w-md shadow-2xl">
+      <div className="bg-modal border border-white/[0.08] rounded-2xl w-full max-w-md shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
           <div>
             <p className="text-white font-semibold">Xác nhận upload</p>
@@ -46,7 +46,7 @@ export default function UploadConfirmModal({
         <div className="px-5 py-4 flex flex-col gap-2 max-h-64 overflow-y-auto">
           {pending.map((p, idx) => (
             <div key={idx} className="flex items-center gap-3 bg-[#161925] rounded-xl px-3 py-2">
-              <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-[#1e2436] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-overlay flex items-center justify-center">
                 {p.previewUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={p.previewUrl} alt={p.file.name} className="object-cover w-full h-full" />

@@ -29,7 +29,7 @@ export default function PostCard({ post, currentUserId, onDelete, onOpenDetail }
       : post.content;
 
   return (
-    <article className="bg-[#141824] border border-white/[0.06] rounded-2xl overflow-hidden shadow-lg">
+    <article className="bg-card border border-white/[0.06] rounded-2xl overflow-hidden shadow-lg">
       {/* Header */}
       <div
         className={`flex items-center justify-between px-5 pt-5 pb-4 ${onOpenDetail ? "cursor-pointer" : ""}`}
@@ -68,7 +68,7 @@ export default function PostCard({ post, currentUserId, onDelete, onOpenDetail }
               <MoreHorizontal size={18} />
             </button>
             {menuOpen && (
-              <div className="absolute right-0 top-10 bg-[#1e2436] border border-white/[0.08] rounded-xl shadow-2xl z-10 min-w-[130px] overflow-hidden">
+              <div className="absolute right-0 top-10 bg-overlay border border-white/[0.08] rounded-xl shadow-2xl z-10 min-w-[130px] overflow-hidden">
                 <button
                   onClick={() => { router.push(`/create-post?edit=${post.id}`); setMenuOpen(false); }}
                   className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 transition-colors"

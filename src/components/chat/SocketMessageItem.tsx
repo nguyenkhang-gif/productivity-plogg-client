@@ -14,7 +14,7 @@ export default function SocketMessageItem({ message, currentUserId }: Props) {
         className={`max-w-[75%] px-3.5 py-2 rounded-2xl text-sm leading-relaxed ${
           isMe
             ? "bg-blue-600 text-white rounded-br-sm"
-            : "bg-[#1e2436] text-slate-200 border border-white/[0.06] rounded-bl-sm"
+            : "bg-overlay text-slate-200 border border-white/[0.06] rounded-bl-sm"
         }`}
       >
         <p>{message.content}</p>

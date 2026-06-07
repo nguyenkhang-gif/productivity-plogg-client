@@ -8,7 +8,7 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({ title, onMinimize, onClose }: ChatHeaderProps) {
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#1a1f2e] flex-shrink-0">
+    <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-modal flex-shrink-0">
       <div className="flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
         <span className="text-white text-sm font-semibold">{title}</span>

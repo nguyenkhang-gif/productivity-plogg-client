@@ -45,7 +45,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
   const isOwner = post.author?.id === profile.id || post.authorId === profile.id;
 
   return (
-    <div className="min-h-screen bg-[#0b0f1a] text-slate-200 px-4 py-10">
+    <div className="min-h-screen bg-page text-slate-200 px-4 py-10">
       <div className="max-w-3xl mx-auto">
 
         {/* Toolbar */}

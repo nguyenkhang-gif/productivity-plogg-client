@@ -107,7 +107,7 @@ export default function ReactionButton({ post }: ReactionButtonProps) {
       onMouseLeave={handleMouseLeave}
     >
       {showPicker && (
-        <div className="absolute bottom-full left-0 mb-2 bg-[#1e2436] border border-white/[0.08] rounded-2xl shadow-2xl px-2 py-1.5 flex gap-0.5 z-20">
+        <div className="absolute bottom-full left-0 mb-2 bg-overlay border border-white/[0.08] rounded-2xl shadow-2xl px-2 py-1.5 flex gap-0.5 z-20">
           {REACTIONS.map(({ type, emoji, label }) => (
             <button
               key={type}

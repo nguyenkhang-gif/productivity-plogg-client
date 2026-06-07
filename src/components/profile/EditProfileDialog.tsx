@@ -68,7 +68,7 @@ export default function EditProfileDialog({ profile, onClose }: Props) {
   return (
     <>
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-      <div className="bg-[#1a1f2e] border border-white/[0.08] rounded-2xl w-full max-w-md shadow-2xl">
+      <div className="bg-modal border border-white/[0.08] rounded-2xl w-full max-w-md shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
           <p className="text-white font-semibold">Chỉnh sửa hồ sơ</p>
@@ -85,7 +85,7 @@ export default function EditProfileDialog({ profile, onClose }: Props) {
           {/* Avatar picker */}
           <div className="flex flex-col items-center gap-3">
             <div className="relative group">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-[#1a1f2e] overflow-hidden">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-modal overflow-hidden">
                 {profilePic ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={profilePic} alt="avatar" className="w-full h-full object-cover" />

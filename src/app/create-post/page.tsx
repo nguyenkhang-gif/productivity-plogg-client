@@ -99,7 +99,7 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0f1a] text-slate-200 py-10 px-4">
+    <div className="min-h-screen bg-page text-slate-200 py-10 px-4">
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}
@@ -126,7 +126,7 @@ export default function CreatePostPage() {
 
         <div className="grid grid-cols-1 gap-8">
           {mode === "edit" ? (
-            <div className="bg-[#161b2b] border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
+            <div className="bg-card border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
               {/* Image URLs */}
               <div className="space-y-3">
                 <label className="text-sm font-medium text-slate-400">Ảnh thumbnail (URL)</label>
@@ -220,7 +220,7 @@ export default function CreatePostPage() {
               </div>
             </div>
           ) : (
-            <div className="bg-[#161b2b] border border-slate-800 rounded-2xl p-8 min-h-[600px] shadow-2xl">
+            <div className="bg-card border border-slate-800 rounded-2xl p-8 min-h-[600px] shadow-2xl">
               {imageUrls.length > 0 && (
                 <div className={`grid gap-1 mb-6 rounded-xl overflow-hidden ${imageUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
                   {imageUrls.map((url, i) => (

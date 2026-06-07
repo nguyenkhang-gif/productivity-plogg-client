@@ -73,11 +73,11 @@ export default function ProfilePage() {
   const avatarLetter = profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? "U";
 
   return (
-    <div className="min-h-screen bg-[#0b0f1a] text-slate-200 px-4 py-10">
+    <div className="min-h-screen bg-page text-slate-200 px-4 py-10">
       <div className="max-w-2xl mx-auto">
 
         {/* Profile Card */}
-        <div className="bg-[#141824] border border-white/[0.06] rounded-2xl overflow-hidden mb-8 shadow-xl">
+        <div className="bg-card border border-white/[0.06] rounded-2xl overflow-hidden mb-8 shadow-xl">
           {/* Banner */}
           <div className="h-24 bg-gradient-to-r from-blue-900/60 via-indigo-900/40 to-slate-900" />
 
@@ -86,7 +86,7 @@ export default function ProfilePage() {
             <div className="-mt-10 mb-4 flex items-end justify-between">
               <div
                 onClick={() => profile.profilePic && setPreviewAvatar(true)}
-                className={`w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-[#141824] shadow-xl overflow-hidden ${profile.profilePic ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
+                className={`w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-card shadow-xl overflow-hidden ${profile.profilePic ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
               >
                 {profile.profilePic ? (
                   <img

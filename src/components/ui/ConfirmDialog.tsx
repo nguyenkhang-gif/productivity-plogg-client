@@ -27,7 +27,7 @@ export default function ConfirmDialog({
 }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-      <div className="bg-[#1a1f2e] border border-white/[0.08] rounded-2xl w-full max-w-sm shadow-2xl p-6 flex flex-col gap-4">
+      <div className="bg-modal border border-white/[0.08] rounded-2xl w-full max-w-sm shadow-2xl p-6 flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
             <Icon size={18} className="text-red-400" />

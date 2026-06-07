@@ -28,7 +28,7 @@ export default function FileCard({ item, isCopied, onCopy, onDelete, isSelected,
           : "border-white/[0.06] hover:border-blue-500/30"
       }`}
     >
-      <div className="aspect-square flex items-center justify-center bg-[#1a1f2e] relative">
+      <div className="aspect-square flex items-center justify-center bg-modal relative">
         {img ? (
           <Image src={item.publicUrl} alt={item.name} fill className="object-cover" sizes="200px" />
         ) : (

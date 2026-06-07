@@ -15,6 +15,10 @@ export default {
 			surface:          'var(--color-surface)',
 			'surface-raised': 'var(--color-surface-raised)',
 			accent:           'var(--color-accent)',
+			page:             'var(--color-page)',
+			card:             'var(--color-card)',
+			overlay:          'var(--color-overlay)',
+			modal:            'var(--color-modal)',
 			dark:{
 				1:"#1C1F2E",
 				2:"#161925"

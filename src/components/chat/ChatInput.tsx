@@ -33,7 +33,7 @@ export default function ChatInput({
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="flex-1 bg-[#1e2436] border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 outline-none focus:border-blue-500/50 transition-colors"
+        className="flex-1 bg-overlay border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 outline-none focus:border-blue-500/50 transition-colors"
       />
       <button
         onClick={onSend}

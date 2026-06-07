@@ -78,7 +78,7 @@ export default function FilePicker({ open, onClose, onSelect }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-      <div className="bg-[#1a1f2e] border border-white/[0.08] rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[85vh]">
+      <div className="bg-modal border border-white/[0.08] rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[85vh]">
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] flex-shrink-0">

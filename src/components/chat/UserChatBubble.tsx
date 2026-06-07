@@ -92,12 +92,12 @@ export default function UserChatBubble() {
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
       {isOpen && (
         <div
-          className={`w-[420px] bg-[#141824] border border-white/[0.08] rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-200 ${
+          className={`w-[420px] bg-card border border-white/[0.08] rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-200 ${
             minimized ? "h-12" : "h-[580px]"
           }`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#1a1f2e] flex-shrink-0">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-modal flex-shrink-0">
             <div className="flex items-center gap-2">
               {inChatWindow && (
                 <button
@@ -167,7 +167,7 @@ export default function UserChatBubble() {
                     )}
                     {isActiveTyping && (
                       <div className="flex justify-start">
-                        <div className="bg-[#1e2436] border border-white/[0.06] rounded-2xl rounded-bl-sm px-3.5 py-2 flex gap-1 items-center">
+                        <div className="bg-overlay border border-white/[0.06] rounded-2xl rounded-bl-sm px-3.5 py-2 flex gap-1 items-center">
                           <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0ms]" />
                           <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:150ms]" />
                           <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:300ms]" />

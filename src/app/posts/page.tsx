@@ -81,7 +81,7 @@ export default function PostsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0f1a] px-4 py-8">
+    <div className="min-h-screen bg-page px-4 py-8">
       <PostDetailDialog
         post={selectedPost}
         open={!!selectedPost}

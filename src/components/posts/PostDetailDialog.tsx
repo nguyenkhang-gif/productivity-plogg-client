@@ -34,7 +34,7 @@ export default function PostDetailDialog({ post, open, onClose }: PostDetailDial
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogPortal>
         <DialogOverlay className="bg-black/70 backdrop-blur-sm" />
-        <DialogContent className="max-w-full sm:max-w-5xl w-full h-full sm:h-[90vh] p-0 bg-[#141824] border-0 sm:border border-white/[0.06] rounded-none sm:rounded-2xl overflow-hidden flex flex-col gap-0 [&>button]:hidden">
+        <DialogContent className="max-w-full sm:max-w-5xl w-full h-full sm:h-[90vh] p-0 bg-card border-0 sm:border border-white/[0.06] rounded-none sm:rounded-2xl overflow-hidden flex flex-col gap-0 [&>button]:hidden">
           <VisuallyHidden.Root>
             <DialogTitle>Chi tiết bài viết</DialogTitle>
           </VisuallyHidden.Root>

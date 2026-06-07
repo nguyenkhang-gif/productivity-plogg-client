@@ -30,7 +30,7 @@ export default function ProviderSelector({ provider, onSelect }: Props) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-2 w-56 z-50 bg-[#1a1f2e] border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden">
+          <div className="absolute right-0 mt-2 w-56 z-50 bg-modal border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden">
             <p className="text-slate-500 text-[10px] font-semibold uppercase tracking-wider px-3 pt-3 pb-1.5">
               Chọn Cloud Provider
             </p>
