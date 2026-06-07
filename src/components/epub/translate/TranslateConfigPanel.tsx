@@ -12,7 +12,7 @@ export function TranslateConfigPanel({
   config, setConfig, isRunning, contextLibrary,
 }: TranslateConfigPanelProps) {
   return (
-    <div className="bg-[#161925] rounded-xl p-4 flex flex-col gap-3">
+    <div className="bg-surface-raised rounded-xl p-4 flex flex-col gap-3">
       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Config</p>
 
       {contextLibrary?.length ? (
@@ -27,7 +27,7 @@ export function TranslateConfigPanel({
               }));
             }}
             disabled={isRunning}
-            className="w-full bg-[#1C1F2E] border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-[#0E78F9] disabled:opacity-50"
+            className="w-full bg-surface border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-accent disabled:opacity-50"
           >
             <option value="">Không dùng ngữ cảnh</option>
             {contextLibrary.map((c) => (
@@ -47,7 +47,7 @@ export function TranslateConfigPanel({
           onChange={(e) => setConfig((c) => ({ ...c, basePrompt: e.target.value }))}
           rows={6}
           disabled={isRunning}
-          className="w-full bg-[#1C1F2E] border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-200 resize-y focus:outline-none focus:border-[#0E78F9] disabled:opacity-50 font-mono"
+          className="w-full bg-surface border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-200 resize-y focus:outline-none focus:border-accent disabled:opacity-50 font-mono"
         />
       </div>
 
@@ -59,7 +59,7 @@ export function TranslateConfigPanel({
           onChange={(e) => setConfig((c) => ({ ...c, apiKey: e.target.value }))}
           placeholder="Server key nếu để trống"
           disabled={isRunning}
-          className="w-full bg-[#1C1F2E] border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-[#0E78F9] disabled:opacity-50"
+          className="w-full bg-surface border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent disabled:opacity-50"
         />
       </div>
     </div>

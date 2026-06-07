@@ -10,7 +10,7 @@ interface TranslateQueueProps {
 
 export function TranslateQueue({ files, isRunning, getFileStatus, onRemove }: TranslateQueueProps) {
   return (
-    <div className="bg-[#161925] rounded-xl overflow-hidden">
+    <div className="bg-surface-raised rounded-xl overflow-hidden">
       <div className="px-4 py-2.5 border-b border-gray-800 flex items-center justify-between">
         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Queue</p>
         <p className="text-xs text-gray-500">{files.length} files</p>
@@ -27,7 +27,7 @@ export function TranslateQueue({ files, isRunning, getFileStatus, onRemove }: Tr
             >
               <div className="shrink-0 w-4 h-4 flex items-center justify-center">
                 {status === "done" && <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />}
-                {status === "processing" && <Loader2 className="h-3.5 w-3.5 text-[#0E78F9] animate-spin" />}
+                {status === "processing" && <Loader2 className="h-3.5 w-3.5 text-accent animate-spin" />}
                 {status === "error" && <XCircle className="h-3.5 w-3.5 text-red-500" />}
                 {status === "pending" && <div className="w-1.5 h-1.5 rounded-full bg-gray-600" />}
               </div>
@@ -52,7 +52,7 @@ export function TranslateQueue({ files, isRunning, getFileStatus, onRemove }: Tr
       </div>
       <div className="px-4 py-2 border-t border-gray-800 flex gap-3 text-[10px] text-gray-500">
         <span className="flex items-center gap-1"><CheckCircle2 className="h-2.5 w-2.5 text-green-500" />done</span>
-        <span className="flex items-center gap-1"><Loader2 className="h-2.5 w-2.5 text-[#0E78F9]" />processing</span>
+        <span className="flex items-center gap-1"><Loader2 className="h-2.5 w-2.5 text-accent" />processing</span>
         <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-gray-600" />pending</span>
       </div>
     </div>

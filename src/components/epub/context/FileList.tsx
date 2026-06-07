@@ -24,7 +24,7 @@ export function FileList({ files, batchPreview, nextChapter, onRemove }: FileLis
   );
 
   return (
-    <div className="bg-[#161925] rounded-xl overflow-hidden">
+    <div className="bg-surface-raised rounded-xl overflow-hidden">
       <div className="px-4 py-2.5 border-b border-gray-800 flex items-center justify-between">
         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Files</p>
         <p className="text-xs text-gray-500">{files.length} loaded</p>
@@ -41,7 +41,7 @@ export function FileList({ files, batchPreview, nextChapter, onRemove }: FileLis
               }`}
             >
               <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                processed ? "bg-green-600" : inBatch ? "bg-[#0E78F9]" : "bg-gray-600"
+                processed ? "bg-green-600" : inBatch ? "bg-accent" : "bg-gray-600"
               }`} />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-gray-300 truncate">{entry.name}</p>
@@ -59,7 +59,7 @@ export function FileList({ files, batchPreview, nextChapter, onRemove }: FileLis
       </div>
       <div className="px-4 py-2 border-t border-gray-800 flex gap-3 text-[10px] text-gray-500">
         <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-green-600 inline-block" />done</span>
-        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#0E78F9] inline-block" />next batch</span>
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-accent inline-block" />next batch</span>
         <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-gray-600 inline-block" />queued</span>
       </div>
     </div>

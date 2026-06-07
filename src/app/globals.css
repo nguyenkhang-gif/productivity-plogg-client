@@ -49,6 +49,9 @@ body,
 @layer base {
   :root {
     --radius: 0.5rem;
+    --color-surface:        #1C1F2E;
+    --color-surface-raised: #161925;
+    --color-accent:         #0E78F9;
   }
 }
 

@@ -29,7 +29,7 @@ export function ContextPanel({ context, onCopy, onDownload, onSave, isSaving = f
         contextJson={context}
         title="Accumulated Context"
       />
-      <div className="bg-[#161925] rounded-xl p-4">
+      <div className="bg-surface-raised rounded-xl p-4">
         <div className="flex items-center justify-between mb-3">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Accumulated Context</p>
           <div className="flex gap-2">
@@ -67,13 +67,13 @@ export function ContextPanel({ context, onCopy, onDownload, onSave, isSaving = f
           />
         )}
 
-        <pre className="text-xs text-gray-300 bg-[#1C1F2E] rounded-lg p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-80 overflow-y-auto">
+        <pre className="text-xs text-gray-300 bg-surface rounded-lg p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-80 overflow-y-auto">
           {preview}
         </pre>
         {context.length > 800 && (
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="mt-2 text-xs text-[#0E78F9] hover:underline flex items-center gap-1"
+            className="mt-2 text-xs text-accent hover:underline flex items-center gap-1"
           >
             {expanded
               ? <><ChevronUp className="h-3 w-3" />Show less</>

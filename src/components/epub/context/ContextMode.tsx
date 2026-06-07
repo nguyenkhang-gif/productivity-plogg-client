@@ -180,7 +180,7 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
       )}
 
       {rolling.log.length > 0 && (
-        <div className="bg-[#161925] rounded-xl p-4">
+        <div className="bg-surface-raised rounded-xl p-4">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Log</p>
           <div className="flex flex-col gap-1.5">
             {rolling.log.map((entry) => (
@@ -196,7 +196,7 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
             ))}
             {isRunning && (
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <Loader2 className="h-4 w-4 animate-spin text-[#0E78F9] shrink-0" />
+                <Loader2 className="h-4 w-4 animate-spin text-accent shrink-0" />
                 Round {rolling.round} — running...
               </div>
             )}

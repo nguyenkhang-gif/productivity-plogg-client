@@ -42,16 +42,16 @@ export function ContextLibrary() {
           title={`${previewCtx.title} — ${previewCtx.author}`}
         />
       )}
-      <div className="bg-[#161925] rounded-xl overflow-hidden">
+      <div className="bg-surface-raised rounded-xl overflow-hidden">
         <button
           onClick={() => setCollapsed((v) => !v)}
           className="w-full px-4 py-3 flex items-center justify-between hover:bg-white/5 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <BookMarked className="h-4 w-4 text-[#0E78F9]" />
+            <BookMarked className="h-4 w-4 text-accent" />
             <span className="text-sm font-semibold text-gray-300">Context Library</span>
             {count > 0 && (
-              <span className="text-xs bg-[#0E78F9]/20 text-[#0E78F9] rounded-full px-2 py-0.5">
+              <span className="text-xs bg-accent/20 text-accent rounded-full px-2 py-0.5">
                 {count}
               </span>
             )}
@@ -66,7 +66,7 @@ export function ContextLibrary() {
           <div className="border-t border-gray-800">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-5 w-5 animate-spin text-[#0E78F9]" />
+                <Loader2 className="h-5 w-5 animate-spin text-accent" />
               </div>
             ) : count === 0 ? (
               <div className="text-center py-8 text-gray-600 text-sm">
@@ -75,7 +75,7 @@ export function ContextLibrary() {
             ) : (
               <div className="p-3 grid grid-cols-2 gap-2">
                 {data!.data.map((ctx) => (
-                  <div key={ctx.id} className="bg-[#1C1F2E] rounded-xl p-3 flex flex-col gap-2">
+                  <div key={ctx.id} className="bg-surface rounded-xl p-3 flex flex-col gap-2">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-gray-200 truncate">{ctx.title}</p>
@@ -92,7 +92,7 @@ export function ContextLibrary() {
                       <div className="flex gap-1">
                         <button
                           onClick={() => setPreviewCtx(ctx)}
-                          className="p-1 text-gray-500 hover:text-[#0E78F9] rounded hover:bg-white/5 transition-colors"
+                          className="p-1 text-gray-500 hover:text-accent rounded hover:bg-white/5 transition-colors"
                           title="Preview"
                         >
                           <Eye className="h-3.5 w-3.5" />

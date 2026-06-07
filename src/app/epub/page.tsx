@@ -19,7 +19,7 @@ export default function EpubPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#1C1F2E] text-white">
+    <div className="min-h-screen bg-surface text-white">
       <EpubNav mode={mode} onModeChange={setMode} />
       <div className="p-6 max-w-6xl mx-auto">
         {mode === "epub" && <EpubExtractorMode onSendToContext={handleSendToContext} />}

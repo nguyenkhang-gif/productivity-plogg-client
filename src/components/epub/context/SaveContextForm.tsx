@@ -37,7 +37,7 @@ export function SaveContextForm({ contextJson, isSaving, onSave, onCancel }: Sav
   };
 
   return (
-    <div className="mb-3 bg-[#1C1F2E] rounded-lg p-3 flex flex-col gap-2 border border-gray-700">
+    <div className="mb-3 bg-surface rounded-lg p-3 flex flex-col gap-2 border border-gray-700">
       <div className="grid grid-cols-2 gap-2">
         <div>
           <label className="text-[10px] text-gray-400 mb-1 block">Title *</label>
@@ -45,7 +45,7 @@ export function SaveContextForm({ contextJson, isSaving, onSave, onCancel }: Sav
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Tên truyện"
-            className="w-full bg-[#161925] border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-[#0E78F9]"
+            className="w-full bg-surface-raised border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
           />
         </div>
         <div>
@@ -54,7 +54,7 @@ export function SaveContextForm({ contextJson, isSaving, onSave, onCancel }: Sav
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="Tác giả"
-            className="w-full bg-[#161925] border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-[#0E78F9]"
+            className="w-full bg-surface-raised border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
           />
         </div>
       </div>
@@ -72,7 +72,7 @@ export function SaveContextForm({ contextJson, isSaving, onSave, onCancel }: Sav
           size="sm"
           onClick={handleSubmit}
           disabled={!title.trim() || !author.trim() || isSaving}
-          className="bg-[#0E78F9] hover:bg-[#0E78F9]/90 disabled:opacity-40 h-7 px-3 text-xs"
+          className="bg-accent hover:bg-accent/90 disabled:opacity-40 h-7 px-3 text-xs"
         >
           {isSaving
             ? <Loader2 className="h-3.5 w-3.5 animate-spin" />

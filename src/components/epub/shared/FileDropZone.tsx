@@ -37,12 +37,12 @@ export function FileDropZone({
       onClick={() => inputRef.current?.click()}
       className={`border-2 border-dashed rounded-xl px-6 py-5 cursor-pointer transition-colors flex items-center gap-4 ${
         isDragging
-          ? "border-[#0E78F9] bg-[#0E78F9]/10"
-          : "border-gray-700 hover:border-gray-500 bg-[#161925]"
+          ? "border-accent bg-accent/10"
+          : "border-gray-700 hover:border-gray-500 bg-surface-raised"
       }`}
     >
       {isLoading
-        ? <Loader2 className="h-5 w-5 animate-spin text-[#0E78F9] shrink-0" />
+        ? <Loader2 className="h-5 w-5 animate-spin text-accent shrink-0" />
         : <Upload className="h-5 w-5 text-gray-500 shrink-0" />
       }
       <div>

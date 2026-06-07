@@ -37,12 +37,12 @@ export function PasteTextSection({ addChapters }: PasteTextSectionProps) {
         Hoặc paste text trực tiếp
       </button>
       {open && (
-        <div className="border-t border-gray-800 p-3 flex flex-col gap-2 bg-[#161925]">
+        <div className="border-t border-gray-800 p-3 flex flex-col gap-2 bg-surface-raised">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Tên chapter (tuỳ chọn)"
-            className="w-full bg-[#1C1F2E] border border-gray-700 rounded px-3 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-[#0E78F9]"
+            className="w-full bg-surface border border-gray-700 rounded px-3 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
           />
           <textarea
             value={text}
@@ -50,7 +50,7 @@ export function PasteTextSection({ addChapters }: PasteTextSectionProps) {
             onKeyDown={handleKeyDown}
             placeholder="Paste nội dung vào đây... (Ctrl+Enter để thêm)"
             rows={6}
-            className="w-full bg-[#1C1F2E] border border-gray-700 rounded px-3 py-2 text-xs text-gray-200 placeholder-gray-600 resize-y focus:outline-none focus:border-[#0E78F9] font-mono"
+            className="w-full bg-surface border border-gray-700 rounded px-3 py-2 text-xs text-gray-200 placeholder-gray-600 resize-y focus:outline-none focus:border-accent font-mono"
           />
           <div className="flex items-center justify-between">
             <span className="text-[10px] text-gray-600">
@@ -60,7 +60,7 @@ export function PasteTextSection({ addChapters }: PasteTextSectionProps) {
               size="sm"
               onClick={handleAdd}
               disabled={!text.trim()}
-              className="bg-[#0E78F9] hover:bg-[#0E78F9]/90 disabled:opacity-40 h-7 px-3 text-xs"
+              className="bg-accent hover:bg-accent/90 disabled:opacity-40 h-7 px-3 text-xs"
             >
               Thêm chapter
             </Button>

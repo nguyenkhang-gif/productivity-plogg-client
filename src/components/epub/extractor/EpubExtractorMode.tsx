@@ -89,7 +89,7 @@ export function EpubExtractorMode({ onSendToContext }: EpubExtractorModeProps) {
           onDragLeave={() => setIsDragging(false)}
           onClick={() => inputRef.current?.click()}
           className={`border-2 border-dashed rounded-xl p-16 text-center cursor-pointer transition-colors ${
-            isDragging ? "border-[#0E78F9] bg-[#0E78F9]/10" : "border-gray-600 hover:border-gray-400 bg-[#161925]"
+            isDragging ? "border-accent bg-accent/10" : "border-gray-600 hover:border-gray-400 bg-surface-raised"
           }`}
         >
           <Upload className="h-10 w-10 mx-auto mb-4 text-gray-500" />
@@ -101,14 +101,14 @@ export function EpubExtractorMode({ onSendToContext }: EpubExtractorModeProps) {
       )}
 
       {state.status === "processing" && (
-        <div className="bg-[#161925] rounded-xl p-12 text-center">
-          <Loader2 className="h-8 w-8 mx-auto mb-4 animate-spin text-[#0E78F9]" />
+        <div className="bg-surface-raised rounded-xl p-12 text-center">
+          <Loader2 className="h-8 w-8 mx-auto mb-4 animate-spin text-accent" />
           <p className="text-gray-300 font-medium">{state.fileName}</p>
           {state.progress.total > 0 && (
             <>
               <p className="text-gray-500 text-sm mt-1">{state.progress.current} / {state.progress.total} items</p>
               <div className="w-64 mx-auto mt-3 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                <div className="h-full bg-[#0E78F9] rounded-full transition-all duration-200"
+                <div className="h-full bg-accent rounded-full transition-all duration-200"
                   style={{ width: `${(state.progress.current / state.progress.total) * 100}%` }} />
               </div>
             </>
@@ -146,7 +146,7 @@ export function EpubExtractorMode({ onSendToContext }: EpubExtractorModeProps) {
                 size="sm"
                 onClick={handleSend}
                 disabled={checkedIndices.size === 0}
-                className="bg-[#0E78F9] hover:bg-[#0E78F9]/90 disabled:opacity-40"
+                className="bg-accent hover:bg-accent/90 disabled:opacity-40"
               >
                 <ArrowRight className="h-3.5 w-3.5 mr-1.5" />
                 Send to Context ({checkedIndices.size})
@@ -155,12 +155,12 @@ export function EpubExtractorMode({ onSendToContext }: EpubExtractorModeProps) {
           </div>
 
           <div className="grid grid-cols-[300px_1fr] gap-4 h-[calc(100vh-280px)]">
-            <div className="bg-[#161925] rounded-xl overflow-y-auto">
+            <div className="bg-surface-raised rounded-xl overflow-y-auto">
               {state.chapters.map((ch, i) => (
                 <div
                   key={ch.index}
                   className={`group flex items-center gap-2 px-3 py-2.5 border-b border-gray-800 last:border-0 hover:bg-white/5 transition-colors ${
-                    previewIndex === i ? "bg-[#0E78F9]/10" : ""
+                    previewIndex === i ? "bg-accent/10" : ""
                   }`}
                 >
                   <input
@@ -184,7 +184,7 @@ export function EpubExtractorMode({ onSendToContext }: EpubExtractorModeProps) {
               ))}
             </div>
 
-            <div className="bg-[#161925] rounded-xl flex flex-col overflow-hidden">
+            <div className="bg-surface-raised rounded-xl flex flex-col overflow-hidden">
               <ChapterPreview
                 chapter={selectedChapter}
                 onExport={() => exportChapter(previewIndex!)}

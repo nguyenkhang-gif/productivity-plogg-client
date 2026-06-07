@@ -19,7 +19,7 @@ function ModeTab({ active, onClick, icon, label, disabled }: ModeTabProps) {
         disabled
           ? "text-gray-600 cursor-not-allowed"
           : active
-          ? "bg-[#0E78F9]/15 text-[#0E78F9]"
+          ? "bg-accent/15 text-accent"
           : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
       }`}
     >
@@ -39,7 +39,7 @@ export function EpubNav({ mode, onModeChange }: EpubNavProps) {
   return (
     <div className="border-b border-gray-800 px-6 py-3 flex items-center gap-6">
       <div className="flex items-center gap-2 text-gray-300">
-        <BookOpen className="h-5 w-5 text-[#0E78F9]" />
+        <BookOpen className="h-5 w-5 text-accent" />
         <span className="font-semibold">Epub Tools</span>
       </div>
       <div className="flex gap-1">

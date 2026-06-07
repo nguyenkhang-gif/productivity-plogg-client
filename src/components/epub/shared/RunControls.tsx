@@ -28,7 +28,7 @@ export function RunControls({
           onClick={onRun}
           disabled={!canRun}
           size="sm"
-          className="bg-[#0E78F9] hover:bg-[#0E78F9]/90 disabled:opacity-40"
+          className="bg-accent hover:bg-accent/90 disabled:opacity-40"
         >
           <Play className="h-3.5 w-3.5 mr-1.5" />{label}
         </Button>

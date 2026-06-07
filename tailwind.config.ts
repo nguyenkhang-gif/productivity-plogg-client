@@ -12,6 +12,9 @@ export default {
   		colors: {
   			background: 'var(--background)',
   			foreground: 'var(--foreground)',
+			surface:          'var(--color-surface)',
+			'surface-raised': 'var(--color-surface-raised)',
+			accent:           'var(--color-accent)',
 			dark:{
 				1:"#1C1F2E",
 				2:"#161925"

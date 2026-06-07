@@ -36,7 +36,7 @@ function EpubExportForm({
   };
 
   return (
-    <div className="bg-[#1C1F2E] rounded-xl p-4 border border-gray-700 flex flex-col gap-3">
+    <div className="bg-surface rounded-xl p-4 border border-gray-700 flex flex-col gap-3">
       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Export EPUB</p>
       <div className="grid grid-cols-2 gap-3">
         <div>
@@ -45,7 +45,7 @@ function EpubExportForm({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="VD: Thiên Sứ Nhà Bên"
-            className="w-full bg-[#161925] border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-[#0E78F9]"
+            className="w-full bg-surface-raised border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
           />
         </div>
         <div>
@@ -54,7 +54,7 @@ function EpubExportForm({
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="VD: Nguyễn Văn A"
-            className="w-full bg-[#161925] border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-[#0E78F9]"
+            className="w-full bg-surface-raised border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
           />
         </div>
       </div>
@@ -66,7 +66,7 @@ function EpubExportForm({
           size="sm"
           onClick={handleSubmit}
           disabled={!title.trim() || !author.trim() || loading}
-          className="bg-[#0E78F9] hover:bg-[#0E78F9]/90 disabled:opacity-40 h-7 px-3 text-xs"
+          className="bg-accent hover:bg-accent/90 disabled:opacity-40 h-7 px-3 text-xs"
         >
           {loading
             ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -125,7 +125,7 @@ export function TranslateResults({ results, onPreview, onDownloadOne, onDownload
 
       <div className="grid grid-cols-1 gap-2">
         {results.map((r) => (
-          <div key={r.name} className="bg-[#161925] rounded-xl px-4 py-3 flex items-center gap-3">
+          <div key={r.name} className="bg-surface-raised rounded-xl px-4 py-3 flex items-center gap-3">
             <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-200 truncate">{r.name}</p>
@@ -135,7 +135,7 @@ export function TranslateResults({ results, onPreview, onDownloadOne, onDownload
               <Button
                 variant="ghost" size="sm"
                 onClick={() => onPreview({ name: r.name, text: r.text })}
-                className="text-gray-400 hover:text-[#0E78F9] h-7 px-2"
+                className="text-gray-400 hover:text-accent h-7 px-2"
               >
                 <Eye className="h-3.5 w-3.5 mr-1" />Preview
               </Button>
