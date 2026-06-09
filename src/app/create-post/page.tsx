@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
 import { Send, X, Eye, Edit3, Sparkles, Link as LinkIcon, Loader2, ClipboardPaste, Plus, FolderOpen, Tag } from "lucide-react";
 import { PostCategory } from "@/core/enums";
-import { styles } from "@/core/config/styles";
 import FilePicker from "@/components/upload/FilePicker";
 import { useCreatePost, useUpdatePost, useGetPostById } from "@/core/services/client/posts";
 import { useToast } from "@/core/hooks/use-toast";
