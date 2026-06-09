@@ -1,4 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 import { LANDING_THEME } from "../landingTheme";
+import { fadeInLeft, fadeInRight, viewportOnce } from "@/core/lib/animations";
 import type { Project } from "./projectsData";
 import ProjectText from "./ProjectText";
 import ProjectVisual from "./ProjectVisual";
@@ -21,12 +26,22 @@ export default function ProjectRow({ project, index }: ProjectRowProps) {
           isImageLeft ? "" : "lg:[&>*:first-child]:order-2 lg:[&>*:last-child]:order-1"
         }`}
       >
-        <div>
+        <motion.div
+          variants={isImageLeft ? fadeInLeft : fadeInRight}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+        >
           <ProjectText project={project} />
-        </div>
-        <div>
+        </motion.div>
+        <motion.div
+          variants={isImageLeft ? fadeInRight : fadeInLeft}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+        >
           <ProjectVisual image={project.image} imageAlt={project.imageAlt} />
-        </div>
+        </motion.div>
       </div>
     </div>
   );

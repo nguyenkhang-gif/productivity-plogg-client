@@ -1,4 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 import { LANDING_THEME } from "./landingTheme";
+import { fadeInUp, staggerContainerSlow, viewportOnce } from "@/core/lib/animations";
 
 interface Feature {
   symbol: string;
@@ -56,7 +61,13 @@ export default function AppFeaturesSection() {
       style={{ borderTop: `1px solid ${LANDING_THEME.sectionDivider}` }}
     >
       <div className="max-w-5xl mx-auto">
-        <div className="mb-12 text-center">
+        <motion.div
+          className="mb-12 text-center"
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+        >
           <p className="font-mono text-xs mb-3" style={{ color: LANDING_THEME.terminal }}>
             <span style={{ opacity: 0.5 }}>&gt;</span> ls ./features
           </p>
@@ -66,13 +77,21 @@ export default function AppFeaturesSection() {
           <p className="mt-2 text-sm" style={{ color: LANDING_THEME.textMuted }}>
             A productivity platform built feature by feature.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <motion.div
+          className="grid grid-cols-2 md:grid-cols-4 gap-3"
+          variants={staggerContainerSlow}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+        >
           {FEATURES.map((feature) => (
-            <div
+            <motion.div
               key={feature.title}
-              className="p-4 rounded-lg border transition-colors group"
+              variants={fadeInUp}
+              whileHover={{ y: -4, borderColor: LANDING_THEME.accentBorder }}
+              className="p-4 rounded-lg border transition-colors group cursor-default"
               style={{
                 backgroundColor: LANDING_THEME.cardBg,
                 borderColor: LANDING_THEME.cardBorder,
@@ -93,9 +112,9 @@ export default function AppFeaturesSection() {
               <p className="text-xs leading-relaxed" style={{ color: LANDING_THEME.textMuted }}>
                 {feature.description}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

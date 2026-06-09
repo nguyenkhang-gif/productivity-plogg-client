@@ -1,4 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 import { LANDING_THEME } from "./landingTheme";
+import { fadeInUp, staggerContainerSlow, buttonHover, buttonTap, viewportOnce } from "@/core/lib/animations";
 
 interface SocialLink {
   label: string;
@@ -45,27 +50,43 @@ export default function ContactSection() {
       style={{ borderTop: `1px solid ${LANDING_THEME.sectionDivider}` }}
     >
       <div className="max-w-5xl mx-auto text-center">
-        <p className="font-mono text-xs mb-3" style={{ color: LANDING_THEME.terminal }}>
-          <span style={{ opacity: 0.5 }}>&gt;</span> echo $CONTACT
-        </p>
-        <h2
-          className="text-2xl md:text-3xl font-bold mb-3"
-          style={{ color: LANDING_THEME.textPrimary }}
+        <motion.div
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
         >
-          Get in Touch
-        </h2>
-        <p className="text-sm mb-12" style={{ color: LANDING_THEME.textMuted }}>
-          Open to opportunities, collaborations, or just a chat.
-        </p>
+          <p className="font-mono text-xs mb-3" style={{ color: LANDING_THEME.terminal }}>
+            <span style={{ opacity: 0.5 }}>&gt;</span> echo $CONTACT
+          </p>
+          <h2
+            className="text-2xl md:text-3xl font-bold mb-3"
+            style={{ color: LANDING_THEME.textPrimary }}
+          >
+            Get in Touch
+          </h2>
+          <p className="text-sm mb-12" style={{ color: LANDING_THEME.textMuted }}>
+            Open to opportunities, collaborations, or just a chat.
+          </p>
+        </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto">
+        <motion.div
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto"
+          variants={staggerContainerSlow}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+        >
           {SOCIAL_LINKS.map((link) => (
-            <a
+            <motion.a
               key={link.label}
+              variants={fadeInUp}
+              whileHover={buttonHover}
+              whileTap={buttonTap}
               href={link.url}
               target={link.url.startsWith("mailto") ? undefined : "_blank"}
               rel={link.url.startsWith("mailto") ? undefined : "noopener noreferrer"}
-              className="flex flex-col items-center gap-3 p-4 rounded-lg border transition-colors group"
+              className="flex flex-col items-center gap-3 p-4 rounded-lg border group"
               style={{
                 backgroundColor: LANDING_THEME.cardBg,
                 borderColor: LANDING_THEME.cardBorder,
@@ -74,7 +95,7 @@ export default function ContactSection() {
               <svg
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-5 h-5 transition-colors"
+                className="w-5 h-5"
                 style={{ color: LANDING_THEME.textMuted }}
               >
                 <path d={link.svgPath} />
@@ -93,16 +114,20 @@ export default function ContactSection() {
                   {link.handle}
                 </p>
               </div>
-            </a>
+            </motion.a>
           ))}
-        </div>
+        </motion.div>
 
-        <p
+        <motion.p
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
           className="font-mono text-xs mt-16 pb-4"
           style={{ color: LANDING_THEME.textMuted, opacity: 0.4 }}
         >
           © {new Date().getFullYear()} Nguyen Nguyen Khang
-        </p>
+        </motion.p>
       </div>
     </section>
   );

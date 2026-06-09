@@ -1,6 +1,19 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 import { LANDING_THEME } from "./landingTheme";
+import {
+  fadeInUp,
+  fadeInRight,
+  scaleIn,
+  staggerContainer,
+  buttonHoverGlow,
+  buttonTap,
+  buttonHover,
+  viewportOnce,
+} from "@/core/lib/animations";
 
 const AVATAR_URL =
   "https://lh3.googleusercontent.com/a/ACg8ocJdWiIXRbvDWMs5aTL4nBQ3iKHTD_cR5fQd4f3YGVb86MvjmzBP=s1000";
@@ -41,7 +54,7 @@ const TERMINAL_LINES: {
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-[calc(100vh-80px)] overflow-hidden">
+    <section className="relative overflow-hidden">
       {/* dot grid background */}
       <div
         className="absolute inset-0"
@@ -61,13 +74,19 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
 
           {/* ── Left: intro ── */}
-          <div>
-            <p className="font-mono text-xs mb-7 tracking-widest">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+          >
+            <motion.p variants={fadeInUp} className="font-mono text-xs mb-7 tracking-widest">
               <span style={{ color: LANDING_THEME.terminal, opacity: 0.55 }}>~/portfolio</span>
               <span style={{ color: LANDING_THEME.terminal }} className="ml-2">$ whoami</span>
-            </p>
+            </motion.p>
 
-            <div
+            <motion.div
+              variants={scaleIn}
               className="mb-5 w-20 h-20 rounded-full overflow-hidden border-2"
               style={{
                 borderColor: LANDING_THEME.accent,
@@ -76,20 +95,22 @@ export default function HeroSection() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={AVATAR_URL} alt="Nguyen Nguyen Khang" className="object-cover w-full h-full" />
-            </div>
+            </motion.div>
 
-            <p className="font-mono text-xs mb-1.5" style={{ color: LANDING_THEME.terminal }}>
+            <motion.p variants={fadeInUp} className="font-mono text-xs mb-1.5" style={{ color: LANDING_THEME.terminal }}>
               <span style={{ opacity: 0.45 }}>&gt;</span> hello, I&apos;m
-            </p>
+            </motion.p>
 
-            <h1
+            <motion.h1
+              variants={fadeInUp}
               className="text-4xl md:text-5xl font-bold mb-3 tracking-tight"
               style={{ color: LANDING_THEME.textPrimary }}
             >
               Nguyen Nguyen Khang
-            </h1>
+            </motion.h1>
 
-            <div
+            <motion.div
+              variants={fadeInUp}
               className="inline-flex items-center gap-2 px-3 py-1 rounded border mb-5"
               style={{
                 borderColor: LANDING_THEME.accentBorder,
@@ -103,19 +124,20 @@ export default function HeroSection() {
               <span className="font-mono text-sm" style={{ color: LANDING_THEME.accent }}>
                 Full-Stack Developer
               </span>
-            </div>
+            </motion.div>
 
-            <p
+            <motion.p
+              variants={fadeInUp}
               className="text-sm md:text-base leading-relaxed mb-7 max-w-md"
               style={{ color: LANDING_THEME.textSecondary }}
             >
               {TAGLINE}
-            </p>
+            </motion.p>
 
             {/* Stats row */}
-            <div className="grid grid-cols-4 gap-3 mb-8 max-w-sm">
+            <motion.div variants={staggerContainer} className="grid grid-cols-4 gap-3 mb-8 max-w-sm">
               {STATS.map((stat) => (
-                <div key={stat.label} className="text-center">
+                <motion.div key={stat.label} variants={fadeInUp} className="text-center">
                   <p
                     className="text-xl font-bold font-mono"
                     style={{ color: LANDING_THEME.accent }}
@@ -128,40 +150,52 @@ export default function HeroSection() {
                   >
                     {stat.label}
                   </p>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             {/* CTAs */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <Link
-                href="/posts"
-                className="px-6 py-2.5 font-medium rounded transition-colors text-sm"
-                style={{ backgroundColor: LANDING_THEME.accent, color: LANDING_THEME.textPrimary }}
-              >
-                Enter App →
-              </Link>
-              <a
+            <motion.div variants={staggerContainer} className="flex items-center gap-3 flex-wrap">
+              <motion.div variants={fadeInUp} whileHover={buttonHoverGlow(LANDING_THEME.accentGlow)} whileTap={buttonTap}>
+                <Link
+                  href="/posts"
+                  className="px-6 py-2.5 font-medium rounded text-sm inline-block"
+                  style={{ backgroundColor: LANDING_THEME.accent, color: LANDING_THEME.textPrimary }}
+                >
+                  Enter App →
+                </Link>
+              </motion.div>
+              <motion.a
+                variants={fadeInUp}
+                whileHover={buttonHover}
+                whileTap={buttonTap}
                 href="https://github.com/nguyenkhang-gif"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-2.5 font-mono text-sm rounded transition-colors border"
+                className="px-6 py-2.5 font-mono text-sm rounded border inline-block"
                 style={{ borderColor: LANDING_THEME.cardBorder, color: LANDING_THEME.textSecondary }}
               >
                 GitHub ↗
-              </a>
-              <a
+              </motion.a>
+              <motion.a
+                variants={fadeInUp}
+                whileHover={buttonHover}
+                whileTap={buttonTap}
                 href="#projects"
-                className="px-6 py-2.5 font-mono text-sm rounded transition-colors border"
+                className="px-6 py-2.5 font-mono text-sm rounded border inline-block"
                 style={{ borderColor: LANDING_THEME.sectionDivider, color: LANDING_THEME.textMuted }}
               >
                 Projects ↓
-              </a>
-            </div>
-          </div>
+              </motion.a>
+            </motion.div>
+          </motion.div>
 
           {/* ── Right: terminal window ── */}
-          <div
+          <motion.div
+            variants={fadeInRight}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
             className="rounded-xl overflow-hidden border hidden lg:block"
             style={{
               borderColor: LANDING_THEME.cardBorder,
@@ -238,7 +272,7 @@ export default function HeroSection() {
                 );
               })}
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>
