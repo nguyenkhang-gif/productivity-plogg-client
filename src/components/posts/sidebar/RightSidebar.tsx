@@ -55,7 +55,7 @@ export default function RightSidebar({ posts, onSelectPost, onTagClick }: RightS
     .map(([tag]) => tag);
 
   return (
-    <aside className="hidden lg:flex flex-col gap-4 sticky top-6 pt-14">
+    <aside className="hidden lg:flex flex-col gap-4 sticky top-4 pt-14">
       <div className={`${styles.card} p-4`}>
         {/* Trending */}
         <SectionHeader icon={Flame} label="Nổi bật" />

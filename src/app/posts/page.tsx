@@ -88,16 +88,16 @@ export default function PostsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-page px-4 py-8">
+    <div className="min-h-screen bg-page py-8">
       <PostDetailDialog
         post={selectedPost}
         open={!!selectedPost}
         onClose={() => setSelectedPostId(null)}
       />
 
-      <div className="max-w-[1400px] mx-auto">
-        {/* 3-column grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_260px] gap-6 items-start">
+      <div className="w-full px-4 xl:px-8">
+        {/* 3-column grid — sidebars flush to viewport edges on wide screens */}
+        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_260px] xl:grid-cols-[280px_1fr_280px] gap-4 xl:gap-6 items-start">
           <LeftSidebar posts={sortedPosts} />
 
           {/* Center feed */}

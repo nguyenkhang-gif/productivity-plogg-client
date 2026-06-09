@@ -33,7 +33,7 @@ export default function LeftSidebar({ posts }: LeftSidebarProps) {
   const friendList = friends.map((f) => f.friendInfo).filter(Boolean).slice(0, 5);
 
   return (
-    <aside className="hidden lg:flex flex-col gap-3 sticky top-6 pt-14">
+    <aside className="hidden lg:flex flex-col gap-3 sticky top-4 pt-14">
       {/* Profile + nav unified card */}
       <div className={`${styles.card} overflow-hidden`}>
         {/* Profile section */}
