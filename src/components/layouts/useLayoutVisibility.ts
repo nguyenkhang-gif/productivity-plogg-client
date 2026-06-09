@@ -12,7 +12,7 @@ export function useLayoutVisibility() {
   const isAuthPage = pathname.startsWith("/auth");
   const isMeetingRoom = pathname.startsWith("/meetings/room");
   const isGuestLanding = pathname === "/" && !isAuth;
-  const hideNav = isAuthPage || isGuestLanding;
+  const hideNav = false;
 
   return { isAuthPage, isMeetingRoom, isGuestLanding, hideNav };
 }

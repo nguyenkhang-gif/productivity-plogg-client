@@ -66,7 +66,20 @@ export default function Navbar() {
   };
 
   if (isLoading) return null;
-  if (!isAuth) return null;
+
+  const publicNavLinks = [
+    { href: "/epub", label: "Epub Gen" },
+    { href: "/projects", label: "Projects" },
+    { href: "/portfolio", label: "Portfolio" },
+  ];
+
+  const privateNavLinks = [
+    { href: "/posts", label: "Posts" },
+    { href: "/upload", label: "Files" },
+  ];
+
+  const navLinks = isAuth ? [...publicNavLinks, ...privateNavLinks] : publicNavLinks;
+
   return (
     <nav
       className={`p-4 shadow-md w-full fixed z-10 ${
@@ -103,36 +116,15 @@ export default function Navbar() {
 
         {/* Navigation Links - Desktop */}
         <div className="hidden md:flex space-x-6 items-center">
-          <Link
-            href="/posts"
-            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-          >
-            Posts
-          </Link>
-          <Link
-            href="/epub"
-            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-          >
-            Epub Gen
-          </Link>
-          <Link
-            href="/projects"
-            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-          >
-            Projects
-          </Link>
-          <Link
-            href="/portfolio"
-            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-          >
-            Portfolio
-          </Link>
-          <Link
-            href="/upload"
-            className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-          >
-            Files
-          </Link>
+          {navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+            >
+              {label}
+            </Link>
+          ))}
         </div>
 
         {/* Social Icons and Dropdown - Desktop */}
@@ -158,119 +150,7 @@ export default function Navbar() {
           >
             <Instagram className="text-2xl hover:text-gray-300 dark:hover:text-gray-400 transition-colors" />
           </a>
-          <div className="relative">
-            <button
-              onClick={toggleDropdown}
-              className="flex items-center space-x-2 hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-              aria-label="User menu"
-            >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold overflow-hidden flex-shrink-0">
-                {profile.profilePic ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={profile.profilePic} alt={profile.fullName} className="w-full h-full object-cover" />
-                ) : (
-                  profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
-                )}
-              </div>
-              {isAuth && <span>{profile.fullName || profile.username || "Profile"}</span>}
-              {!isAuth && <span>Account</span>}
-            </button>
-            {isDropdownOpen && (
-              <div
-                className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg z-20 ${
-                  theme === "dark"
-                    ? "bg-gray-800 text-white"
-                    : "bg-white text-black"
-                }`}
-              >
-                {isAuth ? (
-                  <>
-                    <Link
-                      href="/profile"
-                      className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      Profile
-                    </Link>
-                    <Link
-                      href="/friends"
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      <Users className="w-4 h-4" />
-                      <span>Bạn bè</span>
-                      {pendingCount > 0 && (
-                        <span className="ml-auto min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
-                          {pendingCount > 99 ? "99+" : pendingCount}
-                        </span>
-                      )}
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
-                    >
-                      <LogOut className="w-5 h-5" />
-                      <span>Logout</span>
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={handleLogin}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
-                  >
-                    <LogIn className="w-5 h-5" />
-                    <span>Login</span>
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div
-          className={`md:hidden p-4 ${
-            theme === "dark" ? "bg-black text-white" : "bg-white text-black"
-          }`}
-        >
-          <div className="flex flex-col space-y-4">
-            <Link
-              href="/posts"
-              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-              onClick={toggleMenu}
-            >
-              Posts
-            </Link>
-            <Link
-              href="/epub"
-              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-              onClick={toggleMenu}
-            >
-              Epub Gen
-            </Link>
-            <Link
-              href="/projects"
-              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-              onClick={toggleMenu}
-            >
-              Projects
-            </Link>
-            <Link
-              href="/portfolio"
-              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-              onClick={toggleMenu}
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="/upload"
-              className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
-              onClick={toggleMenu}
-            >
-              Files
-            </Link>
+          {isAuth ? (
             <div className="relative">
               <button
                 onClick={toggleDropdown}
@@ -285,65 +165,140 @@ export default function Navbar() {
                     profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
                   )}
                 </div>
-                {isAuth && <span>{profile.fullName || profile.username || "Profile"}</span>}
-                {!isAuth && <span>Account</span>}
+                <span>{profile.fullName || profile.username || "Profile"}</span>
               </button>
               {isDropdownOpen && (
                 <div
-                  className={`mt-2 w-full rounded-md shadow-lg ${
+                  className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg z-20 ${
                     theme === "dark"
                       ? "bg-gray-800 text-white"
                       : "bg-white text-black"
                   }`}
                 >
-                  {isAuth ? (
-                    <>
-                      <Link
-                        href="/profile"
-                        className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                        onClick={() => { toggleDropdown(); toggleMenu(); }}
-                      >
-                        Profile
-                      </Link>
-                      <Link
-                        href="/friends"
-                        className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                        onClick={() => { toggleDropdown(); toggleMenu(); }}
-                      >
-                        <Users className="w-4 h-4" />
-                        <span>Bạn bè</span>
-                        {pendingCount > 0 && (
-                          <span className="ml-auto min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
-                            {pendingCount > 99 ? "99+" : pendingCount}
-                          </span>
-                        )}
-                      </Link>
-                      <button
-                        onClick={() => {
-                          handleLogout();
-                          toggleMenu();
-                        }}
-                        className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
-                      >
-                        <LogOut className="w-5 h-5" />
-                        <span>Logout</span>
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        handleLogin();
-                        toggleMenu();
-                      }}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
-                    >
-                      <LogIn className="w-5 h-5" />
-                      <span>Login</span>
-                    </button>
-                  )}
+                  <Link
+                    href="/profile"
+                    className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    href="/friends"
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    <Users className="w-4 h-4" />
+                    <span>Bạn bè</span>
+                    {pendingCount > 0 && (
+                      <span className="ml-auto min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                        {pendingCount > 99 ? "99+" : pendingCount}
+                      </span>
+                    )}
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span>Logout</span>
+                  </button>
                 </div>
               )}
             </div>
+          ) : (
+            <button
+              onClick={handleLogin}
+              className="flex items-center space-x-2 hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+            >
+              <LogIn className="w-5 h-5" />
+              <span>Login</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div
+          className={`md:hidden p-4 ${
+            theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+          }`}
+        >
+          <div className="flex flex-col space-y-4">
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+                onClick={toggleMenu}
+              >
+                {label}
+              </Link>
+            ))}
+            {isAuth ? (
+              <div className="relative">
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center space-x-2 hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+                  aria-label="User menu"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold overflow-hidden flex-shrink-0">
+                    {profile.profilePic ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={profile.profilePic} alt={profile.fullName} className="w-full h-full object-cover" />
+                    ) : (
+                      profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
+                    )}
+                  </div>
+                  <span>{profile.fullName || profile.username || "Profile"}</span>
+                </button>
+                {isDropdownOpen && (
+                  <div
+                    className={`mt-2 w-full rounded-md shadow-lg ${
+                      theme === "dark"
+                        ? "bg-gray-800 text-white"
+                        : "bg-white text-black"
+                    }`}
+                  >
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      onClick={() => { toggleDropdown(); toggleMenu(); }}
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      href="/friends"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      onClick={() => { toggleDropdown(); toggleMenu(); }}
+                    >
+                      <Users className="w-4 h-4" />
+                      <span>Bạn bè</span>
+                      {pendingCount > 0 && (
+                        <span className="ml-auto min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                          {pendingCount > 99 ? "99+" : pendingCount}
+                        </span>
+                      )}
+                    </Link>
+                    <button
+                      onClick={() => { handleLogout(); toggleMenu(); }}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => { handleLogin(); toggleMenu(); }}
+                className="flex items-center space-x-2 hover:text-gray-300 dark:hover:text-gray-400 transition-colors"
+              >
+                <LogIn className="w-5 h-5" />
+                <span>Login</span>
+              </button>
+            )}
             <div className="flex space-x-4">
               <a
                 href="https://www.linkedin.com"
