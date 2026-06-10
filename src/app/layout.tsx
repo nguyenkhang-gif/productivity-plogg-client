@@ -2,12 +2,10 @@
 // import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
 import StoreProvider from "../core/providers/ReduxProvider";
 import ReactQueryProvider from "@/core/providers/ReactQuery";
 import { Toaster } from "@/components/ui/toaster";
-// import Navbar from "@/components/layouts/Navbar";
-// import { cn } from "@/core/lib/utils";
-// import { usePathname } from "next/navigation";
 import Script from "next/script";
 import DefaultLayout from "@/@layouts/defaultLayout/";
 
@@ -55,18 +53,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <ReactQueryProvider>
-          <StoreProvider>
-            {/* <Navbar />
-          <div
-            className={cn("pt-20 h-full", {
-              "pt-16": pathname.split("/").includes("meetings"),
-            })}
-          > */}
-            <DefaultLayout>{children}</DefaultLayout>
-            {/* </div> */}
-          </StoreProvider>
-        </ReactQueryProvider>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <ReactQueryProvider>
+            <StoreProvider>
+              <DefaultLayout>{children}</DefaultLayout>
+            </StoreProvider>
+          </ReactQueryProvider>
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>
