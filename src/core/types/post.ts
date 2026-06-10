@@ -20,9 +20,16 @@ export interface PostTag {
   slug: string;
 }
 
+export interface PostCategoryObject {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export interface Post {
   id: string;
   authorId: string;
+  title?: string;
   author: PostAuthor;
   content: string;
   imageUrls: string[];
@@ -35,5 +42,5 @@ export interface Post {
   tags?: (string | PostTag)[];
   viewCount?: number;
   isBookmarked?: boolean;
-  category?: PostCategory;
+  category?: PostCategory | PostCategoryObject | null;
 }

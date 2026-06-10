@@ -10,6 +10,7 @@ export interface UserProfile {
   role: string;
   id: string;
   isPrivate?: boolean;
+  postCount?: number;
 }
 
 export interface UserState {
