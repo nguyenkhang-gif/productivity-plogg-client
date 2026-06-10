@@ -108,14 +108,14 @@ export default function ReactionButton({ post }: ReactionButtonProps) {
       onMouseLeave={handleMouseLeave}
     >
       {showPicker && (
-        <div className="absolute bottom-full left-0 mb-2 bg-overlay border border-white/[0.08] rounded-2xl shadow-2xl px-2 py-1.5 flex gap-0.5 z-20">
+        <div className="absolute bottom-full left-0 mb-2 bg-card border border-border rounded-2xl shadow-2xl px-2 py-1.5 flex gap-0.5 z-20">
           {REACTIONS.map(({ type, emoji, label }) => (
             <button
               key={type}
               title={label}
               onClick={() => handleReact(type)}
-              className={`text-xl p-1.5 rounded-xl hover:bg-white/10 transition-all hover:scale-125 active:scale-110 ${
-                currentReaction?.type === type ? "bg-white/10 scale-110" : ""
+              className={`text-xl p-1.5 rounded-xl hover:bg-surface-raised transition-all hover:scale-125 active:scale-110 ${
+                currentReaction?.type === type ? "bg-surface-raised scale-110" : ""
               }`}
             >
               {emoji}
@@ -130,13 +130,13 @@ export default function ReactionButton({ post }: ReactionButtonProps) {
         onTouchEnd={handleTouchEnd}
         onTouchMove={handleTouchMove}
         className={`flex items-center gap-1.5 text-sm transition-colors select-none ${
-          currentReaction ? activeColor : "text-slate-500 hover:text-slate-300"
+          currentReaction ? activeColor : "text-text-muted hover:text-text-secondary"
         }`}
       >
         <span className="text-base leading-none">
           {currentReaction ? getEmoji(currentReaction.type) : "👍"}
         </span>
-        <span className={currentReaction ? activeColor : "text-slate-400"}>
+        <span className={currentReaction ? activeColor : "text-text-muted"}>
           {post.reactCount}
         </span>
       </button>

@@ -25,11 +25,11 @@ export default function CommentItem({ comment, currentUserId, postId }: CommentI
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="bg-white/[0.04] rounded-2xl rounded-tl-sm px-4 py-2.5">
-          <p className="text-slate-200 text-xs font-semibold mb-0.5">
+        <div className="bg-surface rounded-2xl rounded-tl-sm px-4 py-2.5 border border-border">
+          <p className="text-text-secondary text-xs font-semibold mb-0.5">
             {comment.author?.fullName ?? "Unknown"}
           </p>
-          <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap break-words">
+          <p className="text-text-secondary text-sm leading-relaxed whitespace-pre-wrap break-words">
             {comment.content}
           </p>
           {comment.iconUrl && (
@@ -37,7 +37,7 @@ export default function CommentItem({ comment, currentUserId, postId }: CommentI
             <img src={comment.iconUrl} alt="" className="mt-2 max-h-24 rounded-lg object-contain" />
           )}
         </div>
-        <p className="text-slate-600 text-xs mt-1 ml-1">
+        <p className="text-text-muted text-xs mt-1 ml-1">
           {new Date(comment.createdAt).toLocaleDateString("vi-VN", {
             day: "2-digit",
             month: "short",
@@ -49,7 +49,7 @@ export default function CommentItem({ comment, currentUserId, postId }: CommentI
         <button
           onClick={() => deleteComment(comment.id)}
           disabled={isPending}
-          className="opacity-0 group-hover:opacity-100 self-start mt-1 p-1.5 rounded-full text-slate-600 hover:text-red-400 hover:bg-red-400/10 transition-all"
+          className="opacity-0 group-hover:opacity-100 self-start mt-1 p-1.5 rounded-full text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-all"
         >
           <Trash2 size={12} />
         </button>

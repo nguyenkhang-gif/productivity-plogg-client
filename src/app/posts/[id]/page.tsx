@@ -80,7 +80,7 @@ export default function PostDetailPage({
     <div className="min-h-screen bg-page">
 
       {/* ── sticky back bar ── */}
-      <div className="sticky top-14 z-10 flex items-center justify-between px-4 md:px-8 h-12 bg-page/80 backdrop-blur-md border-b border-white/[0.04]">
+      <div className="sticky top-14 z-10 flex items-center justify-between px-4 md:px-8 h-12 bg-page/80 backdrop-blur-md border-b border-border">
         <Link
           href="/posts"
           className="flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors"
@@ -91,7 +91,7 @@ export default function PostDetailPage({
         {isOwner && (
           <button
             onClick={() => router.push(`/create-post?edit=${post.id}`)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-slate-700 hover:border-blue-500 text-slate-400 hover:text-blue-400 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-border hover:border-accent text-text-muted hover:text-accent transition-colors"
           >
             <Pencil size={13} />
             Edit
@@ -115,7 +115,7 @@ export default function PostDetailPage({
           </>
         ) : (
           <>
-            <div className={`absolute inset-0 bg-gradient-to-br ${heroGradient} opacity-70`} />
+            <div className={`absolute inset-0 bg-gradient-to-br ${heroGradient} dark:opacity-70 opacity-20`} />
             {/* subtle noise */}
             <div
               className="absolute inset-0 opacity-[0.025]"
@@ -132,14 +132,14 @@ export default function PostDetailPage({
         <div className="relative z-10 w-full max-w-2xl mx-auto px-4 md:px-6 pb-12 pt-20">
 
           {category && (
-            <span className="inline-block text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20 mb-5">
+            <span className="inline-block text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/20 mb-5">
               {category.name}
             </span>
           )}
 
           <h1
             className={`text-3xl md:text-4xl lg:text-[2.6rem] font-semibold leading-tight tracking-tight ${
-              post.title ? "text-slate-100" : "text-slate-500 italic"
+              post.title ? "text-text-primary" : "text-text-muted italic"
             }`}
           >
             {displayTitle}
@@ -160,7 +160,7 @@ export default function PostDetailPage({
               )}
             </div>
             <div>
-              <p className="text-slate-200 text-sm font-medium leading-tight">
+              <p className="text-text-secondary text-sm font-medium leading-tight">
                 {post.author?.fullName ?? "Unknown"}
               </p>
               <div className="flex items-center gap-3 text-text-muted text-xs mt-1">
@@ -199,34 +199,34 @@ export default function PostDetailPage({
         {/* markdown body */}
         <article
           className="prose prose-sm max-w-none
-            [&_p]:text-slate-300 [&_p]:leading-[1.9] [&_p]:my-4
-            [&_h1]:text-slate-100 [&_h2]:text-slate-100 [&_h3]:text-slate-200
+            [&_p]:text-text-secondary [&_p]:leading-[1.9] [&_p]:my-4
+            [&_h1]:text-text-primary [&_h2]:text-text-primary [&_h3]:text-text-secondary
             [&_h1]:font-bold [&_h2]:font-semibold [&_h3]:font-medium
             [&_h1]:text-2xl [&_h2]:text-xl [&_h3]:text-lg
             [&_h1]:mt-10 [&_h1]:mb-4 [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:mt-6 [&_h3]:mb-2
-            [&_strong]:text-slate-200
-            [&_em]:text-slate-300 [&_em]:italic
-            [&_a]:text-blue-400 [&_a]:no-underline hover:[&_a]:underline
-            [&_code]:text-sky-300 [&_code]:bg-slate-800/80 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs
-            [&_pre]:bg-slate-900/80 [&_pre]:border [&_pre]:border-white/[0.06] [&_pre]:rounded-xl [&_pre]:p-4 [&_pre]:my-5
-            [&_blockquote]:border-l-2 [&_blockquote]:border-blue-500/40 [&_blockquote]:pl-5 [&_blockquote]:text-slate-400 [&_blockquote]:italic [&_blockquote]:my-6
-            [&_ul]:text-slate-300 [&_ol]:text-slate-300
-            [&_li]:my-1.5 [&_li]:marker:text-slate-600
-            [&_hr]:border-white/[0.06] [&_hr]:my-10"
+            [&_strong]:text-text-primary
+            [&_em]:text-text-secondary [&_em]:italic
+            [&_a]:text-accent [&_a]:no-underline hover:[&_a]:underline
+            [&_code]:text-accent [&_code]:bg-surface-raised [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs
+            [&_pre]:bg-surface-raised [&_pre]:border [&_pre]:border-border [&_pre]:rounded-xl [&_pre]:p-4 [&_pre]:my-5
+            [&_blockquote]:border-l-2 [&_blockquote]:border-accent/40 [&_blockquote]:pl-5 [&_blockquote]:text-text-muted [&_blockquote]:italic [&_blockquote]:my-6
+            [&_ul]:text-text-secondary [&_ol]:text-text-secondary
+            [&_li]:my-1.5 [&_li]:marker:text-text-muted
+            [&_hr]:border-border [&_hr]:my-10"
         >
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </article>
 
         {/* tags */}
         {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-10 pt-7 border-t border-white/[0.05]">
+          <div className="flex flex-wrap gap-2 mt-10 pt-7 border-t border-border">
             {post.tags.map((tag, i) => {
               const t = tag as string | PostTag;
               const label = typeof t === "string" ? t : t.slug;
               return (
                 <span
                   key={i}
-                  className="text-xs px-3 py-1 rounded-full bg-white/[0.04] text-slate-500 border border-white/[0.07] tracking-wide"
+                  className="text-xs px-3 py-1 rounded-full bg-surface text-text-muted border border-border tracking-wide"
                 >
                   #{label}
                 </span>
@@ -236,7 +236,7 @@ export default function PostDetailPage({
         )}
 
         {/* reactions */}
-        <div className="mt-7 pb-10 border-b border-white/[0.05]">
+        <div className="mt-7 pb-10 border-b border-border">
           <ReactionButton post={post} />
         </div>
 
@@ -254,17 +254,17 @@ export default function PostDetailPage({
 function Skeleton() {
   return (
     <div className="min-h-screen bg-page animate-pulse">
-      <div className="h-12 bg-white/[0.02] border-b border-white/[0.04]" />
-      <div className="min-h-[48vh] bg-gradient-to-br from-slate-900 to-slate-800/40 flex items-end">
+      <div className="h-12 bg-surface border-b border-border" />
+      <div className="min-h-[48vh] bg-surface flex items-end">
         <div className="max-w-2xl mx-auto px-4 md:px-6 pb-12 pt-20 w-full space-y-4">
-          <div className="h-5 w-20 bg-white/[0.06] rounded-full" />
-          <div className="h-10 w-3/4 bg-white/[0.06] rounded-xl" />
-          <div className="h-8 w-1/2 bg-white/[0.04] rounded-xl" />
+          <div className="h-5 w-20 bg-surface-raised rounded-full" />
+          <div className="h-10 w-3/4 bg-surface-raised rounded-xl" />
+          <div className="h-8 w-1/2 bg-surface rounded-xl" />
           <div className="flex items-center gap-3 mt-5">
-            <div className="w-9 h-9 rounded-full bg-white/[0.06]" />
+            <div className="w-9 h-9 rounded-full bg-surface-raised" />
             <div className="space-y-2">
-              <div className="h-3 w-28 bg-white/[0.06] rounded" />
-              <div className="h-3 w-20 bg-white/[0.04] rounded" />
+              <div className="h-3 w-28 bg-surface-raised rounded" />
+              <div className="h-3 w-20 bg-surface rounded" />
             </div>
           </div>
         </div>
@@ -273,7 +273,7 @@ function Skeleton() {
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className={`h-4 bg-white/[0.04] rounded ${i % 3 === 2 ? "w-2/3" : "w-full"}`}
+            className={`h-4 bg-surface-raised rounded ${i % 3 === 2 ? "w-2/3" : "w-full"}`}
           />
         ))}
       </div>
@@ -286,13 +286,13 @@ function Skeleton() {
 function NotFound() {
   return (
     <div className="min-h-screen bg-page flex flex-col items-center justify-center gap-4 text-center px-4">
-      <p className="text-6xl font-bold text-white/[0.06] select-none">404</p>
-      <p className="text-slate-400">
+      <p className="text-6xl font-bold text-text-muted/20 select-none">404</p>
+      <p className="text-text-muted">
         This post doesn&apos;t exist or isn&apos;t published.
       </p>
       <Link
         href="/posts"
-        className="flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 transition-colors mt-2"
+        className="flex items-center gap-1.5 text-sm text-accent hover:text-accent/80 transition-colors mt-2"
       >
         <ArrowLeft size={14} />
         Back to feed
