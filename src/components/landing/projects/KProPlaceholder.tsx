@@ -12,11 +12,10 @@ const FEATURES = [
 export default function KProPlaceholder() {
   return (
     <div
-      className="w-full h-full min-h-[300px] rounded-xl border p-6 flex flex-col justify-between"
-      style={{ backgroundColor: LANDING_THEME.cardBgStrong, borderColor: LANDING_THEME.cardBorder }}
+      className="w-full h-full min-h-[300px] rounded-xl border border-border p-6 flex flex-col justify-between bg-overlay"
     >
       <div className="flex items-center gap-2 mb-5">
-        <span className="font-bold text-lg" style={{ color: LANDING_THEME.textPrimary }}>
+        <span className="font-bold text-lg text-text-primary">
           KPro
         </span>
         <span
@@ -38,22 +37,14 @@ export default function KProPlaceholder() {
         {FEATURES.map((f) => (
           <div
             key={f}
-            className="px-3 py-2 rounded-lg border text-xs font-mono"
-            style={{
-              borderColor: LANDING_THEME.cardBorder,
-              backgroundColor: LANDING_THEME.cardBgSubtle,
-              color: LANDING_THEME.textMuted,
-            }}
+            className="px-3 py-2 rounded-lg border border-border text-xs font-mono text-text-muted bg-surface-raised"
           >
             {f}
           </div>
         ))}
       </div>
 
-      <div
-        className="mt-5 pt-4 border-t font-mono text-[11px]"
-        style={{ borderColor: LANDING_THEME.sectionDivider, color: LANDING_THEME.textMuted }}
-      >
+      <div className="mt-5 pt-4 border-t border-border-muted font-mono text-[11px] text-text-muted">
         <span style={{ color: LANDING_THEME.terminal }}>❯</span>
         <span className="ml-2">knnpb.duckdns.org</span>
         <span

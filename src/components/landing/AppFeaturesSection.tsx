@@ -56,10 +56,7 @@ const FEATURES: Feature[] = [
 
 export default function AppFeaturesSection() {
   return (
-    <section
-      className="py-20 px-6"
-      style={{ borderTop: `1px solid ${LANDING_THEME.sectionDivider}` }}
-    >
+    <section className="py-20 px-6 border-t border-border-muted">
       <div className="max-w-5xl mx-auto">
         <motion.div
           className="mb-12 text-center"
@@ -71,10 +68,10 @@ export default function AppFeaturesSection() {
           <p className="font-mono text-xs mb-3" style={{ color: LANDING_THEME.terminal }}>
             <span style={{ opacity: 0.5 }}>&gt;</span> ls ./features
           </p>
-          <h2 className="text-2xl md:text-3xl font-bold" style={{ color: LANDING_THEME.textPrimary }}>
+          <h2 className="text-2xl md:text-3xl font-bold text-text-primary">
             What&apos;s inside KPro
           </h2>
-          <p className="mt-2 text-sm" style={{ color: LANDING_THEME.textMuted }}>
+          <p className="mt-2 text-sm text-text-muted">
             A productivity platform built feature by feature.
           </p>
         </motion.div>
@@ -91,25 +88,15 @@ export default function AppFeaturesSection() {
               key={feature.title}
               variants={fadeInUp}
               whileHover={{ y: -4, borderColor: LANDING_THEME.accentBorder }}
-              className="p-4 rounded-lg border transition-colors group cursor-default"
-              style={{
-                backgroundColor: LANDING_THEME.cardBg,
-                borderColor: LANDING_THEME.cardBorder,
-              }}
+              className="p-4 rounded-lg border border-border bg-card transition-colors group cursor-default"
             >
-              <p
-                className="font-mono text-xl font-bold mb-3"
-                style={{ color: LANDING_THEME.accent }}
-              >
+              <p className="font-mono text-xl font-bold mb-3 text-accent">
                 {feature.symbol}
               </p>
-              <p
-                className="text-sm font-semibold mb-1"
-                style={{ color: LANDING_THEME.textPrimary }}
-              >
+              <p className="text-sm font-semibold mb-1 text-text-primary">
                 {feature.title}
               </p>
-              <p className="text-xs leading-relaxed" style={{ color: LANDING_THEME.textMuted }}>
+              <p className="text-xs leading-relaxed text-text-muted">
                 {feature.description}
               </p>
             </motion.div>

@@ -11,11 +11,8 @@ export default function ProjectVisual({ image, imageAlt }: ProjectVisualProps) {
 
   return (
     <div
-      className="w-full overflow-hidden rounded-xl border"
-      style={{
-        borderColor: LANDING_THEME.cardBorder,
-        boxShadow: `0 0 40px ${LANDING_THEME.accentGlow}`,
-      }}
+      className="w-full overflow-hidden rounded-xl border border-border"
+      style={{ boxShadow: `0 0 40px ${LANDING_THEME.accentGlow}` }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

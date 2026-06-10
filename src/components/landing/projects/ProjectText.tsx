@@ -11,10 +11,7 @@ export default function ProjectText({ project }: ProjectTextProps) {
   return (
     <div className="flex flex-col justify-center">
       <div className="flex items-center gap-3 mb-4">
-        <span
-          className="font-mono text-4xl font-bold opacity-20 select-none"
-          style={{ color: LANDING_THEME.accent }}
-        >
+        <span className="font-mono text-4xl font-bold opacity-20 select-none text-accent">
           {project.number}
         </span>
         <span
@@ -29,27 +26,17 @@ export default function ProjectText({ project }: ProjectTextProps) {
         </span>
       </div>
 
-      <h3
-        className="text-2xl md:text-3xl font-bold mb-3 tracking-tight"
-        style={{ color: LANDING_THEME.textPrimary }}
-      >
+      <h3 className="text-2xl md:text-3xl font-bold mb-3 tracking-tight text-text-primary">
         {project.name}
       </h3>
 
-      <p
-        className="text-sm leading-relaxed mb-5"
-        style={{ color: LANDING_THEME.textSecondary }}
-      >
+      <p className="text-sm leading-relaxed mb-5 text-text-secondary">
         {project.description}
       </p>
 
       <ul className="space-y-2 mb-6">
         {project.highlights.map((highlight) => (
-          <li
-            key={highlight}
-            className="flex items-start gap-2 text-xs"
-            style={{ color: LANDING_THEME.textMuted }}
-          >
+          <li key={highlight} className="flex items-start gap-2 text-xs text-text-muted">
             <span className="mt-0.5 shrink-0" style={{ color: LANDING_THEME.terminal }}>
               ▸
             </span>
@@ -62,8 +49,7 @@ export default function ProjectText({ project }: ProjectTextProps) {
         {project.techStack.map((tech) => (
           <span
             key={tech}
-            className="font-mono text-[10px] px-2 py-0.5 rounded border"
-            style={{ color: LANDING_THEME.textMuted, borderColor: LANDING_THEME.cardBorder }}
+            className="font-mono text-[10px] px-2 py-0.5 rounded border border-border text-text-muted"
           >
             {tech}
           </span>
@@ -78,8 +64,7 @@ export default function ProjectText({ project }: ProjectTextProps) {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-sm font-medium transition-colors"
-              style={{ color: LANDING_THEME.accent }}
+              className="font-mono text-sm font-medium transition-colors text-accent"
             >
               {link.label}
             </a>
@@ -87,8 +72,7 @@ export default function ProjectText({ project }: ProjectTextProps) {
             <Link
               key={link.label}
               href={link.url}
-              className="font-mono text-sm font-medium transition-colors"
-              style={{ color: LANDING_THEME.accent }}
+              className="font-mono text-sm font-medium transition-colors text-accent"
             >
               {link.label}
             </Link>

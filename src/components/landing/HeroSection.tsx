@@ -66,8 +66,8 @@ export default function HeroSection() {
       />
       {/* accent glow */}
       <div
-        className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none"
-        style={{ backgroundColor: LANDING_THEME.accent, opacity: 0.04 }}
+        className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none bg-accent"
+        style={{ opacity: 0.04 }}
       />
 
       <div className="relative z-10 w-full max-w-6xl mx-auto px-6 pt-14 pb-20">
@@ -87,11 +87,8 @@ export default function HeroSection() {
 
             <motion.div
               variants={scaleIn}
-              className="mb-5 w-20 h-20 rounded-full overflow-hidden border-2"
-              style={{
-                borderColor: LANDING_THEME.accent,
-                boxShadow: `0 0 28px ${LANDING_THEME.accentGlow}`,
-              }}
+              className="mb-5 w-20 h-20 rounded-full overflow-hidden border-2 border-accent"
+              style={{ boxShadow: `0 0 28px ${LANDING_THEME.accentGlow}` }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={AVATAR_URL} alt="Nguyen Nguyen Khang" className="object-cover w-full h-full" />
@@ -103,8 +100,7 @@ export default function HeroSection() {
 
             <motion.h1
               variants={fadeInUp}
-              className="text-4xl md:text-5xl font-bold mb-3 tracking-tight"
-              style={{ color: LANDING_THEME.textPrimary }}
+              className="text-4xl md:text-5xl font-bold mb-3 tracking-tight text-text-primary"
             >
               Nguyen Nguyen Khang
             </motion.h1>
@@ -121,15 +117,14 @@ export default function HeroSection() {
                 className="w-1.5 h-1.5 rounded-full animate-pulse"
                 style={{ backgroundColor: LANDING_THEME.terminal }}
               />
-              <span className="font-mono text-sm" style={{ color: LANDING_THEME.accent }}>
+              <span className="font-mono text-sm text-accent">
                 Full-Stack Developer
               </span>
             </motion.div>
 
             <motion.p
               variants={fadeInUp}
-              className="text-sm md:text-base leading-relaxed mb-7 max-w-md"
-              style={{ color: LANDING_THEME.textSecondary }}
+              className="text-sm md:text-base leading-relaxed mb-7 max-w-md text-text-secondary"
             >
               {TAGLINE}
             </motion.p>
@@ -138,16 +133,10 @@ export default function HeroSection() {
             <motion.div variants={staggerContainer} className="grid grid-cols-4 gap-3 mb-8 max-w-sm">
               {STATS.map((stat) => (
                 <motion.div key={stat.label} variants={fadeInUp} className="text-center">
-                  <p
-                    className="text-xl font-bold font-mono"
-                    style={{ color: LANDING_THEME.accent }}
-                  >
+                  <p className="text-xl font-bold font-mono text-accent">
                     {stat.value}
                   </p>
-                  <p
-                    className="text-[10px] leading-tight mt-0.5"
-                    style={{ color: LANDING_THEME.textMuted }}
-                  >
+                  <p className="text-[10px] leading-tight mt-0.5 text-text-muted">
                     {stat.label}
                   </p>
                 </motion.div>
@@ -159,8 +148,7 @@ export default function HeroSection() {
               <motion.div variants={fadeInUp} whileHover={buttonHoverGlow(LANDING_THEME.accentGlow)} whileTap={buttonTap}>
                 <Link
                   href="/posts"
-                  className="px-6 py-2.5 font-medium rounded text-sm inline-block"
-                  style={{ backgroundColor: LANDING_THEME.accent, color: LANDING_THEME.textPrimary }}
+                  className="px-6 py-2.5 font-medium rounded text-sm inline-block bg-accent text-text-primary"
                 >
                   Enter App →
                 </Link>
@@ -172,8 +160,7 @@ export default function HeroSection() {
                 href="https://github.com/nguyenkhang-gif"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-2.5 font-mono text-sm rounded border inline-block"
-                style={{ borderColor: LANDING_THEME.cardBorder, color: LANDING_THEME.textSecondary }}
+                className="px-6 py-2.5 font-mono text-sm rounded border border-border text-text-secondary inline-block"
               >
                 GitHub ↗
               </motion.a>
@@ -182,8 +169,7 @@ export default function HeroSection() {
                 whileHover={buttonHover}
                 whileTap={buttonTap}
                 href="#projects"
-                className="px-6 py-2.5 font-mono text-sm rounded border inline-block"
-                style={{ borderColor: LANDING_THEME.sectionDivider, color: LANDING_THEME.textMuted }}
+                className="px-6 py-2.5 font-mono text-sm rounded border border-border-muted text-text-muted inline-block"
               >
                 Projects ↓
               </motion.a>
@@ -196,26 +182,19 @@ export default function HeroSection() {
             initial="hidden"
             whileInView="visible"
             viewport={viewportOnce}
-            className="rounded-xl overflow-hidden border hidden lg:block"
+            className="rounded-xl overflow-hidden border border-border hidden lg:block"
             style={{
-              borderColor: LANDING_THEME.cardBorder,
               backgroundColor: LANDING_THEME.overlayBg,
               backdropFilter: "blur(10px)",
               boxShadow: `0 0 40px ${LANDING_THEME.accentGlow}`,
             }}
           >
             {/* title bar */}
-            <div
-              className="flex items-center gap-1.5 px-4 py-3 border-b"
-              style={{
-                borderColor: LANDING_THEME.cardBorder,
-                backgroundColor: LANDING_THEME.cardBgSubtle,
-              }}
-            >
+            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border bg-surface-raised">
               <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#ff5f57" }} />
               <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#febc2e" }} />
               <span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#28c840" }} />
-              <span className="ml-3 font-mono text-xs" style={{ color: LANDING_THEME.textMuted }}>
+              <span className="ml-3 font-mono text-xs text-text-muted">
                 about.txt — bash
               </span>
             </div>
@@ -227,7 +206,7 @@ export default function HeroSection() {
 
                 if (line.cursor) {
                   return (
-                    <p key={i} className="pt-1" style={{ color: LANDING_THEME.textMuted }}>
+                    <p key={i} className="pt-1 text-text-muted">
                       <span style={{ color: LANDING_THEME.terminal }}>❯</span>
                       <span
                         className="ml-2 inline-block w-2 h-3 align-middle animate-pulse"
@@ -239,7 +218,7 @@ export default function HeroSection() {
 
                 if (line.prompt) {
                   return (
-                    <p key={i} className="mb-1" style={{ color: LANDING_THEME.textMuted }}>
+                    <p key={i} className="mb-1 text-text-muted">
                       <span style={{ color: LANDING_THEME.terminal }}>❯</span>
                       <span className="ml-2">cat about.txt</span>
                     </p>
@@ -248,7 +227,7 @@ export default function HeroSection() {
 
                 if (line.section) {
                   return (
-                    <p key={i} className="pt-1" style={{ color: LANDING_THEME.textMuted }}>
+                    <p key={i} className="pt-1 text-text-muted">
                       {line.section}
                     </p>
                   );
@@ -257,15 +236,15 @@ export default function HeroSection() {
                 if (line.key) {
                   return (
                     <p key={i}>
-                      <span style={{ color: LANDING_THEME.accent }}>{line.key}</span>
-                      <span className="mx-2" style={{ color: LANDING_THEME.textMuted }}>│</span>
-                      <span style={{ color: LANDING_THEME.textSecondary }}>{line.value}</span>
+                      <span className="text-accent">{line.key}</span>
+                      <span className="mx-2 text-text-muted">│</span>
+                      <span className="text-text-secondary">{line.value}</span>
                     </p>
                   );
                 }
 
                 return (
-                  <p key={i} className="pl-2" style={{ color: LANDING_THEME.textSecondary }}>
+                  <p key={i} className="pl-2 text-text-secondary">
                     <span style={{ color: LANDING_THEME.terminal, opacity: 0.5 }}>▸</span>
                     <span className="ml-2">{line.value}</span>
                   </p>

@@ -45,10 +45,7 @@ const SOCIAL_LINKS: SocialLink[] = [
 
 export default function ContactSection() {
   return (
-    <section
-      className="py-20 px-6"
-      style={{ borderTop: `1px solid ${LANDING_THEME.sectionDivider}` }}
-    >
+    <section className="py-20 px-6 border-t border-border-muted">
       <div className="max-w-5xl mx-auto text-center">
         <motion.div
           variants={fadeInUp}
@@ -59,13 +56,10 @@ export default function ContactSection() {
           <p className="font-mono text-xs mb-3" style={{ color: LANDING_THEME.terminal }}>
             <span style={{ opacity: 0.5 }}>&gt;</span> echo $CONTACT
           </p>
-          <h2
-            className="text-2xl md:text-3xl font-bold mb-3"
-            style={{ color: LANDING_THEME.textPrimary }}
-          >
+          <h2 className="text-2xl md:text-3xl font-bold mb-3 text-text-primary">
             Get in Touch
           </h2>
-          <p className="text-sm mb-12" style={{ color: LANDING_THEME.textMuted }}>
+          <p className="text-sm mb-12 text-text-muted">
             Open to opportunities, collaborations, or just a chat.
           </p>
         </motion.div>
@@ -86,31 +80,20 @@ export default function ContactSection() {
               href={link.url}
               target={link.url.startsWith("mailto") ? undefined : "_blank"}
               rel={link.url.startsWith("mailto") ? undefined : "noopener noreferrer"}
-              className="flex flex-col items-center gap-3 p-4 rounded-lg border group"
-              style={{
-                backgroundColor: LANDING_THEME.cardBg,
-                borderColor: LANDING_THEME.cardBorder,
-              }}
+              className="flex flex-col items-center gap-3 p-4 rounded-lg border border-border bg-card group"
             >
               <svg
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-5 h-5"
-                style={{ color: LANDING_THEME.textMuted }}
+                className="w-5 h-5 text-text-muted"
               >
                 <path d={link.svgPath} />
               </svg>
               <div>
-                <p
-                  className="text-xs font-semibold"
-                  style={{ color: LANDING_THEME.textPrimary }}
-                >
+                <p className="text-xs font-semibold text-text-primary">
                   {link.label}
                 </p>
-                <p
-                  className="font-mono text-[10px] mt-0.5 truncate max-w-[100px]"
-                  style={{ color: LANDING_THEME.textMuted }}
-                >
+                <p className="font-mono text-[10px] mt-0.5 truncate max-w-[100px] text-text-muted">
                   {link.handle}
                 </p>
               </div>
@@ -123,8 +106,7 @@ export default function ContactSection() {
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="font-mono text-xs mt-16 pb-4"
-          style={{ color: LANDING_THEME.textMuted, opacity: 0.4 }}
+          className="font-mono text-xs mt-16 pb-4 text-text-muted opacity-40"
         >
           © {new Date().getFullYear()} Nguyen Nguyen Khang
         </motion.p>

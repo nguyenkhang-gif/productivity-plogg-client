@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 
-import { LANDING_THEME } from "../landingTheme";
 import { fadeInLeft, fadeInRight, viewportOnce } from "@/core/lib/animations";
 import type { Project } from "./projectsData";
 import ProjectText from "./ProjectText";
@@ -17,10 +16,7 @@ export default function ProjectRow({ project, index }: ProjectRowProps) {
   const isImageLeft = index % 2 === 0;
 
   return (
-    <div
-      className="py-16 border-t"
-      style={{ borderColor: LANDING_THEME.sectionDivider }}
-    >
+    <div className="py-16 border-t border-border-muted">
       <div
         className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${
           isImageLeft ? "" : "lg:[&>*:first-child]:order-2 lg:[&>*:last-child]:order-1"
