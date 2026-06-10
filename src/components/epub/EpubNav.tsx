@@ -17,15 +17,15 @@ function ModeTab({ active, onClick, icon, label, disabled }: ModeTabProps) {
       disabled={disabled}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
         disabled
-          ? "text-gray-600 cursor-not-allowed"
+          ? "text-text-muted cursor-not-allowed"
           : active
           ? "bg-accent/15 text-accent"
-          : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+          : "text-text-muted hover:text-text-secondary hover:bg-white/5"
       }`}
     >
       {icon}
       {label}
-      {disabled && <span className="text-[10px] text-gray-600 ml-1">soon</span>}
+      {disabled && <span className="text-[10px] text-text-muted ml-1">soon</span>}
     </button>
   );
 }
@@ -37,8 +37,8 @@ interface EpubNavProps {
 
 export function EpubNav({ mode, onModeChange }: EpubNavProps) {
   return (
-    <div className="border-b border-gray-800 px-6 py-3 flex items-center gap-6">
-      <div className="flex items-center gap-2 text-gray-300">
+    <div className="border-b border-border px-6 py-3 flex items-center gap-6">
+      <div className="flex items-center gap-2 text-text-secondary">
         <BookOpen className="h-5 w-5 text-accent" />
         <span className="font-semibold">Epub Tools</span>
       </div>

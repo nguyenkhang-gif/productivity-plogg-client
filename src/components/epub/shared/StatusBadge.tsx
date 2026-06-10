@@ -10,7 +10,7 @@ export function StatusBadge({ status, countdown, round }: StatusBadgeProps) {
   if (status === "idle") return null;
   if (status === "running") {
     return (
-      <span className="text-xs text-gray-400 flex items-center gap-1">
+      <span className="text-xs text-text-muted flex items-center gap-1">
         {countdown > 0
           ? <><Clock className="h-3 w-3" />Next batch in {countdown}s</>
           : `Round ${round} processing...`

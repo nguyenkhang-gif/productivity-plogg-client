@@ -37,24 +37,24 @@ export function SaveContextForm({ contextJson, isSaving, onSave, onCancel }: Sav
   };
 
   return (
-    <div className="mb-3 bg-surface rounded-lg p-3 flex flex-col gap-2 border border-gray-700">
+    <div className="mb-3 bg-surface rounded-lg p-3 flex flex-col gap-2 border border-border">
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="text-[10px] text-gray-400 mb-1 block">Title *</label>
+          <label className="text-[10px] text-text-muted mb-1 block">Title *</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Tên truyện"
-            className="w-full bg-surface-raised border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
+            className="w-full bg-surface-raised border border-border rounded px-2 py-1.5 text-xs text-text-secondary placeholder:text-text-muted focus:outline-none focus:border-accent"
           />
         </div>
         <div>
-          <label className="text-[10px] text-gray-400 mb-1 block">Author *</label>
+          <label className="text-[10px] text-text-muted mb-1 block">Author *</label>
           <input
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="Tác giả"
-            className="w-full bg-surface-raised border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
+            className="w-full bg-surface-raised border border-border rounded px-2 py-1.5 text-xs text-text-secondary placeholder:text-text-muted focus:outline-none focus:border-accent"
           />
         </div>
       </div>
@@ -64,7 +64,7 @@ export function SaveContextForm({ contextJson, isSaving, onSave, onCancel }: Sav
           variant="ghost"
           size="sm"
           onClick={onCancel}
-          className="text-gray-500 h-7 px-2 text-xs"
+          className="text-text-muted h-7 px-2 text-xs"
         >
           Cancel
         </Button>

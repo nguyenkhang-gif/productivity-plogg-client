@@ -31,9 +31,9 @@ export function ContextPanel({ context, onCopy, onDownload, onSave, isSaving = f
       />
       <div className="bg-surface-raised rounded-xl p-4">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Accumulated Context</p>
+          <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Accumulated Context</p>
           <div className="flex gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setShowPreview(true)} className="text-gray-400 hover:text-white h-7 px-2">
+            <Button variant="ghost" size="sm" onClick={() => setShowPreview(true)} className="text-text-muted hover:text-text-primary h-7 px-2">
               <Eye className="h-3.5 w-3.5 mr-1" />Preview
             </Button>
             {onSave && (
@@ -41,15 +41,15 @@ export function ContextPanel({ context, onCopy, onDownload, onSave, isSaving = f
                 variant="ghost"
                 size="sm"
                 onClick={() => { setShowSaveForm((v) => !v); }}
-                className="text-gray-400 hover:text-white h-7 px-2"
+                className="text-text-muted hover:text-text-primary h-7 px-2"
               >
                 <Save className="h-3.5 w-3.5 mr-1" />Save
               </Button>
             )}
-            <Button variant="ghost" size="sm" onClick={onCopy} className="text-gray-400 hover:text-white h-7 px-2">
+            <Button variant="ghost" size="sm" onClick={onCopy} className="text-text-muted hover:text-text-primary h-7 px-2">
               <Copy className="h-3.5 w-3.5 mr-1" />Copy
             </Button>
-            <Button variant="ghost" size="sm" onClick={onDownload} className="text-gray-400 hover:text-white h-7 px-2">
+            <Button variant="ghost" size="sm" onClick={onDownload} className="text-text-muted hover:text-text-primary h-7 px-2">
               <Download className="h-3.5 w-3.5 mr-1" />.json
             </Button>
           </div>
@@ -67,7 +67,7 @@ export function ContextPanel({ context, onCopy, onDownload, onSave, isSaving = f
           />
         )}
 
-        <pre className="text-xs text-gray-300 bg-surface rounded-lg p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-80 overflow-y-auto">
+        <pre className="text-xs text-text-secondary bg-surface rounded-lg p-3 overflow-x-auto whitespace-pre-wrap break-words max-h-80 overflow-y-auto">
           {preview}
         </pre>
         {context.length > 800 && (

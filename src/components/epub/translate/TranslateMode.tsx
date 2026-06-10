@@ -68,7 +68,7 @@ export function TranslateMode({ pendingChapters = [], onPendingConsumed }: Trans
   const translateStatusSlot = (
     <>
       {trans.status === "running" && (
-        <span className="text-xs text-gray-400 flex items-center gap-1">
+        <span className="text-xs text-text-muted flex items-center gap-1">
           {trans.countdown > 0
             ? <><Clock className="h-3 w-3" />Next in {trans.countdown}s</>
             : <><Loader2 className="h-3 w-3 animate-spin" />Translating {trans.streamingName}...</>
@@ -97,11 +97,11 @@ export function TranslateMode({ pendingChapters = [], onPendingConsumed }: Trans
 
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-text-muted">
             Mỗi file được dịch riêng thành một prompt. Chọn ngữ cảnh truyện để tăng độ chính xác.
           </p>
           {(files.length > 0 || trans.results.length > 0) && (
-            <Button variant="ghost" size="sm" onClick={handleReset} className="text-gray-400 hover:text-white">
+            <Button variant="ghost" size="sm" onClick={handleReset} className="text-text-muted hover:text-text-primary">
               <RotateCcw className="h-4 w-4 mr-1" />Reset
             </Button>
           )}
@@ -115,8 +115,8 @@ export function TranslateMode({ pendingChapters = [], onPendingConsumed }: Trans
           sublabel="Mỗi file = 1 API call riêng lẻ"
           stats={files.length > 0 ? (
             <>
-              <p className="text-sm font-medium text-white">{files.length} files</p>
-              <p className="text-xs text-gray-400">{totalWords.toLocaleString()} words total</p>
+              <p className="text-sm font-medium text-text-primary">{files.length} files</p>
+              <p className="text-xs text-text-muted">{totalWords.toLocaleString()} words total</p>
             </>
           ) : undefined}
           onFiles={loadFiles}

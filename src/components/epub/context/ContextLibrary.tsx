@@ -49,7 +49,7 @@ export function ContextLibrary() {
         >
           <div className="flex items-center gap-2">
             <BookMarked className="h-4 w-4 text-accent" />
-            <span className="text-sm font-semibold text-gray-300">Context Library</span>
+            <span className="text-sm font-semibold text-text-secondary">Context Library</span>
             {count > 0 && (
               <span className="text-xs bg-accent/20 text-accent rounded-full px-2 py-0.5">
                 {count}
@@ -57,19 +57,19 @@ export function ContextLibrary() {
             )}
           </div>
           {collapsed
-            ? <ChevronDown className="h-4 w-4 text-gray-500" />
-            : <ChevronUp className="h-4 w-4 text-gray-500" />
+            ? <ChevronDown className="h-4 w-4 text-text-muted" />
+            : <ChevronUp className="h-4 w-4 text-text-muted" />
           }
         </button>
 
         {!collapsed && (
-          <div className="border-t border-gray-800">
+          <div className="border-t border-border">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-5 w-5 animate-spin text-accent" />
               </div>
             ) : count === 0 ? (
-              <div className="text-center py-8 text-gray-600 text-sm">
+              <div className="text-center py-8 text-text-muted text-sm">
                 Chưa có context nào được lưu.
               </div>
             ) : (
@@ -78,28 +78,28 @@ export function ContextLibrary() {
                   <div key={ctx.id} className="bg-surface rounded-xl p-3 flex flex-col gap-2">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-200 truncate">{ctx.title}</p>
-                        <p className="text-xs text-gray-500">{ctx.author}</p>
+                        <p className="text-sm font-medium text-text-secondary truncate">{ctx.title}</p>
+                        <p className="text-xs text-text-muted">{ctx.author}</p>
                       </div>
-                      <span className="text-[10px] bg-gray-700/60 text-gray-300 rounded px-1.5 py-0.5 shrink-0 truncate max-w-[90px]">
+                      <span className="text-[10px] bg-surface-raised text-text-secondary rounded px-1.5 py-0.5 shrink-0 truncate max-w-[90px]">
                         {ctx.genre}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-gray-600">
+                      <span className="text-[10px] text-text-muted">
                         {new Date(ctx.createdAt).toLocaleDateString("vi-VN")}
                       </span>
                       <div className="flex gap-1">
                         <button
                           onClick={() => setPreviewCtx(ctx)}
-                          className="p-1 text-gray-500 hover:text-accent rounded hover:bg-white/5 transition-colors"
+                          className="p-1 text-text-muted hover:text-accent rounded hover:bg-white/5 transition-colors"
                           title="Preview"
                         >
                           <Eye className="h-3.5 w-3.5" />
                         </button>
                         <button
                           onClick={() => handleDownload(ctx)}
-                          className="p-1 text-gray-500 hover:text-gray-300 rounded hover:bg-white/5 transition-colors"
+                          className="p-1 text-text-muted hover:text-text-secondary rounded hover:bg-white/5 transition-colors"
                           title="Download JSON"
                         >
                           <Download className="h-3.5 w-3.5" />
@@ -107,7 +107,7 @@ export function ContextLibrary() {
                         <button
                           onClick={() => handleDelete(ctx.id)}
                           disabled={deletingId === ctx.id}
-                          className="p-1 text-gray-500 hover:text-red-400 rounded hover:bg-white/5 transition-colors disabled:opacity-40"
+                          className="p-1 text-text-muted hover:text-red-400 rounded hover:bg-white/5 transition-colors disabled:opacity-40"
                           title="Delete"
                         >
                           {deletingId === ctx.id

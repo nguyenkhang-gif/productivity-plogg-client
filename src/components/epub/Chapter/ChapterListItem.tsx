@@ -39,7 +39,7 @@ export function ChapterListItem({
           <label
             htmlFor={`chapter-${chapter.id}`}
             className={` whitespace-nowrap overflow-x-auto ${
-              chapter.completed ? "line-through text-gray-500" : ""
+              chapter.completed ? "line-through text-text-muted" : ""
             }`}
             style={{ width: "100%" }}
           >

@@ -28,21 +28,21 @@ export function PasteTextSection({ addChapters }: PasteTextSectionProps) {
   };
 
   return (
-    <div className="border border-gray-800 rounded-xl overflow-hidden">
+    <div className="border border-border rounded-xl overflow-hidden">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full px-4 py-2.5 flex items-center gap-2 text-xs text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors text-left"
+        className="w-full px-4 py-2.5 flex items-center gap-2 text-xs text-text-muted hover:text-text-secondary hover:bg-white/5 transition-colors text-left"
       >
         {open ? <ChevronUp className="h-3.5 w-3.5 shrink-0" /> : <ChevronDown className="h-3.5 w-3.5 shrink-0" />}
         Hoặc paste text trực tiếp
       </button>
       {open && (
-        <div className="border-t border-gray-800 p-3 flex flex-col gap-2 bg-surface-raised">
+        <div className="border-t border-border p-3 flex flex-col gap-2 bg-surface-raised">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Tên chapter (tuỳ chọn)"
-            className="w-full bg-surface border border-gray-700 rounded px-3 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
+            className="w-full bg-surface border border-border rounded px-3 py-1.5 text-xs text-text-secondary placeholder:text-text-muted focus:outline-none focus:border-accent"
           />
           <textarea
             value={text}
@@ -50,10 +50,10 @@ export function PasteTextSection({ addChapters }: PasteTextSectionProps) {
             onKeyDown={handleKeyDown}
             placeholder="Paste nội dung vào đây... (Ctrl+Enter để thêm)"
             rows={6}
-            className="w-full bg-surface border border-gray-700 rounded px-3 py-2 text-xs text-gray-200 placeholder-gray-600 resize-y focus:outline-none focus:border-accent font-mono"
+            className="w-full bg-surface border border-border rounded px-3 py-2 text-xs text-text-secondary placeholder:text-text-muted resize-y focus:outline-none focus:border-accent font-mono"
           />
           <div className="flex items-center justify-between">
-            <span className="text-[10px] text-gray-600">
+            <span className="text-[10px] text-text-muted">
               {text.trim() ? `${text.trim().split(/\s+/).length.toLocaleString()} words` : ""}
             </span>
             <Button

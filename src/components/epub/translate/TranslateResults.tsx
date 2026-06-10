@@ -36,30 +36,30 @@ function EpubExportForm({
   };
 
   return (
-    <div className="bg-surface rounded-xl p-4 border border-gray-700 flex flex-col gap-3">
-      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Export EPUB</p>
+    <div className="bg-surface rounded-xl p-4 border border-border flex flex-col gap-3">
+      <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Export EPUB</p>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-[10px] text-gray-400 mb-1 block">Tên truyện *</label>
+          <label className="text-[10px] text-text-muted mb-1 block">Tên truyện *</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="VD: Thiên Sứ Nhà Bên"
-            className="w-full bg-surface-raised border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
+            className="w-full bg-surface-raised border border-border rounded px-2 py-1.5 text-xs text-text-secondary placeholder:text-text-muted focus:outline-none focus:border-accent"
           />
         </div>
         <div>
-          <label className="text-[10px] text-gray-400 mb-1 block">Tác giả *</label>
+          <label className="text-[10px] text-text-muted mb-1 block">Tác giả *</label>
           <input
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="VD: Nguyễn Văn A"
-            className="w-full bg-surface-raised border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-accent"
+            className="w-full bg-surface-raised border border-border rounded px-2 py-1.5 text-xs text-text-secondary placeholder:text-text-muted focus:outline-none focus:border-accent"
           />
         </div>
       </div>
       <div className="flex gap-2 justify-end">
-        <Button variant="ghost" size="sm" onClick={onCancel} className="text-gray-500 h-7 px-2 text-xs">
+        <Button variant="ghost" size="sm" onClick={onCancel} className="text-text-muted h-7 px-2 text-xs">
           Huỷ
         </Button>
         <Button
@@ -96,7 +96,7 @@ export function TranslateResults({ results, onPreview, onDownloadOne, onDownload
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+        <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">
           Kết quả — {results.length} file(s)
         </p>
         <div className="flex items-center gap-2">
@@ -109,7 +109,7 @@ export function TranslateResults({ results, onPreview, onDownloadOne, onDownload
             <BookOpen className="h-3.5 w-3.5 mr-1.5" />Export EPUB
           </Button>
           {results.length > 1 && (
-            <Button variant="ghost" size="sm" onClick={onDownloadAll} className="text-gray-400 hover:text-white h-7 px-3">
+            <Button variant="ghost" size="sm" onClick={onDownloadAll} className="text-text-muted hover:text-text-primary h-7 px-3">
               <Download className="h-3.5 w-3.5 mr-1.5" />Tải tất cả .txt
             </Button>
           )}
@@ -128,21 +128,21 @@ export function TranslateResults({ results, onPreview, onDownloadOne, onDownload
           <div key={r.name} className="bg-surface-raised rounded-xl px-4 py-3 flex items-center gap-3">
             <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-200 truncate">{r.name}</p>
-              <p className="text-[10px] text-gray-600">{r.wordCount.toLocaleString()} words dịch</p>
+              <p className="text-sm font-medium text-text-secondary truncate">{r.name}</p>
+              <p className="text-[10px] text-text-muted">{r.wordCount.toLocaleString()} words dịch</p>
             </div>
             <div className="flex gap-1.5 shrink-0">
               <Button
                 variant="ghost" size="sm"
                 onClick={() => onPreview({ name: r.name, text: r.text })}
-                className="text-gray-400 hover:text-accent h-7 px-2"
+                className="text-text-muted hover:text-accent h-7 px-2"
               >
                 <Eye className="h-3.5 w-3.5 mr-1" />Preview
               </Button>
               <Button
                 variant="ghost" size="sm"
                 onClick={() => onDownloadOne(r.name, r.text)}
-                className="text-gray-400 hover:text-white h-7 px-2"
+                className="text-text-muted hover:text-text-primary h-7 px-2"
               >
                 <Download className="h-3.5 w-3.5 mr-1" />.txt
               </Button>

@@ -17,26 +17,26 @@ export function ContextPreviewDialog({ open, onClose, contextJson, title }: Cont
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[85vh] bg-surface border-gray-700 text-white flex flex-col gap-0 p-0 overflow-hidden">
-        <DialogHeader className="px-6 py-4 border-b border-gray-800 shrink-0">
-          <DialogTitle className="text-gray-100 text-base">{title ?? "Context Preview"}</DialogTitle>
+      <DialogContent className="max-w-4xl max-h-[85vh] bg-surface border-border text-text-primary flex flex-col gap-0 p-0 overflow-hidden">
+        <DialogHeader className="px-6 py-4 border-b border-border shrink-0">
+          <DialogTitle className="text-text-primary text-base">{title ?? "Context Preview"}</DialogTitle>
         </DialogHeader>
         <div className="overflow-y-auto px-6 py-5 flex-1">
           <ReactMarkdown
             components={{
-              h1: ({ children }) => <h1 className="text-xl font-bold text-white mb-3">{children}</h1>,
-              h2: ({ children }) => <h2 className="text-base font-semibold text-gray-200 mt-5 mb-2 pb-1 border-b border-gray-700">{children}</h2>,
-              h3: ({ children }) => <h3 className="text-sm font-semibold text-gray-300 mt-3 mb-1">{children}</h3>,
-              p: ({ children }) => <p className="text-sm text-gray-300 mb-2 leading-relaxed">{children}</p>,
+              h1: ({ children }) => <h1 className="text-xl font-bold text-text-primary mb-3">{children}</h1>,
+              h2: ({ children }) => <h2 className="text-base font-semibold text-text-secondary mt-5 mb-2 pb-1 border-b border-border">{children}</h2>,
+              h3: ({ children }) => <h3 className="text-sm font-semibold text-text-secondary mt-3 mb-1">{children}</h3>,
+              p: ({ children }) => <p className="text-sm text-text-secondary mb-2 leading-relaxed">{children}</p>,
               table: ({ children }) => <div className="overflow-x-auto mb-3"><table className="w-full text-xs text-left border-collapse">{children}</table></div>,
-              thead: ({ children }) => <thead className="bg-gray-800/60">{children}</thead>,
-              tbody: ({ children }) => <tbody className="divide-y divide-gray-800">{children}</tbody>,
-              th: ({ children }) => <th className="px-3 py-1.5 font-medium text-gray-400 whitespace-nowrap">{children}</th>,
-              td: ({ children }) => <td className="px-3 py-1.5 text-gray-300">{children}</td>,
-              ul: ({ children }) => <ul className="list-disc list-inside text-sm text-gray-300 mb-2 space-y-0.5 ml-2">{children}</ul>,
-              li: ({ children }) => <li className="text-sm text-gray-300">{children}</li>,
-              strong: ({ children }) => <strong className="font-semibold text-gray-200">{children}</strong>,
-              hr: () => <hr className="border-gray-700 my-3" />,
+              thead: ({ children }) => <thead className="bg-surface-raised">{children}</thead>,
+              tbody: ({ children }) => <tbody className="divide-y divide-border">{children}</tbody>,
+              th: ({ children }) => <th className="px-3 py-1.5 font-medium text-text-muted whitespace-nowrap">{children}</th>,
+              td: ({ children }) => <td className="px-3 py-1.5 text-text-secondary">{children}</td>,
+              ul: ({ children }) => <ul className="list-disc list-inside text-sm text-text-secondary mb-2 space-y-0.5 ml-2">{children}</ul>,
+              li: ({ children }) => <li className="text-sm text-text-secondary">{children}</li>,
+              strong: ({ children }) => <strong className="font-semibold text-text-secondary">{children}</strong>,
+              hr: () => <hr className="border-border my-3" />,
             }}
           >
             {markdown}

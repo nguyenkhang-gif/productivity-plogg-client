@@ -38,16 +38,16 @@ export function FileDropZone({
       className={`border-2 border-dashed rounded-xl px-6 py-5 cursor-pointer transition-colors flex items-center gap-4 ${
         isDragging
           ? "border-accent bg-accent/10"
-          : "border-gray-700 hover:border-gray-500 bg-surface-raised"
+          : "border-border hover:border-accent/50 bg-surface-raised"
       }`}
     >
       {isLoading
         ? <Loader2 className="h-5 w-5 animate-spin text-accent shrink-0" />
-        : <Upload className="h-5 w-5 text-gray-500 shrink-0" />
+        : <Upload className="h-5 w-5 text-text-muted shrink-0" />
       }
       <div>
-        <p className="text-sm text-gray-300 font-medium">{label}</p>
-        {sublabel && <p className="text-xs text-gray-500 mt-0.5">{sublabel}</p>}
+        <p className="text-sm text-text-secondary font-medium">{label}</p>
+        {sublabel && <p className="text-xs text-text-muted mt-0.5">{sublabel}</p>}
       </div>
       {stats && <div className="ml-auto text-right">{stats}</div>}
       <input

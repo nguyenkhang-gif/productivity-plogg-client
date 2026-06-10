@@ -37,7 +37,7 @@ export function RunControls({
         onClick={onReset}
         variant="ghost"
         size="sm"
-        className="text-gray-400 hover:text-white"
+        className="text-text-muted hover:text-text-primary"
         disabled={isRunning}
       >
         <RotateCcw className="h-3.5 w-3.5 mr-1.5" />Reset Progress

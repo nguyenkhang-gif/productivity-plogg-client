@@ -106,12 +106,12 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-400">
-          Chọn các file <code className="text-gray-300">.txt</code> (đã extract từ EPUB),
+        <p className="text-sm text-text-muted">
+          Chọn các file <code className="text-text-secondary">.txt</code> (đã extract từ EPUB),
           AI sẽ tích lũy context qua từng batch.
         </p>
         {(files.length > 0 || rolling.context) && (
-          <Button variant="ghost" size="sm" onClick={handleReset} className="text-gray-400 hover:text-white">
+          <Button variant="ghost" size="sm" onClick={handleReset} className="text-text-muted hover:text-text-primary">
             <RotateCcw className="h-4 w-4 mr-1" />Reset
           </Button>
         )}
@@ -125,8 +125,8 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
         sublabel="Multiple files — sorted automatically by filename"
         stats={files.length > 0 ? (
           <>
-            <p className="text-sm font-medium text-white">{files.length} files</p>
-            <p className="text-xs text-gray-400">{totalWords.toLocaleString()} words total</p>
+            <p className="text-sm font-medium text-text-primary">{files.length} files</p>
+            <p className="text-xs text-text-muted">{totalWords.toLocaleString()} words total</p>
           </>
         ) : undefined}
         onFiles={loadFiles}
@@ -181,7 +181,7 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
 
       {rolling.log.length > 0 && (
         <div className="bg-surface-raised rounded-xl p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Log</p>
+          <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Log</p>
           <div className="flex flex-col gap-1.5">
             {rolling.log.map((entry) => (
               <div key={entry.round} className="flex items-center gap-2 text-sm">
@@ -189,13 +189,13 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
                   ? <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
                   : <XCircle className="h-4 w-4 text-red-500 shrink-0" />
                 }
-                <span className="text-gray-500 shrink-0 w-16">Round {entry.round}</span>
-                <span className="text-gray-300 truncate">{entry.from} → {entry.to}</span>
-                <span className="text-gray-500 shrink-0">{entry.count} files · {entry.words.toLocaleString()} words</span>
+                <span className="text-text-muted shrink-0 w-16">Round {entry.round}</span>
+                <span className="text-text-secondary truncate">{entry.from} → {entry.to}</span>
+                <span className="text-text-muted shrink-0">{entry.count} files · {entry.words.toLocaleString()} words</span>
               </div>
             ))}
             {isRunning && (
-              <div className="flex items-center gap-2 text-sm text-gray-400">
+              <div className="flex items-center gap-2 text-sm text-text-muted">
                 <Loader2 className="h-4 w-4 animate-spin text-accent shrink-0" />
                 Round {rolling.round} — running...
               </div>

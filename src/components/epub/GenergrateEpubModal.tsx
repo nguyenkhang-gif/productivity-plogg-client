@@ -78,35 +78,35 @@ export default function GenerateEpubModal() {
       <DialogTrigger asChild>
         <Button>Generate Epub</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] dark:bg-gray-800 dark:text-white">
+      <DialogContent className="sm:max-w-[425px] bg-surface text-text-primary">
         <DialogHeader>
-          <DialogTitle className="dark:text-white">Add New Book</DialogTitle>
+          <DialogTitle className="text-text-primary">Add New Book</DialogTitle>
         </DialogHeader>
         <form className="grid gap-4 py-4" onSubmit={handleSubmit}>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="author-name" className="text-right dark:text-gray-200">
+            <Label htmlFor="author-name" className="text-right text-text-secondary">
               Author Name
             </Label>
             <Input
               id="author-name"
               value={authorName}
               onChange={(e) => setAuthorName(e.target.value)}
-              className="col-span-3 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              className="col-span-3"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="book-title" className="text-right dark:text-gray-200">
+            <Label htmlFor="book-title" className="text-right text-text-secondary">
               Book Title
             </Label>
             <Input
               id="book-title"
               value={bookTitle}
               onChange={(e) => setBookTitle(e.target.value)}
-              className="col-span-3 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              className="col-span-3"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right dark:text-gray-200">Chapters</Label>
+            <Label className="text-right text-text-secondary">Chapters</Label>
             <div className="col-span-3">
               <ul
                 className="space-y-1 overflow-x-auto"
@@ -115,7 +115,7 @@ export default function GenerateEpubModal() {
                 {chapters.map((chapter, index) => (
                   <li key={index} className="flex justify-between items-center">
                     {/* <span className="font-medium BI">{chapter.info.title}</span> */}
-                    <Card className="p-2 flex dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                    <Card className="p-2 flex bg-surface-raised text-text-primary border-border">
                       {chapter.info.title}
                       <Button
                         variant="ghost"

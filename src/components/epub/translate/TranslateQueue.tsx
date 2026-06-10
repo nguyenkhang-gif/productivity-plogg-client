@@ -11,9 +11,9 @@ interface TranslateQueueProps {
 export function TranslateQueue({ files, isRunning, getFileStatus, onRemove }: TranslateQueueProps) {
   return (
     <div className="bg-surface-raised rounded-xl overflow-hidden">
-      <div className="px-4 py-2.5 border-b border-gray-800 flex items-center justify-between">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Queue</p>
-        <p className="text-xs text-gray-500">{files.length} files</p>
+      <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
+        <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Queue</p>
+        <p className="text-xs text-text-muted">{files.length} files</p>
       </div>
       <div className="overflow-y-auto max-h-[420px]">
         {files.map((entry, i) => {
@@ -21,7 +21,7 @@ export function TranslateQueue({ files, isRunning, getFileStatus, onRemove }: Tr
           return (
             <div
               key={entry.name}
-              className={`flex items-center gap-2 px-4 py-2.5 border-b border-gray-800/50 last:border-0 group ${
+              className={`flex items-center gap-2 px-4 py-2.5 border-b border-border/50 last:border-0 group ${
                 status === "done" ? "opacity-50" : ""
               }`}
             >
@@ -29,11 +29,11 @@ export function TranslateQueue({ files, isRunning, getFileStatus, onRemove }: Tr
                 {status === "done" && <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />}
                 {status === "processing" && <Loader2 className="h-3.5 w-3.5 text-accent animate-spin" />}
                 {status === "error" && <XCircle className="h-3.5 w-3.5 text-red-500" />}
-                {status === "pending" && <div className="w-1.5 h-1.5 rounded-full bg-gray-600" />}
+                {status === "pending" && <div className="w-1.5 h-1.5 rounded-full bg-text-muted" />}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-gray-300 truncate">{entry.name}</p>
-                <p className="text-[10px] text-gray-600">{entry.chapter.wordCount.toLocaleString()} words</p>
+                <p className="text-xs text-text-secondary truncate">{entry.name}</p>
+                <p className="text-[10px] text-text-muted">{entry.chapter.wordCount.toLocaleString()} words</p>
               </div>
               {status === "error" && (
                 <span className="text-[10px] text-red-400 shrink-0">error</span>
@@ -41,7 +41,7 @@ export function TranslateQueue({ files, isRunning, getFileStatus, onRemove }: Tr
               {!isRunning && status !== "processing" && (
                 <button
                   onClick={() => onRemove(entry.name)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-600 hover:text-red-400 shrink-0"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity text-text-muted hover:text-red-400 shrink-0"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -50,10 +50,10 @@ export function TranslateQueue({ files, isRunning, getFileStatus, onRemove }: Tr
           );
         })}
       </div>
-      <div className="px-4 py-2 border-t border-gray-800 flex gap-3 text-[10px] text-gray-500">
+      <div className="px-4 py-2 border-t border-border flex gap-3 text-[10px] text-text-muted">
         <span className="flex items-center gap-1"><CheckCircle2 className="h-2.5 w-2.5 text-green-500" />done</span>
         <span className="flex items-center gap-1"><Loader2 className="h-2.5 w-2.5 text-accent" />processing</span>
-        <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-gray-600" />pending</span>
+        <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-text-muted" />pending</span>
       </div>
     </div>
   );
