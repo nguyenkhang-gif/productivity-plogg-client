@@ -9,7 +9,6 @@ import { useGetPostsFeed, useDeletePost } from "@/core/services/client/posts";
 import { PenSquare, Loader2, X } from "lucide-react";
 import PostCard from "@/components/posts/PostCard";
 import PostSkeleton from "@/components/posts/PostSkeleton";
-import PostDetailDialog from "@/components/posts/PostDetailDialog";
 import LeftSidebar from "@/components/posts/sidebar/LeftSidebar";
 import RightSidebar from "@/components/posts/sidebar/RightSidebar";
 import { SortOrder } from "@/core/enums";
@@ -20,7 +19,6 @@ const PRELOAD_BEFORE_END = 3;
 export default function PostsPage() {
   const { profile } = useSelector((state: RootState) => state.user);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [sort, setSort] = useState<SortOrder>(SortOrder.Newest);
   const [tagFilter, setTagFilter] = useState<string | null>(null);
 
@@ -34,10 +32,6 @@ export default function PostsPage() {
 
   const posts: Post[] = data?.pages.flatMap((p) => p.posts) ?? [];
   const hasMore = data?.pages.at(-1)?.hasMore ?? false;
-
-  const selectedPost = selectedPostId
-    ? (posts.find((p) => p.id === selectedPostId) ?? null)
-    : null;
 
   const sortedPosts = [...posts].sort((a, b) => {
     const diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
@@ -88,13 +82,7 @@ export default function PostsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-page py-8">
-      <PostDetailDialog
-        post={selectedPost}
-        open={!!selectedPost}
-        onClose={() => setSelectedPostId(null)}
-      />
-
+    <div className="min-h-screen bg-page pt-4 pb-8">
       <div className="w-full px-4 xl:px-8">
         {/* 3-column grid — sidebars flush to viewport edges on wide screens */}
         <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_260px] xl:grid-cols-[280px_1fr_280px] gap-4 xl:gap-6 items-start">
@@ -102,8 +90,7 @@ export default function PostsPage() {
 
           {/* Center feed */}
           <div className="flex flex-col gap-4">
-            {/* Header — h-14 so sidebars can offset by the same amount */}
-            <div className="flex items-center justify-between gap-3 h-14">
+            <div className="flex items-center justify-between gap-3 h-10">
               <h1 className="text-xl md:text-2xl font-bold text-text-primary shrink-0">Bảng tin</h1>
               <div className="flex items-center gap-2">
                 <div className="flex items-center bg-white/[0.04] border border-border rounded-xl overflow-hidden text-sm">
@@ -162,7 +149,6 @@ export default function PostsPage() {
                       post={post}
                       currentUserId={profile.id}
                       onDelete={(id) => deletePost(id)}
-                      onOpenDetail={(p) => setSelectedPostId(p.id)}
                       onTagClick={setTagFilter}
                     />
                   </div>
@@ -180,7 +166,6 @@ export default function PostsPage() {
 
           <RightSidebar
             posts={sortedPosts}
-            onSelectPost={setSelectedPostId}
             onTagClick={setTagFilter}
           />
         </div>

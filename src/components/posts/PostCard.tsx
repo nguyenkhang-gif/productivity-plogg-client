@@ -18,7 +18,6 @@ interface PostCardProps {
   post: Post;
   currentUserId: string;
   onDelete: (id: string) => void;
-  onOpenDetail?: (post: Post) => void;
   onTagClick?: (tag: string) => void;
 }
 
@@ -51,7 +50,7 @@ function normalizeTag(tag: unknown): string {
   return String(tag ?? "");
 }
 
-export default function PostCard({ post, currentUserId, onDelete, onOpenDetail, onTagClick }: PostCardProps) {
+export default function PostCard({ post, currentUserId, onDelete, onTagClick }: PostCardProps) {
   const { Post: PostConstants } = useConstants();
   const router = useRouter();
   const { toast } = useToast();
@@ -93,8 +92,8 @@ export default function PostCard({ post, currentUserId, onDelete, onOpenDetail, 
     <article className={styles.card}>
       {/* Header */}
       <div
-        className={`flex items-center justify-between px-5 pt-4 pb-3 ${onOpenDetail ? "cursor-pointer" : ""}`}
-        onClick={() => onOpenDetail?.(post)}
+        className="flex items-center justify-between px-5 pt-4 pb-3 cursor-pointer"
+        onClick={() => router.push(`/posts/${post.id}`)}
       >
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-md overflow-hidden">
@@ -158,8 +157,8 @@ export default function PostCard({ post, currentUserId, onDelete, onOpenDetail, 
       {/* Category badge */}
       {post.category && (
         <div
-          className={`px-5 pb-2 ${onOpenDetail ? "cursor-pointer" : ""}`}
-          onClick={() => onOpenDetail?.(post)}
+          className="px-5 pb-2 cursor-pointer"
+          onClick={() => router.push(`/posts/${post.id}`)}
         >
           <span className={`${styles.badge} ${CATEGORY_STYLES[post.category as PostCategory]}`}>
             {CATEGORY_LABELS[post.category as PostCategory]}
@@ -169,8 +168,8 @@ export default function PostCard({ post, currentUserId, onDelete, onOpenDetail, 
 
       {/* Content */}
       <div
-        className={`px-5 pb-2 ${onOpenDetail ? "cursor-pointer" : ""}`}
-        onClick={() => onOpenDetail?.(post)}
+        className="px-5 pb-2 cursor-pointer"
+        onClick={() => router.push(`/posts/${post.id}`)}
       >
         <div className="prose prose-sm max-w-none
           [&_p]:text-text-secondary [&_p]:leading-relaxed [&_p]:my-1.5
@@ -216,8 +215,8 @@ export default function PostCard({ post, currentUserId, onDelete, onOpenDetail, 
       {/* Images */}
       {post.imageUrls?.length > 0 && (
         <div
-          className={`grid gap-0.5 ${post.imageUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"} ${onOpenDetail ? "cursor-pointer" : ""}`}
-          onClick={() => onOpenDetail?.(post)}
+          className={`grid gap-0.5 cursor-pointer ${post.imageUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}
+          onClick={() => router.push(`/posts/${post.id}`)}
         >
           {post.imageUrls.slice(0, PostConstants.MAX_IMAGES).map((url, i) => (
             <div key={i} className="relative">
@@ -236,7 +235,7 @@ export default function PostCard({ post, currentUserId, onDelete, onOpenDetail, 
       {/* Footer */}
       <div className={`flex items-center gap-4 px-5 py-3 border-t ${styles.divider}`}>
         <ReactionButton post={post} />
-        <button onClick={() => onOpenDetail?.(post)} className={styles.footerAction}>
+        <button onClick={() => router.push(`/posts/${post.id}`)} className={styles.footerAction}>
           <MessageCircle size={15} />
           <span>{post.commentCount ?? 0}</span>
         </button>

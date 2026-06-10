@@ -1,6 +1,7 @@
 "use client";
 
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import { RootState } from "@/core/redux/store";
 import { Post } from "@/core/types/post";
 import { Flame, Activity, Tag, Users } from "lucide-react";
@@ -8,7 +9,6 @@ import { styles } from "@/core/config/styles";
 
 interface RightSidebarProps {
   posts: Post[];
-  onSelectPost: (id: string) => void;
   onTagClick?: (tag: string) => void;
 }
 
@@ -34,8 +34,9 @@ const normalizeTag = (raw: unknown): string => {
   return String(raw ?? "");
 };
 
-export default function RightSidebar({ posts, onSelectPost, onTagClick }: RightSidebarProps) {
+export default function RightSidebar({ posts, onTagClick }: RightSidebarProps) {
   const { profile } = useSelector((state: RootState) => state.user);
+  const router = useRouter();
 
   const trending = [...posts].sort((a, b) => b.reactCount - a.reactCount).slice(0, 5);
 
@@ -55,7 +56,7 @@ export default function RightSidebar({ posts, onSelectPost, onTagClick }: RightS
     .map(([tag]) => tag);
 
   return (
-    <aside className="hidden lg:flex flex-col gap-4 sticky top-4 pt-14">
+    <aside className="hidden lg:flex flex-col gap-4 sticky top-[72px]">
       <div className={`${styles.card} p-4`}>
         {/* Trending */}
         <SectionHeader icon={Flame} label="Nổi bật" />
@@ -64,7 +65,7 @@ export default function RightSidebar({ posts, onSelectPost, onTagClick }: RightS
         ) : (
           <div className="flex flex-col gap-3">
             {trending.map((post) => (
-              <button key={post.id} onClick={() => onSelectPost(post.id)} className="text-left group">
+              <button key={post.id} onClick={() => router.push(`/posts/${post.id}`)} className="text-left group">
                 <p className="text-xs text-text-secondary leading-snug group-hover:text-accent-text transition-colors line-clamp-2">
                   {post.content.slice(0, 72).replace(/[#*`]/g, "")}…
                 </p>
