@@ -10,7 +10,7 @@ import { FileText, BookOpen, Users, Upload, LayoutDashboard } from "lucide-react
 import { styles } from "@/core/config/styles";
 
 interface LeftSidebarProps {
-  posts: Post[];
+  posts?: Post[];
 }
 
 const NAV_LINKS = [
@@ -26,14 +26,13 @@ export default function LeftSidebar({ posts }: LeftSidebarProps) {
   const { profile } = useSelector((state: RootState) => state.user);
   const { friends } = useFriendship();
 
-  const myPostCount = posts.filter(
-    (p) => p.authorId === profile.id || p.author?.id === profile.id
-  ).length;
+  const myPostCount = profile.postCount
+    ?? (posts ?? []).filter((p) => p.authorId === profile.id || p.author?.id === profile.id).length;
 
   const friendList = friends.map((f) => f.friendInfo).filter(Boolean).slice(0, 5);
 
   return (
-    <aside className="hidden lg:flex flex-col gap-3 sticky top-4 pt-14">
+    <aside className="hidden lg:flex flex-col gap-3 sticky top-[72px]">
       {/* Profile + nav unified card */}
       <div className={`${styles.card} overflow-hidden`}>
         {/* Profile section */}

@@ -151,7 +151,7 @@ export default function UploadPage() {
   const { items, pagination } = data;
 
   return (
-    <div className="min-h-screen bg-[#1C1F2E] text-white px-6 py-8 max-w-5xl mx-auto">
+    <div className="min-h-screen bg-[#1C1F2E] text-white px-6 xl:px-12 py-6 w-full">
       <div className="flex items-start justify-between mb-1">
         <h1 className="text-2xl font-bold">File Manager</h1>
         <ProviderSelector provider={provider} onSelect={handleSelectProvider} />

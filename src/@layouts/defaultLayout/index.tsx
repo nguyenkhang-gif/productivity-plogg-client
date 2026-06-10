@@ -17,7 +17,7 @@ export default function DefaultLayout({
     <RouteGuard>
       <TitleManager />
       {!hideNav && <Navbar />}
-      <div className={cn("h-full", { "pt-20": !hideNav, "pt-0": hideNav })}>
+      <div className={cn("h-full", { "pt-14": !hideNav, "pt-0": hideNav })}>
         {children}
       </div>
       {!isAuthPage && !isMeetingRoom && !isGuestLanding && <UserChatBubble />}

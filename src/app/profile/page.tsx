@@ -147,7 +147,7 @@ export default function ProfilePage() {
 
           {/* Stats */}
           <div className="flex border-t border-white/[0.05] divide-x divide-white/[0.05]">
-            <StatBadge label="Bài viết" value={totalPosts} />
+            <StatBadge label="Bài viết" value={profile.postCount ?? totalPosts} />
             <StatBadge label="Membership" value={profile.memberShip || "Free"} />
             <StatBadge label="Role" value={profile.role || "User"} />
           </div>
