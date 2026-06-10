@@ -1,3 +1,5 @@
+"use client";
+
 import Navbar from "@/components/layouts/Navbar";
 import RouteGuard from "@/components/layouts/RouteGuard";
 import TitleManager from "@/components/layouts/TitleManager";
