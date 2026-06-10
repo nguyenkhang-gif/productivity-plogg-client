@@ -22,8 +22,8 @@ import {
 function StatBadge({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="flex flex-col items-center px-6 py-3">
-      <span className="text-2xl font-bold text-white">{value}</span>
-      <span className="text-xs text-slate-500 mt-0.5">{label}</span>
+      <span className="text-2xl font-bold text-text-primary">{value}</span>
+      <span className="text-xs text-text-muted mt-0.5">{label}</span>
     </div>
   );
 }
@@ -45,14 +45,12 @@ export default function ProfilePage() {
 
   const { mutate: deletePost } = useDeletePost();
 
-  // Flatten tất cả pages thành 1 array
   const posts: Post[] = useMemo(
     () => data?.pages.flatMap((p) => p.posts) ?? [],
     [data]
   );
   const totalPosts = data?.pages[0]?.total ?? 0;
 
-  // Infinite scroll
   useEffect(() => {
     const el = loaderRef.current;
     if (!el) return;
@@ -73,13 +71,13 @@ export default function ProfilePage() {
   const avatarLetter = profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? "U";
 
   return (
-    <div className="min-h-screen bg-page text-slate-200 px-4 py-10">
+    <div className="min-h-screen bg-page text-text-primary px-4 py-10">
       <div className="max-w-2xl mx-auto">
 
         {/* Profile Card */}
-        <div className="bg-card border border-white/[0.06] rounded-2xl overflow-hidden mb-8 shadow-xl">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden mb-8 shadow-xl">
           {/* Banner */}
-          <div className="h-24 bg-gradient-to-r from-blue-900/60 via-indigo-900/40 to-slate-900" />
+          <div className="h-24 bg-gradient-to-r from-blue-900/40 via-indigo-900/20 to-transparent dark:from-blue-900/60 dark:via-indigo-900/40 dark:to-slate-900 bg-surface-raised" />
 
           {/* Avatar + Info */}
           <div className="px-6 pb-6">
@@ -101,13 +99,13 @@ export default function ProfilePage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowEditDialog(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl text-sm font-medium transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-surface hover:bg-surface-raised border border-border text-text-secondary rounded-xl text-sm font-medium transition-colors"
                 >
                   <Pencil size={14} /> Chỉnh sửa
                 </button>
                 <Link
                   href="/create-post"
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-medium transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded-xl text-sm font-medium transition-colors"
                 >
                   <PenSquare size={14} /> Viết bài
                 </Link>
@@ -117,28 +115,28 @@ export default function ProfilePage() {
             {/* Name & username */}
             <div className="mb-4">
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-white">{profile.fullName || "—"}</h1>
+                <h1 className="text-xl font-bold text-text-primary">{profile.fullName || "—"}</h1>
                 {profile.role === "admin" && (
-                  <Shield size={16} className="text-blue-400" />
+                  <Shield size={16} className="text-accent" />
                 )}
                 {profile.memberShip === "premium" && (
                   <Crown size={15} className="text-yellow-400" />
                 )}
               </div>
-              <p className="text-slate-500 text-sm">@{profile.username}</p>
+              <p className="text-text-muted text-sm">@{profile.username}</p>
             </div>
 
             {/* Info rows */}
             <div className="flex flex-col gap-2 text-sm">
               {profile.email && (
-                <div className="flex items-center gap-2 text-slate-400">
-                  <Mail size={14} className="text-slate-500" />
+                <div className="flex items-center gap-2 text-text-secondary">
+                  <Mail size={14} className="text-text-muted" />
                   {profile.email}
                 </div>
               )}
               {profile.gender && (
-                <div className="flex items-center gap-2 text-slate-400">
-                  <User size={14} className="text-slate-500" />
+                <div className="flex items-center gap-2 text-text-secondary">
+                  <User size={14} className="text-text-muted" />
                   {profile.gender}
                 </div>
               )}
@@ -146,7 +144,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Stats */}
-          <div className="flex border-t border-white/[0.05] divide-x divide-white/[0.05]">
+          <div className="flex border-t border-border divide-x divide-border">
             <StatBadge label="Bài viết" value={profile.postCount ?? totalPosts} />
             <StatBadge label="Membership" value={profile.memberShip || "Free"} />
             <StatBadge label="Role" value={profile.role || "User"} />
@@ -154,21 +152,21 @@ export default function ProfilePage() {
         </div>
 
         {/* Posts section */}
-        <h2 className="text-lg font-semibold text-white mb-4">Bài viết của tôi</h2>
+        <h2 className="text-lg font-semibold text-text-primary mb-4">Bài viết của tôi</h2>
 
         {isLoading ? (
           <div className="flex justify-center py-16">
-            <Loader2 className="w-7 h-7 text-blue-500 animate-spin" />
+            <Loader2 className="w-7 h-7 text-accent animate-spin" />
           </div>
         ) : isError ? (
-          <div className="text-center py-16 text-slate-500">
+          <div className="text-center py-16 text-text-muted">
             Không thể tải bài viết. Vui lòng thử lại.
           </div>
         ) : posts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-4 text-slate-500">
+          <div className="flex flex-col items-center justify-center py-16 gap-4 text-text-muted">
             <PenSquare size={40} className="opacity-30" />
             <p>Bạn chưa có bài viết nào.</p>
-            <Link href="/create-post" className="text-blue-400 hover:underline text-sm">
+            <Link href="/create-post" className="text-accent hover:underline text-sm">
               Tạo bài viết đầu tiên →
             </Link>
           </div>
@@ -185,10 +183,10 @@ export default function ProfilePage() {
 
             <div ref={loaderRef} className="flex justify-center py-6">
               {isFetchingNextPage && (
-                <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+                <Loader2 className="w-6 h-6 text-accent animate-spin" />
               )}
               {!hasNextPage && posts.length > 0 && (
-                <p className="text-slate-600 text-sm">Đã xem hết bài viết</p>
+                <p className="text-text-muted text-sm">Đã xem hết bài viết</p>
               )}
             </div>
           </div>
