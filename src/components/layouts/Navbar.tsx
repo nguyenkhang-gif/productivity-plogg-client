@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   Linkedin,
@@ -15,6 +15,7 @@ import {
   Moon,
   Users,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useAuth } from "@/core/hooks/auth/useAuth";
@@ -24,7 +25,7 @@ import { useRouter, usePathname } from "next/navigation";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [theme, setTheme] = useState("dark");
+  const { theme = "dark", setTheme } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
   const { signOut } = useAuth();
@@ -32,18 +33,7 @@ export default function Navbar() {
   const { data: receivedRequests } = useGetReceivedRequests();
   const pendingCount = receivedRequests?.length ?? 0;
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") ?? "dark";
-    setTheme(savedTheme);
-    document.documentElement.classList.toggle("dark", savedTheme === "dark");
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
-  };
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
