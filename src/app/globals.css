@@ -2,41 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Prevent white flash on initial load */
-html {
-  background: #111;
-}
-
-/* Mặc định (mobile light) */
 body {
-  background: #111;
   font-family: Arial, Helvetica, sans-serif;
-}
-
-/* Desktop light mode */
-@screen md {
-  body {
-    /* background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("/images.jpeg"); */
-    
-    background-size: cover; /* Hoặc 'contain' tùy vào yêu cầu */
-    background-position: center; /* Đặt ảnh nằm chính giữa */
-    background-repeat: no-repeat; 
-  }
-}
-
-/* Mobile dark mode */
-.dark body {
-  background: #111;
-}
-
-/* Desktop dark mode */
-@screen md {
-  .dark body {
-    /* background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), url("/images.jpeg"); */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
 }
 
 html,
@@ -75,6 +42,28 @@ body,
     /* Border */
     --color-border:         rgba(255, 255, 255, 0.06);
     --color-border-muted:   rgba(255, 255, 255, 0.05);
+  }
+
+  html.light {
+    --color-page:           #f8fafc;
+    --color-card:           #ffffff;
+    --color-overlay:        #f1f5f9;
+    --color-modal:          #ffffff;
+
+    --color-surface:        #e2e8f0;
+    --color-surface-raised: #f1f5f9;
+
+    --color-text-primary:   #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted:     #94a3b8;
+
+    --color-accent-text:    #1d4ed8;
+    --color-accent-hover:   #1e40af;
+    --color-accent-subtle:        rgba(59, 130, 246, 0.08);
+    --color-accent-subtle-hover:  rgba(59, 130, 246, 0.15);
+
+    --color-border:         rgba(0, 0, 0, 0.08);
+    --color-border-muted:   rgba(0, 0, 0, 0.05);
   }
 }
 
