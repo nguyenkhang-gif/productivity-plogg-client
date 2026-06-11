@@ -45,7 +45,7 @@ export const useGetPostsFeed = () => {
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
       const page = pageParam as number;
-      const data = await apiGetPosts(page, PostConstants.PAGE_LIMIT);
+      const data = await apiGetPosts({ page, limit: PostConstants.PAGE_LIMIT });
       const posts = data.items;
       const totalPages = data.pagination.totalPages;
       const hasMore = page < totalPages;

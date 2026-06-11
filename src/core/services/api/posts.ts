@@ -26,11 +26,16 @@ export interface MyStats {
   totalBookmarks: number;
 }
 
-export const apiGetPosts = async (page = 1, limit = 10): Promise<PaginatedResponse<Post>> => {
-  const { data } = await axiosInstance.get(Endpoints.POST_GET_ALL, {
-    params: { page, limit },
-  });
+export interface GetPostsParams {
+  page?: number;
+  limit?: number;
+  categoryId?: string;
+  tags?: string; // comma-separated slugs
+  excludeId?: string;
+}
 
+export const apiGetPosts = async (params: GetPostsParams = {}): Promise<PaginatedResponse<Post>> => {
+  const { data } = await axiosInstance.get(Endpoints.POST_GET_ALL, { params });
   return data;
 };
 
