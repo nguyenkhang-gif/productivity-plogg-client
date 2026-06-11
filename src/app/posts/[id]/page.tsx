@@ -9,8 +9,10 @@ import { ArrowLeft, CalendarDays, Eye, Pencil } from "lucide-react";
 
 import { RootState } from "@/core/redux/store";
 import { useGetPostById } from "@/core/services/client/posts";
-import { apiViewPost } from "@/core/services/api/posts";
-import { PostCategoryObject, PostTag } from "@/core/types/post";
+import { useQuery } from "@/core/plugins/reactQuery";
+import { apiGetPosts, apiViewPost } from "@/core/services/api/posts";
+import { FetchQueryKeys } from "@/core/services/endpoints";
+import { Post, PostCategoryObject, PostTag } from "@/core/types/post";
 import { timeAgo } from "@/core/lib/timeAgo";
 import CommentSection from "@/components/posts/CommentSection";
 import ReactionButton from "@/components/posts/ReactionButton";
@@ -39,6 +41,54 @@ const TITLE_PLACEHOLDERS = [
   "No title needed",
 ];
 
+// ─── related post card ────────────────────────────────────────────────────────
+
+function RelatedPostCard({ post }: { post: Post }) {
+  const heroGradient = HERO_GRADIENTS[post.id.charCodeAt(0) % HERO_GRADIENTS.length];
+  const category =
+    post.category && typeof post.category === "object"
+      ? (post.category as PostCategoryObject).name
+      : typeof post.category === "string"
+      ? post.category
+      : null;
+
+  return (
+    <Link
+      href={`/posts/${post.id}`}
+      className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:border-accent/40 transition-colors"
+    >
+      {/* thumbnail */}
+      <div className="relative h-32 overflow-hidden bg-surface">
+        {post.imageUrls?.[0] ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={post.imageUrls[0]}
+            alt=""
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div
+            className={`w-full h-full bg-gradient-to-br ${heroGradient} dark:opacity-60 opacity-15`}
+          />
+        )}
+        {category && (
+          <span className="absolute top-2.5 left-2.5 text-[10px] px-2 py-0.5 rounded-full bg-black/40 backdrop-blur-sm text-white border border-white/10">
+            {category}
+          </span>
+        )}
+      </div>
+
+      {/* text */}
+      <div className="p-4 flex flex-col flex-1">
+        <p className="text-text-primary text-sm font-medium leading-snug line-clamp-2 group-hover:text-accent transition-colors mb-auto">
+          {post.title ?? "Untitled"}
+        </p>
+        <p className="text-text-muted text-xs mt-3">{timeAgo(post.createdAt)}</p>
+      </div>
+    </Link>
+  );
+}
+
 // ─── page ─────────────────────────────────────────────────────────────────────
 
 export default function PostDetailPage({
@@ -50,6 +100,32 @@ export default function PostDetailPage({
   const router = useRouter();
   const { profile } = useSelector((state: RootState) => state.user);
   const { data: post, isLoading, isError } = useGetPostById(id);
+
+  // Build filter params once post is available: prefer category+tags, fall back to tags-only
+  const categoryId =
+    post?.category && typeof post.category === "object"
+      ? (post.category as PostCategoryObject).id
+      : undefined;
+  const tagSlugs = post?.tags
+    ?.map((t) => (typeof t === "string" ? t : (t as PostTag).slug))
+    .filter(Boolean)
+    .join(",");
+  const hasFilters = !!categoryId || !!tagSlugs;
+
+  const { data: relatedData } = useQuery({
+    queryKey: [FetchQueryKeys.POST_GET_ALL, "related", id, categoryId, tagSlugs],
+    queryFn: () =>
+      apiGetPosts({
+        page: 1,
+        limit: 5,
+        ...(categoryId ? { categoryId } : {}),
+        ...(tagSlugs ? { tags: tagSlugs } : {}),
+        excludeId: id,
+      }),
+    enabled: hasFilters,
+  });
+
+  const relatedPosts = (relatedData?.items ?? []).slice(0, 3);
 
   useEffect(() => {
     if (!post) return;
@@ -66,7 +142,6 @@ export default function PostDetailPage({
   const isOwner =
     post.author?.id === profile.id || post.authorId === profile.id;
 
-  // Deterministic per-post so values never flicker across renders
   const heroGradient = HERO_GRADIENTS[post.id.charCodeAt(0) % HERO_GRADIENTS.length];
   const displayTitle =
     post.title ?? TITLE_PLACEHOLDERS[post.id.charCodeAt(1) % TITLE_PLACEHOLDERS.length];
@@ -78,26 +153,6 @@ export default function PostDetailPage({
 
   return (
     <div className="min-h-screen bg-page">
-
-      {/* ── sticky back bar ── */}
-      <div className="sticky top-14 z-10 flex items-center justify-between px-4 md:px-8 h-12 bg-page/80 backdrop-blur-md border-b border-border">
-        <Link
-          href="/posts"
-          className="flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors"
-        >
-          <ArrowLeft size={15} />
-          Back to feed
-        </Link>
-        {isOwner && (
-          <button
-            onClick={() => router.push(`/create-post?edit=${post.id}`)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-border hover:border-accent text-text-muted hover:text-accent transition-colors"
-          >
-            <Pencil size={13} />
-            Edit
-          </button>
-        )}
-      </div>
 
       {/* ── hero ── */}
       <div className="relative w-full min-h-[48vh] flex items-end overflow-hidden">
@@ -116,7 +171,6 @@ export default function PostDetailPage({
         ) : (
           <>
             <div className={`absolute inset-0 bg-gradient-to-br ${heroGradient} dark:opacity-70 opacity-20`} />
-            {/* subtle noise */}
             <div
               className="absolute inset-0 opacity-[0.025]"
               style={{
@@ -186,7 +240,7 @@ export default function PostDetailPage({
       {/* ── body ── */}
       <div className="max-w-2xl mx-auto px-4 md:px-6 py-10 md:py-14">
 
-        {/* secondary images (hero already shows first) */}
+        {/* secondary images */}
         {post.imageUrls?.length > 1 && (
           <div className="grid grid-cols-2 gap-1 mb-10 rounded-2xl overflow-hidden">
             {post.imageUrls.slice(1).map((url, i) => (
@@ -244,6 +298,43 @@ export default function PostDetailPage({
         <div className="mt-10">
           <CommentSection postId={post.id} />
         </div>
+
+        {/* ── more from author ── */}
+        {relatedPosts.length > 0 && (
+          <section className="mt-14 pt-10 border-t border-border">
+            <div className="flex items-center justify-between mb-5">
+              <p className="text-sm font-semibold text-text-primary">
+                More from{" "}
+                <span className="text-accent">{post.author?.fullName ?? "this author"}</span>
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {relatedPosts.map((rp) => (
+                <RelatedPostCard key={rp.id} post={rp} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── bottom nav ── */}
+        <div className="mt-12 pt-8 border-t border-border flex items-center justify-between">
+          <Link
+            href="/posts"
+            className="flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors group"
+          >
+            <ArrowLeft size={15} className="group-hover:-translate-x-0.5 transition-transform" />
+            Back to feed
+          </Link>
+          {isOwner && (
+            <button
+              onClick={() => router.push(`/create-post?edit=${post.id}`)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-border hover:border-accent text-text-muted hover:text-accent transition-colors"
+            >
+              <Pencil size={13} />
+              Edit post
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -254,7 +345,6 @@ export default function PostDetailPage({
 function Skeleton() {
   return (
     <div className="min-h-screen bg-page animate-pulse">
-      <div className="h-12 bg-surface border-b border-border" />
       <div className="min-h-[48vh] bg-surface flex items-end">
         <div className="max-w-2xl mx-auto px-4 md:px-6 pb-12 pt-20 w-full space-y-4">
           <div className="h-5 w-20 bg-surface-raised rounded-full" />
