@@ -8,6 +8,7 @@ import { Post } from "@/core/types/post";
 import { useFriendship } from "@/core/hooks/friendship/useFriendship";
 import { FileText, BookOpen, Users, Upload, LayoutDashboard } from "lucide-react";
 import { styles } from "@/core/config/styles";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 interface LeftSidebarProps {
   posts?: Post[];
@@ -37,14 +38,7 @@ export default function LeftSidebar({ posts }: LeftSidebarProps) {
       <div className={`${styles.card} overflow-hidden`}>
         {/* Profile section */}
         <Link href="/profile" className="flex items-center gap-3 px-4 pt-4 pb-3 hover:bg-white/[0.03] transition-colors group">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden flex-shrink-0">
-            {profile.profilePic ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={profile.profilePic} alt={profile.fullName} className="w-full h-full object-cover" />
-            ) : (
-              profile.fullName?.[0]?.toUpperCase() ?? "U"
-            )}
-          </div>
+          <UserAvatar src={profile.profilePic} name={profile.fullName} size="lg" />
           <div className="min-w-0">
             <p className="text-text-primary text-sm font-semibold truncate group-hover:text-accent-text transition-colors">
               {profile.fullName}
@@ -94,13 +88,8 @@ export default function LeftSidebar({ posts }: LeftSidebarProps) {
           <div className="flex flex-col gap-2.5">
             {friendList.map((f) => (
               <div key={f!.id} className="flex items-center gap-2.5">
-                <div className="relative w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold overflow-hidden flex-shrink-0">
-                  {f!.profilePic ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={f!.profilePic} alt={f!.fullName} className="w-full h-full object-cover" />
-                  ) : (
-                    f!.fullName?.[0]?.toUpperCase() ?? "U"
-                  )}
+                <div className="relative flex-shrink-0">
+                  <UserAvatar src={f!.profilePic} name={f!.fullName} size="xs" />
                   <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-slate-600 border border-card" />
                 </div>
                 <span className="text-text-secondary text-xs truncate">{f!.fullName}</span>

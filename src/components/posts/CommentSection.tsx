@@ -8,6 +8,7 @@ import { Comment } from "@/core/types/comment";
 import FilePicker from "@/components/upload/FilePicker";
 import { ImagePlus, Loader2, Send, X } from "lucide-react";
 import CommentItem from "./CommentItem";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 export default function CommentSection({ postId }: { postId: string }) {
   const { profile } = useSelector((state: RootState) => state.user);
@@ -82,9 +83,7 @@ export default function CommentSection({ postId }: { postId: string }) {
 
       <div className="mt-3 pt-3 border-t border-border">
         <div className="flex gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0 mt-1">
-            {profile.fullName?.[0]?.toUpperCase() ?? "U"}
-          </div>
+          <UserAvatar src={profile.profilePic} name={profile.fullName} size="sm" className="mt-1" />
           <div className="flex-1 bg-surface border border-border rounded-xl focus-within:border-accent/50 transition-colors">
             <textarea
               value={text}

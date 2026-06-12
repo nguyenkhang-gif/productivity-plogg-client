@@ -16,20 +16,7 @@ import {
   Check,
   X,
 } from "lucide-react";
-
-function Avatar({ name, profilePic, size = "md" }: { name: string; profilePic?: string; size?: "sm" | "md" }) {
-  const dim = size === "sm" ? "w-8 h-8 text-xs" : "w-10 h-10 text-sm";
-  return (
-    <div className={`${dim} rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold flex-shrink-0 overflow-hidden`}>
-      {profilePic ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={profilePic} alt={name} className="w-full h-full object-cover" />
-      ) : (
-        name?.[0]?.toUpperCase() ?? "U"
-      )}
-    </div>
-  );
-}
+import UserAvatar from "@/components/ui/UserAvatar";
 
 export default function FriendsPage() {
   const { profile } = useSelector((s: RootState) => s.user);
@@ -139,7 +126,7 @@ export default function FriendsPage() {
                   const isPending = sentToIds.has(user.id);
                   return (
                     <div key={user.id} className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3">
-                      <Avatar name={user.fullName} profilePic={user.profilePic} />
+                      <UserAvatar name={user.fullName} src={user.profilePic} size="lg" />
                       <div className="flex-1 min-w-0">
                         <p className="text-text-primary text-sm font-semibold truncate">{user.fullName}</p>
                         <p className="text-text-muted text-xs">@{user.username}</p>
@@ -193,7 +180,7 @@ export default function FriendsPage() {
                 const otherId = f.userId === profile.id ? f.friendId : f.userId;
                 return (
                   <div key={f.id} className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3">
-                    <Avatar name={info?.fullName ?? "?"} profilePic={info?.profilePic} />
+                    <UserAvatar name={info?.fullName} src={info?.profilePic} size="lg" />
                     <div className="flex-1 min-w-0">
                       <p className="text-text-primary text-sm font-semibold truncate">{info?.fullName ?? "—"}</p>
                       <p className="text-text-muted text-xs">@{info?.username ?? "—"}</p>
@@ -228,7 +215,7 @@ export default function FriendsPage() {
                 const info = f.friendInfo;
                 return (
                   <div key={f.id} className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3">
-                    <Avatar name={info?.fullName ?? "?"} profilePic={info?.profilePic} />
+                    <UserAvatar name={info?.fullName} src={info?.profilePic} size="lg" />
                     <div className="flex-1 min-w-0">
                       <p className="text-text-primary text-sm font-semibold truncate">{info?.fullName ?? "—"}</p>
                       <p className="text-text-muted text-xs">@{info?.username ?? "—"}</p>

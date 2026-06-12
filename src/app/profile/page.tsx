@@ -9,6 +9,7 @@ import { Post } from "@/core/types/post";
 import PostCard from "@/components/posts/PostCard";
 import EditProfileDialog from "@/components/profile/EditProfileDialog";
 import ImagePreviewDialog from "@/components/ui/ImagePreviewDialog";
+import UserAvatar from "@/components/ui/UserAvatar";
 import {
   User,
   Mail,
@@ -68,8 +69,6 @@ export default function ProfilePage() {
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const avatarLetter = profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? "U";
-
   return (
     <div className="min-h-screen bg-page text-text-primary px-4 py-10">
       <div className="max-w-2xl mx-auto">
@@ -82,20 +81,13 @@ export default function ProfilePage() {
           {/* Avatar + Info */}
           <div className="px-6 pb-6">
             <div className="-mt-10 mb-4 flex items-end justify-between">
-              <div
-                onClick={() => profile.profilePic && setPreviewAvatar(true)}
-                className={`w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-card shadow-xl overflow-hidden ${profile.profilePic ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
-              >
-                {profile.profilePic ? (
-                  <img
-                    src={profile.profilePic}
-                    alt={profile.fullName}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  avatarLetter
-                )}
-              </div>
+              <UserAvatar
+                src={profile.profilePic}
+                name={profile.fullName ?? profile.username}
+                size="xl"
+                className="border-4 border-card shadow-xl"
+                onClick={() => setPreviewAvatar(true)}
+              />
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowEditDialog(true)}

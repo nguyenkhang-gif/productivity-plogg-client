@@ -16,6 +16,7 @@ import { Post, PostCategoryObject, PostTag } from "@/core/types/post";
 import { timeAgo } from "@/core/lib/timeAgo";
 import CommentSection from "@/components/posts/CommentSection";
 import ReactionButton from "@/components/posts/ReactionButton";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 // ─── constants ────────────────────────────────────────────────────────────────
 
@@ -201,18 +202,7 @@ export default function PostDetailPage({
 
           {/* author + meta */}
           <div className="flex items-center gap-3 mt-8">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden shrink-0">
-              {post.author?.profilePic ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={post.author.profilePic}
-                  alt={post.author.fullName}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                post.author?.fullName?.[0]?.toUpperCase() ?? "U"
-              )}
-            </div>
+            <UserAvatar src={post.author?.profilePic} name={post.author?.fullName} size="md" />
             <div>
               <p className="text-text-secondary text-sm font-medium leading-tight">
                 {post.author?.fullName ?? "Unknown"}

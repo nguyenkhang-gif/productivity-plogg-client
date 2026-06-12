@@ -21,6 +21,7 @@ import { RootState } from "@/core/redux/store";
 import { useAuth } from "@/core/hooks/auth/useAuth";
 import { useGetReceivedRequests } from "@/core/services/client/friendships";
 import { useRouter, usePathname } from "next/navigation";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -128,14 +129,7 @@ export default function Navbar() {
                 className="flex items-center space-x-2 text-text-muted hover:text-text-primary transition-colors"
                 aria-label="User menu"
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold overflow-hidden flex-shrink-0">
-                  {profile.profilePic ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={profile.profilePic} alt={profile.fullName} className="w-full h-full object-cover" />
-                  ) : (
-                    profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
-                  )}
-                </div>
+                <UserAvatar src={profile.profilePic} name={profile.fullName ?? profile.username} size="sm" />
                 <span className="text-text-secondary">
                   {profile.fullName || profile.username || "Profile"}
                 </span>
@@ -205,14 +199,7 @@ export default function Navbar() {
                   className="flex items-center space-x-2 text-text-muted hover:text-text-primary transition-colors"
                   aria-label="User menu"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold overflow-hidden flex-shrink-0">
-                    {profile.profilePic ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={profile.profilePic} alt={profile.fullName} className="w-full h-full object-cover" />
-                    ) : (
-                      profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
-                    )}
-                  </div>
+                  <UserAvatar src={profile.profilePic} name={profile.fullName ?? profile.username} size="sm" />
                   <span>{profile.fullName || profile.username || "Profile"}</span>
                 </button>
                 {isDropdownOpen && (

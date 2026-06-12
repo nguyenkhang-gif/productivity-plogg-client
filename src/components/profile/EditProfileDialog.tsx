@@ -8,6 +8,7 @@ import { updateProfile, UserProfile } from "@/core/redux/user";
 import { profileApi } from "@/core/services/api/profile";
 import { cloudinaryApi } from "@/core/services/api/cloudinary";
 import FilePicker from "@/components/upload/FilePicker";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 interface Props {
   profile: UserProfile;
@@ -29,7 +30,6 @@ export default function EditProfileDialog({ profile, onClose }: Props) {
   const [showPicker, setShowPicker] = useState(false);
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
-  const avatarLetter = fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? "U";
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,14 +85,7 @@ export default function EditProfileDialog({ profile, onClose }: Props) {
           {/* Avatar picker */}
           <div className="flex flex-col items-center gap-3">
             <div className="relative group">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-card overflow-hidden">
-                {profilePic ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={profilePic} alt="avatar" className="w-full h-full object-cover" />
-                ) : (
-                  avatarLetter
-                )}
-              </div>
+              <UserAvatar src={profilePic} name={fullName ?? profile.username} size="xl" className="border-4 border-card" />
               <button
                 onClick={() => avatarInputRef.current?.click()}
                 disabled={isUploadingAvatar}

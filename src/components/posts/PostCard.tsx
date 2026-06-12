@@ -13,6 +13,7 @@ import { timeAgo } from "@/core/lib/timeAgo";
 import { readingTime } from "@/core/lib/readingTime";
 import { apiBookmarkPost, apiUnbookmarkPost } from "@/core/services/api/posts";
 import { styles } from "@/core/config/styles";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 interface PostCardProps {
   post: Post;
@@ -96,14 +97,7 @@ export default function PostCard({ post, currentUserId, onDelete, onTagClick }: 
         onClick={() => router.push(`/posts/${post.id}`)}
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-md overflow-hidden">
-            {post.author?.profilePic ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={post.author.profilePic} alt={post.author.fullName} className="w-full h-full object-cover" />
-            ) : (
-              post.author?.fullName?.[0]?.toUpperCase() ?? "U"
-            )}
-          </div>
+          <UserAvatar src={post.author?.profilePic} name={post.author?.fullName} size="lg" className="shadow-md" />
           <div>
             <p className="text-text-primary text-sm font-semibold leading-tight">
               {post.author?.fullName ?? "Unknown"}
