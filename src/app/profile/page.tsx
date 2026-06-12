@@ -8,6 +8,7 @@ import { useGetPostsByAuthor, useDeletePost } from "@/core/services/client/posts
 import { useInfiniteScroll } from "@/core/hooks/useInfiniteScroll";
 import { Post } from "@/core/types/post";
 import PostCard from "@/components/posts/PostCard";
+import PostSkeleton from "@/components/posts/PostSkeleton";
 import EditProfileDialog from "@/components/profile/EditProfileDialog";
 import ProfileCard from "@/components/profile/ProfileCard";
 import ImagePreviewDialog from "@/components/ui/ImagePreviewDialog";
@@ -52,8 +53,8 @@ export default function ProfilePage() {
         <h2 className="text-lg font-semibold text-text-primary mb-4">Bài viết của tôi</h2>
 
         {isLoading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="w-7 h-7 text-accent animate-spin" />
+          <div className="flex flex-col gap-4">
+            {Array.from({ length: 3 }).map((_, i) => <PostSkeleton key={i} />)}
           </div>
         ) : isError ? (
           <div className="text-center py-16 text-text-muted">
