@@ -151,25 +151,25 @@ export default function UploadPage() {
   const { items, pagination } = data;
 
   return (
-    <div className="min-h-screen bg-[#1C1F2E] text-white px-6 xl:px-12 py-6 w-full">
+    <div className="min-h-screen bg-page px-6 xl:px-12 py-6 w-full">
       <div className="flex items-start justify-between mb-1">
-        <h1 className="text-2xl font-bold">File Manager</h1>
+        <h1 className="text-2xl font-bold text-text-primary">File Manager</h1>
         <ProviderSelector provider={provider} onSelect={handleSelectProvider} />
       </div>
 
-      <p className="text-slate-400 text-sm mb-6">
+      <p className="text-text-muted text-sm mb-6">
         Upload và quản lý file, icon của bạn &middot;{" "}
-        <span className="text-blue-400">{currentProvider.label}</span>
+        <span className="text-accent-text">{currentProvider.label}</span>
       </p>
 
       {/* Tab */}
-      <div className="flex gap-1 bg-[#161925] rounded-xl p-1 w-fit mb-6">
+      <div className="flex gap-1 bg-surface-raised rounded-xl p-1 w-fit mb-6">
         {(["files", "icons"] as Bucket[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
-              tab === t ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"
+              tab === t ? "bg-accent text-white" : "text-text-muted hover:text-text-primary"
             }`}
           >
             {t === "files" ? "Files" : "Icons"}

@@ -25,8 +25,8 @@ export default function DropZone({ tab, onFiles }: Props) {
       onClick={() => inputRef.current?.click()}
       className={`relative border-2 border-dashed rounded-2xl p-10 mb-6 flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors ${
         isDragging
-          ? "border-blue-500 bg-blue-500/10"
-          : "border-white/10 hover:border-blue-500/50 hover:bg-white/[0.02]"
+          ? "border-accent bg-accent/10"
+          : "border-border hover:border-accent/50 hover:bg-surface-raised/50"
       }`}
     >
       <input
@@ -36,9 +36,9 @@ export default function DropZone({ tab, onFiles }: Props) {
         className="hidden"
         onChange={(e) => { if (e.target.files?.length) onFiles(e.target.files); e.target.value = ""; }}
       />
-      <Upload size={32} className="text-slate-500" />
-      <p className="text-slate-400 text-sm">Kéo thả file vào đây hoặc click để chọn</p>
-      <p className="text-slate-600 text-xs">
+      <Upload size={32} className="text-text-muted" />
+      <p className="text-text-secondary text-sm">Kéo thả file vào đây hoặc click để chọn</p>
+      <p className="text-text-muted text-xs">
         {tab === "files" ? "Ảnh, tài liệu, v.v." : "PNG, JPG, SVG cho avatar/icon"}
       </p>
     </div>

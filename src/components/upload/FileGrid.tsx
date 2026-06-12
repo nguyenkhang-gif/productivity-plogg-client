@@ -19,14 +19,14 @@ export default function FileGrid({ items, isLoading, copiedUrl, onCopy, onDelete
   if (isLoading) {
     return (
       <div className="flex justify-center py-16">
-        <Loader2 size={28} className="text-blue-400 animate-spin" />
+        <Loader2 size={28} className="text-accent animate-spin" />
       </div>
     );
   }
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-3 text-slate-600">
+      <div className="flex flex-col items-center justify-center py-20 gap-3 text-text-muted">
         <FolderOpen size={40} className="opacity-40" />
         <p className="text-sm">Chưa có file nào</p>
       </div>

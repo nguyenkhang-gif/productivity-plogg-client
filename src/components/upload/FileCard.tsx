@@ -22,29 +22,29 @@ export default function FileCard({ item, isCopied, onCopy, onDelete, isSelected,
   return (
     <div
       onClick={selectable ? () => onSelect(item) : undefined}
-      className={`group relative bg-[#161925] border rounded-xl overflow-hidden transition-colors ${
+      className={`group relative bg-surface-raised border rounded-xl overflow-hidden transition-colors ${
         selectable
-          ? `cursor-pointer ${isSelected ? "border-blue-500 ring-2 ring-blue-500/30" : "border-white/[0.06] hover:border-blue-400/50"}`
-          : "border-white/[0.06] hover:border-blue-500/30"
+          ? `cursor-pointer ${isSelected ? "border-accent ring-2 ring-accent/30" : "border-border hover:border-accent/50"}`
+          : "border-border hover:border-accent/30"
       }`}
     >
       <div className="aspect-square flex items-center justify-center bg-modal relative">
         {img ? (
           <Image src={item.publicUrl} alt={item.name} fill className="object-cover" sizes="200px" />
         ) : (
-          <FileText size={32} className="text-slate-600" />
+          <FileText size={32} className="text-text-muted" />
         )}
         {isSelected && (
-          <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center">
-            <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+          <div className="absolute inset-0 bg-accent/20 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center">
               <Check size={13} className="text-white" />
             </div>
           </div>
         )}
       </div>
       <div className="p-2.5">
-        <p className="text-slate-300 text-xs font-medium truncate">{item.name}</p>
-        <p className="text-slate-600 text-[10px] mt-0.5">{formatBytes(item.size)}</p>
+        <p className="text-text-secondary text-xs font-medium truncate">{item.name}</p>
+        <p className="text-text-muted text-[10px] mt-0.5">{formatBytes(item.size)}</p>
       </div>
 
       {/* Default mode overlay */}

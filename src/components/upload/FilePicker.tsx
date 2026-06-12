@@ -78,15 +78,15 @@ export default function FilePicker({ open, onClose, onSelect }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-      <div className="bg-modal border border-white/[0.08] rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[85vh]">
+      <div className="bg-modal border border-border rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[85vh]">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border flex-shrink-0">
           <div>
-            <p className="text-white font-semibold">Chọn ảnh từ thư viện</p>
-            <p className="text-slate-500 text-xs mt-0.5">
+            <p className="text-text-primary font-semibold">Chọn ảnh từ thư viện</p>
+            <p className="text-text-muted text-xs mt-0.5">
               {selected ? (
-                <span className="text-blue-400 truncate max-w-xs inline-block">{selected.name}</span>
+                <span className="text-accent-text truncate max-w-xs inline-block">{selected.name}</span>
               ) : (
                 "Click vào ảnh để chọn"
               )}
@@ -94,20 +94,20 @@ export default function FilePicker({ open, onClose, onSelect }: Props) {
           </div>
           <div className="flex items-center gap-2">
             <ProviderSelector provider={provider} onSelect={handleSelectProvider} />
-            <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
+            <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors">
               <X size={16} />
             </button>
           </div>
         </div>
 
         {/* Tab */}
-        <div className="flex gap-1 bg-[#161925] rounded-xl p-1 w-fit mx-5 mt-4 flex-shrink-0">
+        <div className="flex gap-1 bg-surface-raised rounded-xl p-1 w-fit mx-5 mt-4 flex-shrink-0">
           {(["files", "icons"] as Bucket[]).map((t) => (
             <button
               key={t}
               onClick={() => { setTab(t); setSelected(null); }}
               className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                tab === t ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"
+                tab === t ? "bg-accent text-white" : "text-text-muted hover:text-text-primary"
               }`}
             >
               {t === "files" ? "Files" : "Icons"}
@@ -135,17 +135,17 @@ export default function FilePicker({ open, onClose, onSelect }: Props) {
         </div>
 
         {/* Footer */}
-        <div className="flex gap-2 px-5 py-4 border-t border-white/[0.06] flex-shrink-0">
+        <div className="flex gap-2 px-5 py-4 border-t border-border flex-shrink-0">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl border border-white/10 text-slate-400 text-sm hover:bg-white/5 transition-colors"
+            className="flex-1 py-2.5 rounded-xl border border-border text-text-muted text-sm hover:bg-surface-raised transition-colors"
           >
             Hủy
           </button>
           <button
             onClick={handleConfirm}
             disabled={!selected}
-            className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-xl bg-accent hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors flex items-center justify-center gap-2"
           >
             <Check size={14} />
             Chèn URL
