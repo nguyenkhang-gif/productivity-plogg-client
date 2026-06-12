@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useGetComments, useCreateComment } from "@/core/services/client/comments";
@@ -9,6 +9,7 @@ import FilePicker from "@/components/upload/FilePicker";
 import { ImagePlus, Loader2, Send, X } from "lucide-react";
 import CommentItem from "./CommentItem";
 import UserAvatar from "@/components/ui/UserAvatar";
+import { useInfiniteScroll } from "@/core/hooks/useInfiniteScroll";
 
 export default function CommentSection({ postId }: { postId: string }) {
   const { profile } = useSelector((state: RootState) => state.user);
@@ -19,24 +20,10 @@ export default function CommentSection({ postId }: { postId: string }) {
   const [text, setText] = useState("");
   const [iconUrl, setIconUrl] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const loaderRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const { mutate: createComment, isPending: isPosting } = useCreateComment(postId);
 
-  useEffect(() => {
-    const el = loaderRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasMore, isFetchingNextPage, fetchNextPage, comments.length]);
+  const loaderRef = useInfiniteScroll({ fetchNextPage, hasNextPage: hasMore, isFetchingNextPage, threshold: 0.1 });
 
   const handleSubmit = () => {
     const trimmed = text.trim();

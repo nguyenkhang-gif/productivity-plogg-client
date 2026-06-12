@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
@@ -13,12 +13,12 @@ import LeftSidebar from "@/components/posts/sidebar/LeftSidebar";
 import RightSidebar from "@/components/posts/sidebar/RightSidebar";
 import { SortOrder } from "@/core/enums";
 import { styles } from "@/core/config/styles";
+import { useInfiniteScroll } from "@/core/hooks/useInfiniteScroll";
 
 const PRELOAD_BEFORE_END = 3;
 
 export default function PostsPage() {
   const { profile } = useSelector((state: RootState) => state.user);
-  const sentinelRef = useRef<HTMLDivElement>(null);
   const [sort, setSort] = useState<SortOrder>(SortOrder.Newest);
   const [tagFilter, setTagFilter] = useState<string | null>(null);
 
@@ -58,20 +58,7 @@ export default function PostsPage() {
 
   const { mutate: deletePost } = useDeletePost();
 
-  useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasMore, isFetchingNextPage, fetchNextPage, filteredPosts.length]);
+  const sentinelRef = useInfiniteScroll({ fetchNextPage, hasNextPage: hasMore, isFetchingNextPage, threshold: 0 });
 
   if (isError) {
     return (

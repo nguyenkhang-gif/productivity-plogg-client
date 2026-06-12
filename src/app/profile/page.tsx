@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useGetPostsByAuthor, useDeletePost } from "@/core/services/client/posts";
+import { useInfiniteScroll } from "@/core/hooks/useInfiniteScroll";
 import { Post } from "@/core/types/post";
 import PostCard from "@/components/posts/PostCard";
 import EditProfileDialog from "@/components/profile/EditProfileDialog";
@@ -31,7 +32,6 @@ function StatBadge({ label, value }: { label: string; value: string | number }) 
 
 export default function ProfilePage() {
   const { profile } = useSelector((state: RootState) => state.user);
-  const loaderRef = useRef<HTMLDivElement>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [previewAvatar, setPreviewAvatar] = useState(false);
 
@@ -52,22 +52,7 @@ export default function ProfilePage() {
   );
   const totalPosts = data?.pages[0]?.total ?? 0;
 
-  useEffect(() => {
-    const el = loaderRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const loaderRef = useInfiniteScroll({ fetchNextPage, hasNextPage: !!hasNextPage, isFetchingNextPage });
 
   return (
     <div className="min-h-screen bg-page text-text-primary px-4 py-10">
