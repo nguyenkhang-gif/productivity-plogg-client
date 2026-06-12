@@ -40,9 +40,7 @@ export default function Navbar() {
     setIsDropdownOpen(false);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   const handleLogin = () => {
     router.push("/auth");
@@ -56,18 +54,10 @@ export default function Navbar() {
 
   const isActive = (href: string) => pathname === href;
 
-  const linkClass = (href: string) =>
-    isActive(href)
-      ? "text-white border-b-2 border-blue-500 pb-0.5 transition-colors"
-      : "text-white/60 hover:text-white transition-colors dark:text-white/60 dark:hover:text-white";
-
-  const linkClassLight = (href: string) =>
-    isActive(href)
-      ? "text-black border-b-2 border-blue-500 pb-0.5 transition-colors"
-      : "text-black/50 hover:text-black transition-colors";
-
   const navLinkClass = (href: string) =>
-    theme === "dark" ? linkClass(href) : linkClassLight(href);
+    isActive(href)
+      ? "text-text-primary border-b-2 border-accent pb-0.5 transition-colors"
+      : "text-text-muted hover:text-text-primary transition-colors";
 
   if (isLoading) return null;
 
@@ -84,18 +74,8 @@ export default function Navbar() {
 
   const navLinks = isAuth ? [...publicNavLinks, ...privateNavLinks] : publicNavLinks;
 
-  const iconClass = theme === "dark"
-    ? "hover:text-white text-white/60 transition-colors"
-    : "hover:text-black text-black/50 transition-colors";
-
   return (
-    <nav
-      className={`px-4 py-3 w-full fixed z-10 border-b ${
-        theme === "dark"
-          ? "bg-black/70 backdrop-blur-lg border-white/[0.08] text-white"
-          : "bg-white/80 backdrop-blur-lg border-black/[0.08] text-black"
-      }`}
-    >
+    <nav className="px-4 py-3 w-full fixed z-10 border-b bg-page/80 backdrop-blur-lg border-border text-text-primary">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold hover:opacity-80 transition-opacity">
@@ -122,22 +102,20 @@ export default function Navbar() {
 
         {/* Right cluster: social icons + theme toggle + user — Desktop */}
         <div className="hidden md:flex items-center space-x-4">
-          <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className={iconClass}>
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-text-primary transition-colors">
             <Linkedin className="w-5 h-5" />
           </a>
-          <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className={iconClass}>
+          <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-text-primary transition-colors">
             <Facebook className="w-5 h-5" />
           </a>
-          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className={iconClass}>
+          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-text-primary transition-colors">
             <Instagram className="w-5 h-5" />
           </a>
 
-          {/* Theme toggle — right cluster */}
+          {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className={`p-1.5 rounded-full transition-colors ${
-              theme === "dark" ? "hover:bg-white/10" : "hover:bg-black/10"
-            }`}
+            className="p-1.5 rounded-full text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
             aria-label="Toggle theme"
           >
             {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -147,7 +125,7 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={toggleDropdown}
-                className={`flex items-center space-x-2 transition-colors ${iconClass}`}
+                className="flex items-center space-x-2 text-text-muted hover:text-text-primary transition-colors"
                 aria-label="User menu"
               >
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold overflow-hidden flex-shrink-0">
@@ -158,26 +136,22 @@ export default function Navbar() {
                     profile.fullName?.[0]?.toUpperCase() ?? profile.username?.[0]?.toUpperCase() ?? <User size={16} />
                   )}
                 </div>
-                <span className={theme === "dark" ? "text-white/80" : "text-black/70"}>
+                <span className="text-text-secondary">
                   {profile.fullName || profile.username || "Profile"}
                 </span>
               </button>
               {isDropdownOpen && (
-                <div
-                  className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg z-20 ${
-                    theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"
-                  }`}
-                >
+                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg z-20 bg-modal border border-border">
                   <Link
                     href="/profile"
-                    className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="block px-4 py-2 text-text-primary hover:bg-surface-raised transition-colors"
                     onClick={() => setIsDropdownOpen(false)}
                   >
                     Profile
                   </Link>
                   <Link
                     href="/friends"
-                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-text-primary hover:bg-surface-raised transition-colors"
                     onClick={() => setIsDropdownOpen(false)}
                   >
                     <Users className="w-4 h-4" />
@@ -190,7 +164,7 @@ export default function Navbar() {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
+                    className="w-full text-left px-4 py-2 text-text-primary hover:bg-surface-raised transition-colors flex items-center space-x-2"
                   >
                     <LogOut className="w-5 h-5" />
                     <span>Logout</span>
@@ -201,7 +175,7 @@ export default function Navbar() {
           ) : (
             <button
               onClick={handleLogin}
-              className={`flex items-center space-x-2 transition-colors ${iconClass}`}
+              className="flex items-center space-x-2 text-text-muted hover:text-text-primary transition-colors"
             >
               <LogIn className="w-5 h-5" />
               <span>Login</span>
@@ -212,11 +186,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div
-          className={`md:hidden px-4 pb-4 pt-2 ${
-            theme === "dark" ? "text-white" : "text-black"
-          }`}
-        >
+        <div className="md:hidden px-4 pb-4 pt-2 text-text-primary">
           <div className="flex flex-col space-y-4">
             {navLinks.map(({ href, label }) => (
               <Link
@@ -232,7 +202,7 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={toggleDropdown}
-                  className={`flex items-center space-x-2 transition-colors ${iconClass}`}
+                  className="flex items-center space-x-2 text-text-muted hover:text-text-primary transition-colors"
                   aria-label="User menu"
                 >
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold overflow-hidden flex-shrink-0">
@@ -246,21 +216,17 @@ export default function Navbar() {
                   <span>{profile.fullName || profile.username || "Profile"}</span>
                 </button>
                 {isDropdownOpen && (
-                  <div
-                    className={`mt-2 w-full rounded-md shadow-lg ${
-                      theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"
-                    }`}
-                  >
+                  <div className="mt-2 w-full rounded-md shadow-lg bg-modal border border-border">
                     <Link
                       href="/profile"
-                      className="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      className="block px-4 py-2 text-text-primary hover:bg-surface-raised transition-colors"
                       onClick={() => { toggleDropdown(); toggleMenu(); }}
                     >
                       Profile
                     </Link>
                     <Link
                       href="/friends"
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 text-text-primary hover:bg-surface-raised transition-colors"
                       onClick={() => { toggleDropdown(); toggleMenu(); }}
                     >
                       <Users className="w-4 h-4" />
@@ -273,7 +239,7 @@ export default function Navbar() {
                     </Link>
                     <button
                       onClick={() => { handleLogout(); toggleMenu(); }}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 text-text-primary hover:bg-surface-raised transition-colors flex items-center space-x-2"
                     >
                       <LogOut className="w-5 h-5" />
                       <span>Logout</span>
@@ -284,7 +250,7 @@ export default function Navbar() {
             ) : (
               <button
                 onClick={() => { handleLogin(); toggleMenu(); }}
-                className={`flex items-center space-x-2 transition-colors ${iconClass}`}
+                className="flex items-center space-x-2 text-text-muted hover:text-text-primary transition-colors"
               >
                 <LogIn className="w-5 h-5" />
                 <span>Login</span>
@@ -292,20 +258,18 @@ export default function Navbar() {
             )}
             {/* Social icons + theme toggle row */}
             <div className="flex items-center space-x-4 pt-1">
-              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className={iconClass} onClick={toggleMenu}>
+              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-text-primary transition-colors" onClick={toggleMenu}>
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className={iconClass} onClick={toggleMenu}>
+              <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-text-primary transition-colors" onClick={toggleMenu}>
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className={iconClass} onClick={toggleMenu}>
+              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-text-primary transition-colors" onClick={toggleMenu}>
                 <Instagram className="w-5 h-5" />
               </a>
               <button
                 onClick={toggleTheme}
-                className={`p-1.5 rounded-full transition-colors ${
-                  theme === "dark" ? "hover:bg-white/10" : "hover:bg-black/10"
-                }`}
+                className="p-1.5 rounded-full text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
                 aria-label="Toggle theme"
               >
                 {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
