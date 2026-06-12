@@ -20,6 +20,7 @@ export default function CreatePostPage() {
 
   const { data: editPost } = useGetPostById(editId ?? "");
 
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [urlInput, setUrlInput] = useState("");
@@ -33,6 +34,7 @@ export default function CreatePostPage() {
   // Prefill khi ở edit mode
   useEffect(() => {
     if (editId && editPost?.id === editId) {
+      setTitle(editPost.title ?? "");
       setContent(editPost.content);
       setImageUrls(editPost.imageUrls ?? []);
       setTags((editPost.tags ?? []).map((t) =>
@@ -85,7 +87,7 @@ export default function CreatePostPage() {
     if (!content.trim()) return;
 
     const body = {
-      title: deriveTitle(content),
+      title: title.trim() || deriveTitle(content),
       content,
       imageUrls,
       tags: tags.length > 0 ? tags : undefined,
@@ -113,25 +115,25 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="min-h-screen bg-page text-slate-200 py-10 px-4">
+    <div className="min-h-screen bg-page py-10 px-4">
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Sparkles className="text-blue-400" size={24} />
+          <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
+            <Sparkles className="text-accent-text" size={24} />
             {editId ? "Chỉnh sửa bài viết" : "Viết Blog Markdown"}
           </h1>
-          <div className="flex bg-slate-800 p-1 rounded-lg border border-slate-700">
+          <div className="flex bg-surface p-1 rounded-lg border border-border">
             <button
               onClick={() => setMode("edit")}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-md transition-all ${mode === "edit" ? "bg-blue-600 text-white" : "hover:bg-slate-700"}`}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-md transition-all text-sm ${mode === "edit" ? "bg-accent text-white" : "text-text-muted hover:bg-surface-raised hover:text-text-primary"}`}
             >
               <Edit3 size={16} /> Soạn thảo
             </button>
             <button
               onClick={() => setMode("preview")}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-md transition-all ${mode === "preview" ? "bg-blue-600 text-white" : "hover:bg-slate-700"}`}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-md transition-all text-sm ${mode === "preview" ? "bg-accent text-white" : "text-text-muted hover:bg-surface-raised hover:text-text-primary"}`}
             >
               <Eye size={16} /> Xem trước
             </button>
@@ -140,7 +142,19 @@ export default function CreatePostPage() {
 
         <div className="grid grid-cols-1 gap-8">
           {mode === "edit" ? (
-            <div className="bg-card border border-slate-800 rounded-2xl p-6 space-y-6 shadow-xl">
+            <div className="bg-card border border-border rounded-2xl p-6 space-y-6 shadow-xl">
+              {/* Title */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-text-muted">Tiêu đề</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Tiêu đề bài viết..."
+                  className="w-full bg-surface-raised border border-border rounded-xl px-4 py-3 text-base text-text-primary placeholder:text-text-muted outline-none focus:ring-2 focus:ring-accent transition-all"
+                />
+              </div>
+
               {/* Category selector */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-text-muted">Danh mục</label>
@@ -161,7 +175,7 @@ export default function CreatePostPage() {
                         className={`px-3 py-1.5 rounded-xl text-sm font-medium border transition-colors ${
                           active
                             ? "bg-accent border-accent text-white"
-                            : "border-white/[0.08] text-text-muted hover:border-accent-text hover:text-text-primary"
+                            : "border-border text-text-muted hover:border-accent/40 hover:text-text-primary"
                         }`}
                       >
                         {labels[cat]}
@@ -176,7 +190,7 @@ export default function CreatePostPage() {
                 <label className="text-sm font-medium text-text-muted flex items-center gap-1.5">
                   <Tag size={13} /> Tags
                 </label>
-                <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-accent">
+                <div className="flex items-center gap-2 bg-surface-raised border border-border rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-accent">
                   <input
                     type="text"
                     value={tagInput}
@@ -190,7 +204,7 @@ export default function CreatePostPage() {
                       }
                     }}
                     placeholder="Nhập tag rồi nhấn Enter..."
-                    className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-slate-600 outline-none"
+                    className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none"
                   />
                 </div>
                 {tags.length > 0 && (
@@ -209,31 +223,31 @@ export default function CreatePostPage() {
 
               {/* Image URLs */}
               <div className="space-y-3">
-                <label className="text-sm font-medium text-slate-400">Ảnh thumbnail (URL)</label>
+                <label className="text-sm font-medium text-text-muted">Ảnh thumbnail (URL)</label>
                 <div className="flex gap-2">
-                  <div className="flex-1 flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-blue-500">
-                    <LinkIcon size={14} className="text-slate-500 flex-shrink-0" />
+                  <div className="flex-1 flex items-center gap-2 bg-surface-raised border border-border rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-accent">
+                    <LinkIcon size={14} className="text-text-muted flex-shrink-0" />
                     <input
                       type="url"
                       value={urlInput}
                       onChange={(e) => setUrlInput(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddUrl())}
                       placeholder="https://example.com/image.jpg"
-                      className="flex-1 bg-transparent text-sm text-slate-200 placeholder:text-slate-600 outline-none"
+                      className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none"
                     />
                   </div>
                   <button
                     type="button"
                     onClick={handleAddUrl}
                     disabled={!urlInput.trim()}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-xl transition-colors"
+                    className="flex items-center gap-1.5 px-4 py-2 bg-accent hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-xl transition-colors"
                   >
                     <Plus size={15} /> Thêm
                   </button>
                   <button
                     type="button"
                     onClick={() => setPickerTarget("thumbnail")}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm rounded-xl transition-colors"
+                    className="flex items-center gap-1.5 px-4 py-2 bg-surface hover:bg-surface-raised border border-border text-text-secondary text-sm rounded-xl transition-colors"
                   >
                     <FolderOpen size={15} /> Thư viện
                   </button>
@@ -242,13 +256,14 @@ export default function CreatePostPage() {
                 {imageUrls.length > 0 && (
                   <div className={`grid gap-2 ${imageUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
                     {imageUrls.map((url, i) => (
-                      <div key={i} className="relative group rounded-xl overflow-hidden border border-slate-700">
+                      <div key={i} className="relative group rounded-xl overflow-hidden border border-border">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={url} alt="" className="w-full h-36 object-cover" />
                         <button
                           onClick={() => handleRemoveUrl(url)}
                           className="absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-all"
                         >
-                          <X size={13} />
+                          <X size={13} className="text-white" />
                         </button>
                       </div>
                     ))}
@@ -259,34 +274,34 @@ export default function CreatePostPage() {
               {/* Editor */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-slate-400">Nội dung (Markdown)</label>
+                  <label className="text-sm font-medium text-text-muted">Nội dung (Markdown)</label>
                   <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPickerTarget("content")}
-                    className="flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-slate-200 transition-colors"
-                  >
-                    <FolderOpen size={12} /> Chèn ảnh
-                  </button>
-                  <div className="flex bg-slate-900 border border-slate-700 p-0.5 rounded-lg text-xs">
                     <button
-                      onClick={() => setEditorTab("rich")}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${editorTab === "rich" ? "bg-slate-700 text-white" : "text-slate-500 hover:text-slate-300"}`}
+                      type="button"
+                      onClick={() => setPickerTarget("content")}
+                      className="flex items-center gap-1.5 px-3 py-1 text-xs rounded-lg bg-surface hover:bg-surface-raised border border-border text-text-muted hover:text-text-secondary transition-colors"
                     >
-                      <Edit3 size={12} /> Editor
+                      <FolderOpen size={12} /> Chèn ảnh
                     </button>
-                    <button
-                      onClick={() => setEditorTab("raw")}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${editorTab === "raw" ? "bg-slate-700 text-white" : "text-slate-500 hover:text-slate-300"}`}
-                    >
-                      <ClipboardPaste size={12} /> Dán MD
-                    </button>
-                  </div>
+                    <div className="flex bg-surface-raised border border-border p-0.5 rounded-lg text-xs">
+                      <button
+                        onClick={() => setEditorTab("rich")}
+                        className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${editorTab === "rich" ? "bg-surface text-text-primary" : "text-text-muted hover:text-text-secondary"}`}
+                      >
+                        <Edit3 size={12} /> Editor
+                      </button>
+                      <button
+                        onClick={() => setEditorTab("raw")}
+                        className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${editorTab === "raw" ? "bg-surface text-text-primary" : "text-text-muted hover:text-text-secondary"}`}
+                      >
+                        <ClipboardPaste size={12} /> Dán MD
+                      </button>
+                    </div>
                   </div>
                 </div>
 
                 {editorTab === "rich" ? (
-                  <div className="dark-editor">
+                  <div className="themed-editor">
                     <SimpleMDE value={content} onChange={setContent} options={editorOptions} />
                   </div>
                 ) : (
@@ -294,21 +309,25 @@ export default function CreatePostPage() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Dán nội dung Markdown vào đây..."
-                    className="w-full min-h-[300px] bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 font-mono placeholder:text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+                    className="w-full min-h-[300px] bg-surface-raised border border-border rounded-xl px-4 py-3 text-sm text-text-primary font-mono placeholder:text-text-muted outline-none focus:ring-2 focus:ring-accent resize-y"
                   />
                 )}
               </div>
             </div>
           ) : (
-            <div className="bg-card border border-slate-800 rounded-2xl p-8 min-h-[600px] shadow-2xl">
+            <div className="bg-card border border-border rounded-2xl p-8 min-h-[600px] shadow-2xl">
+              {title.trim() && (
+                <h1 className="text-2xl font-bold text-text-primary mb-4">{title}</h1>
+              )}
               {imageUrls.length > 0 && (
                 <div className={`grid gap-1 mb-6 rounded-xl overflow-hidden ${imageUrls.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
                   {imageUrls.map((url, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img key={i} src={url} alt="" className="w-full h-52 object-cover" />
                   ))}
                 </div>
               )}
-              <article className="prose prose-sm max-w-none [&_p]:text-slate-300 [&_p]:leading-relaxed [&_p]:my-1.5 [&_h1]:text-slate-100 [&_h2]:text-slate-100 [&_h3]:text-slate-100 [&_h1]:font-bold [&_h2]:font-semibold [&_h3]:font-semibold [&_h1]:mt-4 [&_h1]:mb-2 [&_h2]:mt-3 [&_h2]:mb-1.5 [&_h3]:mt-2 [&_h3]:mb-1 [&_strong]:text-slate-200 [&_em]:text-slate-300 [&_em]:italic [&_a]:text-blue-400 [&_a]:no-underline hover:[&_a]:underline [&_code]:text-sky-300 [&_code]:bg-slate-800/80 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_pre]:bg-slate-900/80 [&_pre]:border [&_pre]:border-white/[0.06] [&_pre]:rounded-xl [&_pre]:p-4 [&_blockquote]:border-l-2 [&_blockquote]:border-blue-500 [&_blockquote]:pl-4 [&_blockquote]:text-slate-400 [&_blockquote]:italic [&_ul]:text-slate-300 [&_ol]:text-slate-300 [&_li]:marker:text-slate-500 [&_hr]:border-white/[0.06]">
+              <article className={"prose prose-sm max-w-none [&_p]:text-text-secondary [&_p]:leading-relaxed [&_p]:my-1.5 [&_h1]:text-text-primary [&_h2]:text-text-primary [&_h3]:text-text-primary [&_h1]:font-bold [&_h2]:font-semibold [&_h3]:font-semibold [&_h1]:mt-4 [&_h1]:mb-2 [&_h2]:mt-3 [&_h2]:mb-1.5 [&_h3]:mt-2 [&_h3]:mb-1 [&_strong]:text-text-primary [&_em]:text-text-secondary [&_em]:italic [&_a]:text-accent-text [&_a]:no-underline hover:[&_a]:underline [&_code]:text-accent-text [&_code]:bg-surface-raised [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_pre]:bg-surface-raised [&_pre]:border [&_pre]:border-border [&_pre]:rounded-xl [&_pre]:p-4 [&_blockquote]:border-l-2 [&_blockquote]:border-accent/40 [&_blockquote]:pl-4 [&_blockquote]:text-text-muted [&_blockquote]:italic [&_ul]:text-text-secondary [&_ol]:text-text-secondary [&_li]:marker:text-text-muted [&_hr]:border-border"}>
                 <ReactMarkdown>{content || "*Chưa có nội dung...*"}</ReactMarkdown>
               </article>
             </div>
@@ -319,14 +338,14 @@ export default function CreatePostPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-6 py-3 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white text-sm font-medium transition-all"
+              className="px-6 py-3 rounded-xl border border-border hover:border-border-muted text-text-muted hover:text-text-primary text-sm font-medium transition-all"
             >
               Hủy
             </button>
             <button
               onClick={handleSubmit}
               disabled={isPending || !content.trim()}
-              className="flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95"
+              className="flex items-center gap-2 px-8 py-3 bg-accent hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95"
             >
               {isPending ? (
                 <><Loader2 size={16} className="animate-spin" /> Đang lưu...</>
@@ -345,11 +364,25 @@ export default function CreatePostPage() {
       />
 
       <style jsx global>{`
-        .dark-editor .editor-toolbar { background: #1e293b; border-color: #334155; border-radius: 8px 8px 0 0; }
-        .dark-editor .editor-toolbar button { color: #94a3b8 !important; }
-        .dark-editor .editor-toolbar button.active,
-        .dark-editor .editor-toolbar button:hover { background: #334155 !important; }
-        .dark-editor .CodeMirror { background: #0f172a !important; color: #e2e8f0 !important; border-color: #334155; border-radius: 0 0 8px 8px; }
+        .themed-editor .editor-toolbar {
+          background: var(--color-surface);
+          border-color: var(--color-border);
+          border-radius: 8px 8px 0 0;
+        }
+        .themed-editor .editor-toolbar button { color: var(--color-text-muted) !important; }
+        .themed-editor .editor-toolbar button.active,
+        .themed-editor .editor-toolbar button:hover {
+          background: var(--color-surface-raised) !important;
+          color: var(--color-text-primary) !important;
+        }
+        .themed-editor .CodeMirror {
+          background: var(--color-page) !important;
+          color: var(--color-text-secondary) !important;
+          border-color: var(--color-border);
+          border-radius: 0 0 8px 8px;
+        }
+        .themed-editor .CodeMirror-cursor { border-left-color: var(--color-text-primary); }
+        .themed-editor .editor-preview { background: var(--color-card); color: var(--color-text-secondary); }
       `}</style>
     </div>
   );
