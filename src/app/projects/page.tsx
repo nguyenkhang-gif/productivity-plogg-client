@@ -117,16 +117,16 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-2">
-          <FolderCode className="text-primary dark:text-blue-400 w-7 h-7" />
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Projects</h1>
+          <FolderCode className="text-accent-text w-7 h-7" />
+          <h1 className="text-3xl font-bold text-text-primary">Projects</h1>
         </div>
-        <p className="text-slate-500 dark:text-slate-300 text-lg">
+        <p className="text-text-secondary text-lg">
           Personal projects I&apos;ve built and maintained.
         </p>
         <div className="mt-4">
           <Link
             href="/portfolio"
-            className="text-sm text-blue-500 dark:text-blue-400 hover:underline"
+            className="text-sm text-accent-text hover:underline"
           >
             ← Back to Portfolio
           </Link>
@@ -138,18 +138,18 @@ export default function ProjectsPage() {
         {projects.map((proj) => (
           <div
             key={proj.name}
-            className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm"
+            className="bg-card rounded-3xl p-8 border border-border shadow-sm"
           >
             {/* Title row */}
             <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
               <div>
                 <div className="flex items-center gap-3 mb-1">
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{proj.name}</h2>
+                  <h2 className="text-2xl font-bold text-text-primary">{proj.name}</h2>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[proj.status]}`}>
                     {proj.status}
                   </span>
                 </div>
-                <p className="text-slate-600 dark:text-slate-400">{proj.description}</p>
+                <p className="text-text-secondary">{proj.description}</p>
               </div>
               <div className="flex flex-wrap gap-2 shrink-0">
                 {proj.links.map((link) => (
@@ -158,7 +158,7 @@ export default function ProjectsPage() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition-colors text-sm font-medium text-slate-700 dark:text-slate-200"
+                    className="flex items-center gap-2 bg-surface px-3 py-1.5 rounded-lg border border-border hover:border-accent/50 transition-colors text-sm font-medium text-text-secondary"
                   >
                     {link.icon === "github" ? <Github size={14} /> : <ExternalLink size={14} />}
                     {link.label}
@@ -168,24 +168,24 @@ export default function ProjectsPage() {
             </div>
 
             {/* Meta */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm text-slate-600 dark:text-slate-400">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm text-text-secondary">
               <div className="flex items-center gap-2">
-                <Users size={16} className="text-primary shrink-0" />
+                <Users size={16} className="text-accent-text shrink-0" />
                 <span>Team: {proj.teamSize === 1 ? "Solo" : `${proj.teamSize} members`}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Briefcase size={16} className="text-primary shrink-0" />
+                <Briefcase size={16} className="text-accent-text shrink-0" />
                 <span>{proj.role}</span>
               </div>
             </div>
 
             <div className="flex items-start gap-2 mb-6">
-              <Code2 size={16} className="text-primary shrink-0 mt-0.5" />
+              <Code2 size={16} className="text-accent-text shrink-0 mt-0.5" />
               <div className="flex flex-wrap gap-1.5">
                 {proj.techStack.map((tech) => (
                   <span
                     key={tech}
-                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${techColors[tech] ?? "bg-slate-400 text-white"}`}
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${techColors[tech] ?? "bg-surface-raised text-text-secondary"}`}
                   >
                     {tech}
                   </span>
@@ -195,13 +195,13 @@ export default function ProjectsPage() {
 
             {/* Highlights */}
             <div className="mb-6">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-text-muted mb-3">
                 Highlights
               </h3>
               <ul className="space-y-2">
                 {proj.highlights.map((h) => (
-                  <li key={h} className="flex items-start gap-2 text-slate-600 dark:text-slate-400 text-sm">
-                    <span className="text-primary mt-1.5 shrink-0">▸</span>
+                  <li key={h} className="flex items-start gap-2 text-text-secondary text-sm">
+                    <span className="text-accent-text mt-1.5 shrink-0">▸</span>
                     {h}
                   </li>
                 ))}
@@ -210,7 +210,7 @@ export default function ProjectsPage() {
 
             <Link
               href={proj.detailPath}
-              className="inline-flex items-center gap-1 text-sm text-blue-500 dark:text-blue-300 hover:underline font-medium"
+              className="inline-flex items-center gap-1 text-sm text-accent-text hover:underline font-medium"
             >
               View details <ArrowRight size={14} />
             </Link>
