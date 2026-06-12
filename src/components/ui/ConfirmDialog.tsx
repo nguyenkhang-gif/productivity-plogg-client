@@ -27,26 +27,26 @@ export default function ConfirmDialog({
 }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-      <div className="bg-modal border border-white/[0.08] rounded-2xl w-full max-w-sm shadow-2xl p-6 flex flex-col gap-4">
+      <div className="bg-modal border border-border rounded-2xl w-full max-w-sm shadow-2xl p-6 flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
             <Icon size={18} className="text-red-400" />
           </div>
           <div>
-            <p className="text-white font-semibold text-sm">{title}</p>
+            <p className="text-text-primary font-semibold text-sm">{title}</p>
             {subtitle && (
-              <p className="text-slate-500 text-xs mt-0.5 truncate max-w-[220px]">{subtitle}</p>
+              <p className="text-text-muted text-xs mt-0.5 truncate max-w-[220px]">{subtitle}</p>
             )}
           </div>
         </div>
 
-        {message && <p className="text-slate-400 text-sm">{message}</p>}
+        {message && <p className="text-text-secondary text-sm">{message}</p>}
 
         <div className="flex gap-2">
           <button
             onClick={onCancel}
             disabled={isLoading}
-            className="flex-1 py-2.5 rounded-xl border border-white/10 text-slate-400 text-sm hover:bg-white/5 transition-colors disabled:opacity-40"
+            className="flex-1 py-2.5 rounded-xl border border-border text-text-muted text-sm hover:bg-surface-raised transition-colors disabled:opacity-40"
           >
             {cancelLabel}
           </button>

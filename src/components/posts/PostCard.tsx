@@ -22,7 +22,7 @@ interface PostCardProps {
 }
 
 const CATEGORY_STYLES: Record<PostCategory, string> = {
-  [PostCategory.Note]:        "bg-slate-700/50 text-slate-300",
+  [PostCategory.Note]:        "bg-surface-raised text-text-secondary",
   [PostCategory.Achievement]: "bg-amber-500/20 text-amber-300",
   [PostCategory.Question]:    "bg-violet-500/20 text-violet-300",
   [PostCategory.Tutorial]:    "bg-emerald-500/20 text-emerald-300",
