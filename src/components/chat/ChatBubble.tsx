@@ -45,7 +45,7 @@ export default function ChatBubble({
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
       {open && (
         <div
-          className={`w-80 bg-card border border-white/[0.08] rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-200 ${
+          className={`w-80 bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-200 ${
             minimized ? "h-12" : "h-[420px]"
           }`}
         >

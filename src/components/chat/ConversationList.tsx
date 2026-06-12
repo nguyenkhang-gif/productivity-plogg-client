@@ -13,7 +13,7 @@ interface Props {
 export default function ConversationList({ conversations, currentUserId, onSelect, getFriendInfo }: Props) {
   if (conversations.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-2 text-slate-600 select-none">
+      <div className="flex flex-col items-center justify-center h-full gap-2 text-text-muted select-none">
         <MessageCircle size={32} className="opacity-30" />
         <p className="text-xs">Chưa có cuộc trò chuyện nào</p>
       </div>
@@ -32,7 +32,7 @@ export default function ConversationList({ conversations, currentUserId, onSelec
           <button
             key={conv.id}
             onClick={() => onSelect(conv.id)}
-            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.04] transition-colors text-left"
+            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-raised transition-colors text-left"
           >
             <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 bg-blue-600/30 border border-blue-500/30 flex items-center justify-center">
               {info?.profilePic ? (
@@ -48,13 +48,13 @@ export default function ConversationList({ conversations, currentUserId, onSelec
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-slate-200 text-sm font-medium truncate">{displayName}</p>
-              <p className="text-slate-500 text-xs truncate mt-0.5">
+              <p className="text-text-primary text-sm font-medium truncate">{displayName}</p>
+              <p className="text-text-muted text-xs truncate mt-0.5">
                 {conv.lastMessage ?? "Bắt đầu cuộc trò chuyện"}
               </p>
             </div>
             {conv.lastMessageAt && (
-              <span className="text-slate-600 text-[10px] flex-shrink-0">
+              <span className="text-text-muted text-[10px] flex-shrink-0">
                 {new Date(conv.lastMessageAt).toLocaleTimeString("vi-VN", {
                   hour: "2-digit",
                   minute: "2-digit",

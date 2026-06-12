@@ -10,7 +10,7 @@ interface Props {
 export default function FriendListPanel({ friends, onStartChat }: Props) {
   if (friends.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-2 text-slate-600 select-none">
+      <div className="flex flex-col items-center justify-center h-full gap-2 text-text-muted select-none">
         <Users size={32} className="opacity-30" />
         <p className="text-xs">Chưa có bạn bè nào</p>
       </div>
@@ -27,7 +27,7 @@ export default function FriendListPanel({ friends, onStartChat }: Props) {
         return (
           <div
             key={f.id}
-            className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.04] transition-colors"
+            className="flex items-center gap-3 px-4 py-3 hover:bg-surface-raised transition-colors"
           >
             <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 bg-blue-600/30 border border-blue-500/30 flex items-center justify-center">
               {info?.profilePic ? (
@@ -43,9 +43,9 @@ export default function FriendListPanel({ friends, onStartChat }: Props) {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-slate-200 text-sm font-medium truncate">{displayName}</p>
+              <p className="text-text-primary text-sm font-medium truncate">{displayName}</p>
               {info?.username && (
-                <p className="text-slate-500 text-xs truncate">@{info.username}</p>
+                <p className="text-text-muted text-xs truncate">@{info.username}</p>
               )}
             </div>
             <button

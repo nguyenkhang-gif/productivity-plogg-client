@@ -26,14 +26,14 @@ export default function ChatInput({
   };
 
   return (
-    <div className="px-3 py-3 border-t border-white/[0.06] flex gap-2 flex-shrink-0">
+    <div className="px-3 py-3 border-t border-border flex gap-2 flex-shrink-0">
       <input
         ref={inputRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="flex-1 bg-overlay border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-slate-200 placeholder-slate-600 outline-none focus:border-blue-500/50 transition-colors"
+        className="flex-1 bg-overlay border border-border rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-accent/50 transition-colors"
       />
       <button
         onClick={onSend}
