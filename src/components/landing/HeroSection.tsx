@@ -54,7 +54,7 @@ const TERMINAL_LINES: {
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden" style={{ zIndex: -1 }}>
       {/* dot grid background */}
       <div
         className="absolute inset-0"
