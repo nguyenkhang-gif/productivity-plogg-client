@@ -21,7 +21,7 @@ export const styles = {
   btnGhost: "px-4 py-2 rounded-xl border border-white/[0.08] hover:border-white/20 text-text-muted hover:text-text-primary text-sm transition-colors",
 
   // Card container
-  card: "bg-card border border-border rounded-2xl overflow-hidden shadow-lg",
+  card: "bg-card border border-border rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)]",
 
   // Divider
   divider: "border-border-muted",
