@@ -8,11 +8,11 @@ import {
   Instagram,
   Menu,
   X,
-  User,
   LogIn,
   LogOut,
   Sun,
   Moon,
+  BookOpen,
   Users,
 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -23,9 +23,16 @@ import { useGetReceivedRequests } from "@/core/services/client/friendships";
 import { useRouter, usePathname } from "next/navigation";
 import UserAvatar from "@/components/ui/UserAvatar";
 
+const THEMES = [
+  { id: "dark",  label: "Dark",  icon: Moon },
+  { id: "light", label: "Light", icon: Sun },
+  { id: "sepia", label: "Sepia", icon: BookOpen },
+] as const;
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isThemeOpen, setIsThemeOpen] = useState(false);
   const { theme = "dark", setTheme } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
@@ -34,11 +41,13 @@ export default function Navbar() {
   const { data: receivedRequests } = useGetReceivedRequests();
   const pendingCount = receivedRequests?.length ?? 0;
 
-  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+  const activeTheme = THEMES.find((t) => t.id === theme) ?? THEMES[0];
+  const ThemeIcon = activeTheme.icon;
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     setIsDropdownOpen(false);
+    setIsThemeOpen(false);
   };
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
@@ -113,14 +122,34 @@ export default function Navbar() {
             <Instagram className="w-5 h-5" />
           </a>
 
-          {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            className="p-1.5 rounded-full text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
-            aria-label="Toggle theme"
-          >
-            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
+          {/* Theme picker */}
+          <div className="relative">
+            <button
+              onClick={() => setIsThemeOpen((o) => !o)}
+              className="p-1.5 rounded-full text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
+              aria-label="Change theme"
+            >
+              <ThemeIcon className="w-5 h-5" />
+            </button>
+            {isThemeOpen && (
+              <div className="absolute right-0 mt-2 w-36 rounded-md shadow-lg z-20 bg-modal border border-border py-1">
+                {THEMES.map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    onClick={() => { setTheme(id); setIsThemeOpen(false); }}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                      theme === id
+                        ? "text-accent-text bg-accent-subtle"
+                        : "text-text-primary hover:bg-surface-raised"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           {isAuth ? (
             <div className="relative">
@@ -254,13 +283,33 @@ export default function Navbar() {
               <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-text-primary transition-colors" onClick={toggleMenu}>
                 <Instagram className="w-5 h-5" />
               </a>
-              <button
-                onClick={toggleTheme}
-                className="p-1.5 rounded-full text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setIsThemeOpen((o) => !o)}
+                  className="p-1.5 rounded-full text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
+                  aria-label="Change theme"
+                >
+                  <ThemeIcon className="w-5 h-5" />
+                </button>
+                {isThemeOpen && (
+                  <div className="absolute left-0 bottom-full mb-2 w-36 rounded-md shadow-lg z-20 bg-modal border border-border py-1">
+                    {THEMES.map(({ id, label, icon: Icon }) => (
+                      <button
+                        key={id}
+                        onClick={() => { setTheme(id); setIsThemeOpen(false); }}
+                        className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                          theme === id
+                            ? "text-accent-text bg-accent-subtle"
+                            : "text-text-primary hover:bg-surface-raised"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
