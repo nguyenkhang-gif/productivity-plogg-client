@@ -160,6 +160,16 @@ export default function PostCard({ post, currentUserId, onDelete, onTagClick }: 
         </div>
       )}
 
+      {/* Title */}
+      {post.title && (
+        <div
+          className="px-5 pb-1 cursor-pointer"
+          onClick={() => router.push(`/posts/${post.id}`)}
+        >
+          <h2 className="text-base font-bold text-text-primary leading-snug">{post.title}</h2>
+        </div>
+      )}
+
       {/* Content */}
       <div
         className="px-5 pb-2 cursor-pointer"
