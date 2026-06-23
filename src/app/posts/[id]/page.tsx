@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ArrowLeft, CalendarDays, Eye, Pencil } from "lucide-react";
 
 import { RootState } from "@/core/redux/store";
@@ -271,11 +272,12 @@ export default function PostDetailPage({
             [&_code]:text-accent [&_code]:bg-surface-raised [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs
             [&_pre]:bg-surface-raised [&_pre]:border [&_pre]:border-border [&_pre]:rounded-xl [&_pre]:p-4 [&_pre]:my-5
             [&_blockquote]:border-l-2 [&_blockquote]:border-accent/40 [&_blockquote]:pl-5 [&_blockquote]:text-text-muted [&_blockquote]:italic [&_blockquote]:my-6
-            [&_ul]:text-text-secondary [&_ol]:text-text-secondary
+            [&_ul]:text-text-secondary [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-4
+            [&_ol]:text-text-secondary [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-4
             [&_li]:my-1.5 [&_li]:marker:text-text-muted
             [&_hr]:border-border [&_hr]:my-10"
         >
-          <ReactMarkdown>{post.content}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
         </article>
 
         {/* tags */}

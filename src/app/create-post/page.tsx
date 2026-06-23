@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Send, X, Eye, Edit3, Sparkles, Link as LinkIcon, Loader2, ClipboardPaste, Plus, FolderOpen, Tag, Globe, Users, Lock } from "lucide-react";
 import { PostCategory, PostVisibility } from "@/core/enums";
 import FilePicker from "@/components/upload/FilePicker";
@@ -359,8 +360,8 @@ export default function CreatePostPage() {
                   ))}
                 </div>
               )}
-              <article className={"prose prose-sm max-w-none [&_p]:text-text-secondary [&_p]:leading-relaxed [&_p]:my-1.5 [&_h1]:text-text-primary [&_h2]:text-text-primary [&_h3]:text-text-primary [&_h1]:font-bold [&_h2]:font-semibold [&_h3]:font-semibold [&_h1]:mt-4 [&_h1]:mb-2 [&_h2]:mt-3 [&_h2]:mb-1.5 [&_h3]:mt-2 [&_h3]:mb-1 [&_strong]:text-text-primary [&_em]:text-text-secondary [&_em]:italic [&_a]:text-accent-text [&_a]:no-underline hover:[&_a]:underline [&_code]:text-accent-text [&_code]:bg-surface-raised [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_pre]:bg-surface-raised [&_pre]:border [&_pre]:border-border [&_pre]:rounded-xl [&_pre]:p-4 [&_blockquote]:border-l-2 [&_blockquote]:border-accent/40 [&_blockquote]:pl-4 [&_blockquote]:text-text-muted [&_blockquote]:italic [&_ul]:text-text-secondary [&_ol]:text-text-secondary [&_li]:marker:text-text-muted [&_hr]:border-border"}>
-                <ReactMarkdown>{content || "*Chưa có nội dung...*"}</ReactMarkdown>
+              <article className={"prose prose-sm max-w-none [&_p]:text-text-secondary [&_p]:leading-relaxed [&_p]:my-1.5 [&_h1]:text-text-primary [&_h2]:text-text-primary [&_h3]:text-text-primary [&_h1]:font-bold [&_h2]:font-semibold [&_h3]:font-semibold [&_h1]:mt-4 [&_h1]:mb-2 [&_h2]:mt-3 [&_h2]:mb-1.5 [&_h3]:mt-2 [&_h3]:mb-1 [&_strong]:text-text-primary [&_em]:text-text-secondary [&_em]:italic [&_a]:text-accent-text [&_a]:no-underline hover:[&_a]:underline [&_code]:text-accent-text [&_code]:bg-surface-raised [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_pre]:bg-surface-raised [&_pre]:border [&_pre]:border-border [&_pre]:rounded-xl [&_pre]:p-4 [&_blockquote]:border-l-2 [&_blockquote]:border-accent/40 [&_blockquote]:pl-4 [&_blockquote]:text-text-muted [&_blockquote]:italic [&_ul]:text-text-secondary [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3 [&_ol]:text-text-secondary [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3 [&_li]:marker:text-text-muted [&_hr]:border-border"}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || "*Chưa có nội dung...*"}</ReactMarkdown>
               </article>
             </div>
           )}

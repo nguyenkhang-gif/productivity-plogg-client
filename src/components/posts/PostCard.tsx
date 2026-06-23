@@ -6,6 +6,7 @@ import { PostCategory, PostVisibility } from "@/core/enums";
 import { Trash2, Pencil, CalendarDays, MoreHorizontal, MessageCircle, Clock, Share2, Bookmark, Eye, Globe, Users, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useConstants } from "@/core/hooks/useConstants";
 import { useToast } from "@/core/hooks/use-toast";
 import ReactionButton from "./ReactionButton";
@@ -228,10 +229,11 @@ export default function PostCard({ post, currentUserId, onDelete, onTagClick }: 
           [&_code]:text-sky-300 [&_code]:bg-slate-800/80 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs
           [&_pre]:bg-slate-900/80 [&_pre]:border [&_pre]:border-border [&_pre]:rounded-xl [&_pre]:p-4
           [&_blockquote]:border-l-2 [&_blockquote]:border-accent [&_blockquote]:pl-4 [&_blockquote]:text-text-muted [&_blockquote]:italic
-          [&_ul]:text-text-secondary [&_ol]:text-text-secondary
+          [&_ul]:text-text-secondary [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3
+          [&_ol]:text-text-secondary [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3
           [&_li]:marker:text-text-muted
           [&_hr]:border-border">
-          <ReactMarkdown>{displayContent}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{displayContent}</ReactMarkdown>
         </div>
 
         {isLong && (
