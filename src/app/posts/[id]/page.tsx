@@ -156,7 +156,7 @@ export default function PostDetailPage({
     <div className="min-h-screen bg-page">
 
       {/* ── hero ── */}
-      <div className="relative w-full min-h-[48vh] flex items-end overflow-hidden">
+      <div className="relative w-full min-h-[42vh] flex items-center justify-center overflow-hidden">
 
         {/* background */}
         {hasImage ? (
@@ -172,54 +172,71 @@ export default function PostDetailPage({
         ) : (
           <>
             <div className={`absolute inset-0 bg-gradient-to-br ${heroGradient} dark:opacity-70 opacity-20`} />
-            <div
-              className="absolute inset-0 opacity-[0.025]"
-              style={{
-                backgroundImage:
-                  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E\")",
-              }}
-            />
             <div className="absolute inset-0 bg-gradient-to-t from-page via-transparent to-transparent" />
           </>
         )}
 
+        {/* scattered decorative quotes (non-sepia) */}
+        <span className="sepia-hide absolute top-10 left-8 text-5xl font-serif text-text-muted/10 select-none leading-none rotate-6">&#8220;</span>
+        <span className="sepia-hide absolute top-16 right-12 text-3xl font-serif text-text-muted/10 select-none leading-none -rotate-6">&#8221;</span>
+        <span className="sepia-hide absolute bottom-12 left-16 text-2xl font-serif text-text-muted/10 select-none leading-none rotate-3">&#8220;</span>
+        <span className="sepia-hide absolute bottom-8 right-8 text-4xl font-serif text-text-muted/10 select-none leading-none -rotate-3">&#8221;</span>
+
+        {/* sakura petals (sepia theme only) */}
+        <span className="sakura-petal absolute top-8   left-10  w-3 h-5 rounded-full opacity-30 rotate-12"  />
+        <span className="sakura-petal absolute top-20  left-5   w-2 h-3 rounded-full opacity-20 -rotate-20" />
+        <span className="sakura-petal absolute top-10  right-14 w-3 h-5 rounded-full opacity-25 rotate-45" />
+        <span className="sakura-petal absolute top-28  right-8  w-2 h-4 rounded-full opacity-20 -rotate-12" />
+        <span className="sakura-petal absolute bottom-10 left-8  w-3 h-5 rounded-full opacity-25 rotate-6"  />
+        <span className="sakura-petal absolute bottom-6  left-20 w-2 h-3 rounded-full opacity-15 rotate-30" />
+        <span className="sakura-petal absolute bottom-8  right-10 w-3 h-5 rounded-full opacity-30 -rotate-15"/>
+        <span className="sakura-petal absolute bottom-16 right-4  w-2 h-4 rounded-full opacity-20 rotate-20" />
+
         {/* hero content */}
-        <div className="relative z-10 w-full max-w-2xl mx-auto px-4 md:px-6 pb-12 pt-20">
+        <div className="relative z-10 w-full max-w-2xl mx-auto px-6 md:px-10 py-12 text-center">
 
           {category && (
-            <span className="inline-block text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/20 mb-5">
+            <span className="inline-block text-[10px] tracking-[0.18em] uppercase px-4 py-1.5 rounded-full border border-border text-text-muted mb-8">
               {category.name}
             </span>
           )}
 
-          <h1
-            className={`text-3xl md:text-4xl lg:text-[2.6rem] font-semibold leading-tight tracking-tight ${
-              post.title ? "text-text-primary" : "text-text-muted italic"
-            }`}
-          >
-            {displayTitle}
-          </h1>
+          {/* title with flanking quotes */}
+          <div className="relative inline-block w-full">
+            <span className="absolute -top-3 left-0 text-5xl font-serif leading-none text-text-muted/30 select-none">&ldquo;</span>
+            <h1
+              className={`font-serif text-4xl md:text-5xl lg:text-[3.4rem] italic leading-[1.15] tracking-tight px-8 ${
+                post.title ? "text-text-primary" : "text-text-muted"
+              }`}
+            >
+              {displayTitle}
+            </h1>
+            <span className="absolute -bottom-5 right-0 text-5xl font-serif leading-none text-text-muted/30 select-none">&rdquo;</span>
+          </div>
+
+          {/* divider */}
+          <div className="flex items-center justify-center gap-3 mt-8 mb-8">
+            <span className="h-px w-10 bg-border" />
+            <span className="w-1 h-1 rounded-full bg-border" />
+            <span className="h-px w-10 bg-border" />
+          </div>
 
           {/* author + meta */}
-          <div className="flex items-center gap-3 mt-8">
+          <div className="flex items-center justify-center gap-3">
             <UserAvatar src={post.author?.profilePic} name={post.author?.fullName} size="md" />
-            <div>
+            <div className="text-left">
               <p className="text-text-secondary text-sm font-medium leading-tight">
                 {post.author?.fullName ?? "Unknown"}
               </p>
-              <div className="flex items-center gap-3 text-text-muted text-xs mt-1">
-                <span
-                  className="flex items-center gap-1"
-                  title={new Date(post.createdAt).toLocaleString("vi-VN")}
-                >
-                  <CalendarDays size={11} />
+              <div className="flex items-center gap-2 text-text-muted text-xs mt-1">
+                <span title={new Date(post.createdAt).toLocaleString("vi-VN")}>
                   {timeAgo(post.createdAt)}
                 </span>
                 {post.viewCount != null && (
-                  <span className="flex items-center gap-1">
-                    <Eye size={11} />
-                    {post.viewCount.toLocaleString()} views
-                  </span>
+                  <>
+                    <span className="opacity-40">·</span>
+                    <span>{post.viewCount.toLocaleString()} views</span>
+                  </>
                 )}
               </div>
             </div>
@@ -228,7 +245,7 @@ export default function PostDetailPage({
       </div>
 
       {/* ── body ── */}
-      <div className="max-w-2xl mx-auto px-4 md:px-6 py-10 md:py-14">
+      <div className="max-w-3xl mx-auto px-4 md:px-6 py-10 md:py-14">
 
         {/* secondary images */}
         {post.imageUrls?.length > 1 && (
@@ -336,7 +353,7 @@ function Skeleton() {
   return (
     <div className="min-h-screen bg-page animate-pulse">
       <div className="min-h-[48vh] bg-surface flex items-end">
-        <div className="max-w-2xl mx-auto px-4 md:px-6 pb-12 pt-20 w-full space-y-4">
+        <div className="max-w-3xl mx-auto px-4 md:px-6 pb-12 pt-20 w-full space-y-4">
           <div className="h-5 w-20 bg-surface-raised rounded-full" />
           <div className="h-10 w-3/4 bg-surface-raised rounded-xl" />
           <div className="h-8 w-1/2 bg-surface rounded-xl" />
@@ -349,7 +366,7 @@ function Skeleton() {
           </div>
         </div>
       </div>
-      <div className="max-w-2xl mx-auto px-4 md:px-6 py-12 space-y-4">
+      <div className="max-w-3xl mx-auto px-4 md:px-6 py-12 space-y-4">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}

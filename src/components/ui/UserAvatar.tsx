@@ -21,7 +21,11 @@ export default function UserAvatar({ name, src, size = "lg", className = "", onC
   return (
     <div
       onClick={clickable ? onClick : undefined}
-      className={`rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold flex-shrink-0 overflow-hidden ${SIZE_CLASS[size]} ${clickable ? "cursor-pointer hover:opacity-90 transition-opacity" : ""} ${className}`}
+      style={{
+        background: "linear-gradient(to bottom right, var(--color-avatar-bg-from), var(--color-avatar-bg-to))",
+        color: "var(--color-avatar-text)",
+      }}
+      className={`rounded-full flex items-center justify-center font-bold flex-shrink-0 overflow-hidden ${SIZE_CLASS[size]} ${clickable ? "cursor-pointer hover:opacity-90 transition-opacity" : ""} ${className}`}
     >
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element

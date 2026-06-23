@@ -48,6 +48,11 @@ body,
     /* Terminal prompt color */
     --color-terminal:       #00ff9d;
     --color-terminal-muted: rgba(0, 255, 157, 0.15);
+
+    /* Avatar fallback */
+    --color-avatar-bg-from: #3b82f6;
+    --color-avatar-bg-to:   #4f46e5;
+    --color-avatar-text:    #ffffff;
   }
 
   html.light {
@@ -73,6 +78,10 @@ body,
 
     --color-terminal:       #16a34a;
     --color-terminal-muted: rgba(22, 163, 74, 0.12);
+
+    --color-avatar-bg-from: #3b82f6;
+    --color-avatar-bg-to:   #4f46e5;
+    --color-avatar-text:    #ffffff;
   }
 
   html.sepia {
@@ -99,6 +108,11 @@ body,
 
     --color-terminal:       #9B4D6B;
     --color-terminal-muted: rgba(155, 77, 107, 0.12);
+
+    /* Sakura avatar */
+    --color-avatar-bg-from: #E8BFCF;
+    --color-avatar-bg-to:   #D4A0B5;
+    --color-avatar-text:    #6B3D54;
   }
 }
 
@@ -106,6 +120,20 @@ body,
   .text-default {
     @apply text-gray-600 dark:text-[#D1D5DB];
   }
+}
+
+/* Sakura petal decorations — only visible in sepia theme */
+.sakura-petal {
+  display: none;
+  background-color: var(--color-accent);
+}
+
+html.sepia .sakura-petal {
+  display: block;
+}
+
+html.sepia .sepia-hide {
+  display: none;
 }
 
 
