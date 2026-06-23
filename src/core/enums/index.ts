@@ -21,6 +21,7 @@ export enum FriendshipStatus {
 }
 
 export enum SortOrder {
+  RecentlyEdited = "recently-edited",
   Newest = "newest",
   Oldest = "oldest",
 }
@@ -28,4 +29,10 @@ export enum SortOrder {
 export enum UploadProvider {
   Default = "default",
   Cloudinary = "cloudinary",
+}
+
+export enum PostVisibility {
+  Public = "PUBLIC",
+  Friends = "FRIENDS",
+  Private = "PRIVATE",
 }

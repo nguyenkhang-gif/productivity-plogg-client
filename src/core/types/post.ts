@@ -1,6 +1,6 @@
-import { PostCategory, ReactionType } from "@/core/enums";
+import { PostCategory, PostVisibility, ReactionType } from "@/core/enums";
 
-export type { PostCategory, ReactionType };
+export type { PostCategory, PostVisibility, ReactionType };
 
 export interface PostAuthor {
   id: string;
@@ -43,4 +43,5 @@ export interface Post {
   viewCount?: number;
   isBookmarked?: boolean;
   category?: PostCategory | PostCategoryObject | null;
+  visibility?: PostVisibility;
 }

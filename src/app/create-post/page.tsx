@@ -4,8 +4,8 @@ import { useState, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
-import { Send, X, Eye, Edit3, Sparkles, Link as LinkIcon, Loader2, ClipboardPaste, Plus, FolderOpen, Tag } from "lucide-react";
-import { PostCategory } from "@/core/enums";
+import { Send, X, Eye, Edit3, Sparkles, Link as LinkIcon, Loader2, ClipboardPaste, Plus, FolderOpen, Tag, Globe, Users, Lock } from "lucide-react";
+import { PostCategory, PostVisibility } from "@/core/enums";
 import FilePicker from "@/components/upload/FilePicker";
 import { useCreatePost, useUpdatePost, useGetPostById } from "@/core/services/client/posts";
 import { useToast } from "@/core/hooks/use-toast";
@@ -30,6 +30,7 @@ export default function CreatePostPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [category, setCategory] = useState<PostCategory | null>(null);
+  const [visibility, setVisibility] = useState<PostVisibility>(PostVisibility.Public);
 
   // Prefill khi ở edit mode
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function CreatePostPage() {
         typeof t === "string" ? t : (t as { slug?: string; name?: string }).slug ?? (t as { name?: string }).name ?? ""
       ).filter(Boolean));
       setCategory((editPost.category as PostCategory) ?? null);
+      setVisibility((editPost.visibility as PostVisibility) ?? PostVisibility.Public);
     }
   }, [editId, editPost]);
 
@@ -92,6 +94,7 @@ export default function CreatePostPage() {
       imageUrls,
       tags: tags.length > 0 ? tags : undefined,
       category: category ?? undefined,
+      visibility,
     };
 
     if (editId) {
@@ -179,6 +182,35 @@ export default function CreatePostPage() {
                         }`}
                       >
                         {labels[cat]}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Visibility selector */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-text-muted">Hiển thị</label>
+                <div className="flex flex-wrap gap-2">
+                  {([
+                    { value: PostVisibility.Public,  label: "Công khai",     Icon: Globe },
+                    { value: PostVisibility.Friends, label: "Bạn bè",        Icon: Users },
+                    { value: PostVisibility.Private, label: "Chỉ mình tôi",  Icon: Lock  },
+                  ] as const).map(({ value, label, Icon }) => {
+                    const active = visibility === value;
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setVisibility(value)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium border transition-colors ${
+                          active
+                            ? "bg-accent border-accent text-white"
+                            : "border-border text-text-muted hover:border-accent/40 hover:text-text-primary"
+                        }`}
+                      >
+                        <Icon size={13} />
+                        {label}
                       </button>
                     );
                   })}

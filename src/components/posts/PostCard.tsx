@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Post } from "@/core/types/post";
-import { PostCategory } from "@/core/enums";
-import { Trash2, Pencil, CalendarDays, MoreHorizontal, MessageCircle, Clock, Share2, Bookmark, Eye } from "lucide-react";
+import { PostCategory, PostVisibility } from "@/core/enums";
+import { Trash2, Pencil, CalendarDays, MoreHorizontal, MessageCircle, Clock, Share2, Bookmark, Eye, Globe, Users, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { useConstants } from "@/core/hooks/useConstants";
@@ -11,7 +11,7 @@ import { useToast } from "@/core/hooks/use-toast";
 import ReactionButton from "./ReactionButton";
 import { timeAgo } from "@/core/lib/timeAgo";
 import { readingTime } from "@/core/lib/readingTime";
-import { apiBookmarkPost, apiUnbookmarkPost } from "@/core/services/api/posts";
+import { apiBookmarkPost, apiUnbookmarkPost, apiUpdatePost } from "@/core/services/api/posts";
 import { styles } from "@/core/config/styles";
 import UserAvatar from "@/components/ui/UserAvatar";
 
@@ -59,6 +59,7 @@ export default function PostCard({ post, currentUserId, onDelete, onTagClick }: 
   const [menuOpen, setMenuOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [bookmarked, setBookmarked] = useState(post.isBookmarked ?? false);
+  const [visibility, setVisibility] = useState<PostVisibility>(post.visibility ?? PostVisibility.Public);
 
   const isLong = post.content.length > PostConstants.COLLAPSE_THRESHOLD;
   const displayContent =
@@ -89,6 +90,25 @@ export default function PostCard({ post, currentUserId, onDelete, onTagClick }: 
     }
   }
 
+  const VISIBILITY_CONFIG: Record<PostVisibility, { label: string; Icon: React.ElementType }> = {
+    [PostVisibility.Public]:  { label: "Công khai",    Icon: Globe },
+    [PostVisibility.Friends]: { label: "Bạn bè",       Icon: Users },
+    [PostVisibility.Private]: { label: "Chỉ mình tôi", Icon: Lock  },
+  };
+
+  async function handleVisibilityChange(next: PostVisibility) {
+    const prev = visibility;
+    setVisibility(next);
+    setMenuOpen(false);
+    try {
+      await apiUpdatePost(post.id, { visibility: next });
+      toast({ description: `Đã đổi thành: ${VISIBILITY_CONFIG[next].label}` });
+    } catch {
+      setVisibility(prev);
+      toast({ description: "Không thể đổi chế độ hiển thị", variant: "destructive" });
+    }
+  }
+
   return (
     <article className={styles.card}>
       {/* Header */}
@@ -116,6 +136,10 @@ export default function PostCard({ post, currentUserId, onDelete, onTagClick }: 
                   {readingTime(post.content)}
                 </span>
               )}
+              {isOwner && (() => {
+                const { Icon } = VISIBILITY_CONFIG[visibility];
+                return <Icon size={11} className={styles.muted} />;
+              })()}
             </div>
           </div>
         </div>
@@ -129,13 +153,31 @@ export default function PostCard({ post, currentUserId, onDelete, onTagClick }: 
               <MoreHorizontal size={18} />
             </button>
             {menuOpen && (
-              <div className="absolute right-0 top-10 bg-overlay border border-border rounded-xl shadow-2xl z-10 min-w-[130px] overflow-hidden">
+              <div className="absolute right-0 top-10 bg-overlay border border-border rounded-xl shadow-2xl z-10 min-w-[160px] overflow-hidden">
                 <button
                   onClick={() => { router.push(`/create-post?edit=${post.id}`); setMenuOpen(false); }}
                   className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-text-secondary hover:bg-white/5 transition-colors"
                 >
                   <Pencil size={14} /> Chỉnh sửa
                 </button>
+                <div className="border-t border-border/50 mx-3 my-1" />
+                {(Object.values(PostVisibility) as PostVisibility[]).map((v) => {
+                  const { label, Icon } = VISIBILITY_CONFIG[v];
+                  const active = visibility === v;
+                  return (
+                    <button
+                      key={v}
+                      onClick={() => handleVisibilityChange(v)}
+                      className={`flex items-center gap-2 w-full px-4 py-2 text-sm transition-colors ${
+                        active ? "text-accent-text bg-accent/10" : "text-text-muted hover:bg-white/5"
+                      }`}
+                    >
+                      <Icon size={13} /> {label}
+                      {active && <span className="ml-auto text-accent-text text-xs">✓</span>}
+                    </button>
+                  );
+                })}
+                <div className="border-t border-border/50 mx-3 my-1" />
                 <button
                   onClick={() => { onDelete(post.id); setMenuOpen(false); }}
                   className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"

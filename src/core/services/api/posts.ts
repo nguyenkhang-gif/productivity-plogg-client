@@ -1,7 +1,7 @@
 import axiosInstance from "@/core/lib/axiosInstance";
 import { Endpoints } from "../endpoints";
 import { Post, ReactionType } from "@/core/types/post";
-import { PostCategory } from "@/core/enums";
+import { PostCategory, PostVisibility } from "@/core/enums";
 import { PaginatedResponse } from "@/core/types/pagination";
 
 export interface CreatePostDto {
@@ -10,6 +10,7 @@ export interface CreatePostDto {
   imageUrls?: string[];
   tags?: string[];
   category?: PostCategory;
+  visibility?: PostVisibility;
 }
 
 export interface UpdatePostDto {
@@ -18,6 +19,7 @@ export interface UpdatePostDto {
   imageUrls?: string[];
   tags?: string[];
   category?: PostCategory;
+  visibility?: PostVisibility;
 }
 
 export interface MyStats {
@@ -32,6 +34,7 @@ export interface GetPostsParams {
   categoryId?: string;
   tags?: string; // comma-separated slugs
   excludeId?: string;
+  sortByUpdatedAt?: 1 | -1;
 }
 
 export const apiGetPosts = async (params: GetPostsParams = {}): Promise<PaginatedResponse<Post>> => {
