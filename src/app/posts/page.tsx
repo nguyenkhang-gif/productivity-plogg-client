@@ -17,6 +17,13 @@ import { useInfiniteScroll } from "@/core/hooks/useInfiniteScroll";
 
 const PRELOAD_BEFORE_END = 3;
 
+function sortToParam(sort: SortOrder): 1 | -1 | undefined {
+  if (sort === SortOrder.RecentlyEdited) return -1;
+  if (sort === SortOrder.Newest) return -1;
+  if (sort === SortOrder.Oldest) return 1;
+  return undefined;
+}
+
 export default function PostsPage() {
   const { profile } = useSelector((state: RootState) => state.user);
   const [sort, setSort] = useState<SortOrder>(SortOrder.Newest);
@@ -28,15 +35,12 @@ export default function PostsPage() {
     isError,
     isFetchingNextPage,
     fetchNextPage,
-  } = useGetPostsFeed();
+  } = useGetPostsFeed(sortToParam(sort));
 
   const posts: Post[] = data?.pages.flatMap((p) => p.posts) ?? [];
   const hasMore = data?.pages.at(-1)?.hasMore ?? false;
 
-  const sortedPosts = [...posts].sort((a, b) => {
-    const diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    return sort === SortOrder.Newest ? -diff : diff;
-  });
+  const sortedPosts = posts;
 
   const normalizeTag = (raw: unknown): string => {
     if (typeof raw === "string") return raw;
@@ -81,6 +85,12 @@ export default function PostsPage() {
               <h1 className="text-xl md:text-2xl font-bold text-text-primary shrink-0">Bảng tin</h1>
               <div className="flex items-center gap-2">
                 <div className="flex items-center bg-white/[0.04] border border-border rounded-xl overflow-hidden text-sm">
+                  <button
+                    onClick={() => setSort(SortOrder.RecentlyEdited)}
+                    className={`px-2.5 md:px-3 py-1.5 transition-colors text-xs md:text-sm ${sort === SortOrder.RecentlyEdited ? "bg-accent text-white" : `${styles.muted} hover:text-text-primary`}`}
+                  >
+                    Đã chỉnh sửa
+                  </button>
                   <button
                     onClick={() => setSort(SortOrder.Newest)}
                     className={`px-2.5 md:px-3 py-1.5 transition-colors text-xs md:text-sm ${sort === SortOrder.Newest ? "bg-accent text-white" : `${styles.muted} hover:text-text-primary`}`}

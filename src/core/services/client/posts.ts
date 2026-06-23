@@ -37,15 +37,15 @@ function updatePostInFeed(
   };
 }
 
-export const useGetPostsFeed = () => {
+export const useGetPostsFeed = (sortByUpdatedAt?: 1 | -1) => {
   const { Post: PostConstants } = useConstants();
 
   return useInfiniteQuery({
-    queryKey: [FetchQueryKeys.POST_GET_ALL],
+    queryKey: [FetchQueryKeys.POST_GET_ALL, sortByUpdatedAt ?? "default"],
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
       const page = pageParam as number;
-      const data = await apiGetPosts({ page, limit: PostConstants.PAGE_LIMIT });
+      const data = await apiGetPosts({ page, limit: PostConstants.PAGE_LIMIT, sortByUpdatedAt });
       const posts = data.items;
       const totalPages = data.pagination.totalPages;
       const hasMore = page < totalPages;
