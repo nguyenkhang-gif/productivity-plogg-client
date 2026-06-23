@@ -25,7 +25,7 @@ export function useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPa
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage,threshold]);
 
   return sentinelRef;
 }

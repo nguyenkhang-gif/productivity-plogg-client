@@ -41,7 +41,7 @@ export const SignUpCard = () => {
     if (score <= 1) return "weak";
     if (score <= 2) return "medium";
     return "strong";
-  }, [formData.password]);
+  }, [formData]);
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

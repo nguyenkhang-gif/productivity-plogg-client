@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowLeft, CalendarDays, Eye, Pencil } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 
 import { RootState } from "@/core/redux/store";
 import { useGetPostById } from "@/core/services/client/posts";
