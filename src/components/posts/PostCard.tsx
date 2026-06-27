@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Post } from "@/core/types/post";
-import { PostCategory, PostVisibility } from "@/core/enums";
+import { PostCategory, PostModerationStatus, PostVisibility } from "@/core/enums";
 import { Trash2, Pencil, CalendarDays, MoreHorizontal, MessageCircle, Clock, Share2, Bookmark, Eye, Globe, Users, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -141,6 +141,19 @@ export default function PostCard({ post, currentUserId, onDelete, onTagClick }: 
                 const { Icon } = VISIBILITY_CONFIG[visibility];
                 return <Icon size={11} className={styles.muted} />;
               })()}
+              {isOwner && post.moderationStatus === PostModerationStatus.Pending && (
+                <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full">
+                  Pending review
+                </span>
+              )}
+              {isOwner && post.moderationStatus === PostModerationStatus.Rejected && (
+                <span
+                  className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full cursor-help"
+                  title={post.rejectionReason ?? "No reason provided"}
+                >
+                  Rejected
+                </span>
+              )}
             </div>
           </div>
         </div>

@@ -36,3 +36,15 @@ export enum PostVisibility {
   Friends = "FRIENDS",
   Private = "PRIVATE",
 }
+
+export enum UserRole {
+  User = "user",
+  Moderator = "moderator",
+  Admin = "admin",
+}
+
+export enum PostModerationStatus {
+  Approved = "APPROVED",
+  Pending = "PENDING",
+  Rejected = "REJECTED",
+}

@@ -100,3 +100,40 @@ export const apiGetTrending = (): Promise<Post[]> =>
 
 export const apiGetMyStats = (): Promise<MyStats> =>
   axiosInstance.get(Endpoints.POST_MY_STATS).then((r) => r.data);
+
+// ── Moderation (moderator/admin only) ──
+
+export interface ModerationQueueParams {
+  page?: number;
+  limit?: number;
+}
+
+// Lấy danh sách post PUBLIC đang chờ duyệt
+export const apiGetPendingPosts = async (
+  params: ModerationQueueParams = {}
+): Promise<PaginatedResponse<Post>> => {
+  const { data } = await axiosInstance.get(Endpoints.POST_MODERATION_PENDING, {
+    params,
+  });
+  return data;
+};
+
+// Approve một post
+export const apiApprovePost = async (postId: string): Promise<Post> => {
+  const { data } = await axiosInstance.patch(
+    Endpoints.POST_APPROVE.replace(":id", postId)
+  );
+  return data;
+};
+
+// Reject một post kèm lý do
+export const apiRejectPost = async (
+  postId: string,
+  reason?: string
+): Promise<Post> => {
+  const { data } = await axiosInstance.patch(
+    Endpoints.POST_REJECT.replace(":id", postId),
+    { reason }
+  );
+  return data;
+};

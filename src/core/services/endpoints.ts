@@ -20,6 +20,11 @@ export enum Endpoints {
   POST_TRENDING = "/posts/trending",
   POST_MY_STATS = "/posts/stats/me",
 
+  POST_MODERATION_PENDING = "/posts/moderation/pending",
+  POST_APPROVE = "/posts/:id/approve",
+  POST_REJECT = "/posts/:id/reject",
+  USER_CHANGE_ROLE = "/users/:id/role",
+
   COMMENT_GET_BY_POST = "/posts/:postId/comments",
   COMMENT_CREATE = "/posts/:postId/comments",
   COMMENT_UPDATE = "/posts/:postId/comments/:id",
@@ -36,6 +41,7 @@ export enum FetchQueryKeys {
   POST_GET_BY_AUTHOR = "POST_GET_BY_AUTHOR",
   POST_TRENDING = "POST_TRENDING",
   POST_MY_STATS = "POST_MY_STATS",
+  POST_MODERATION_PENDING = "POST_MODERATION_PENDING",
 
   COMMENT_GET_BY_POST = "COMMENT_GET_BY_POST",
 

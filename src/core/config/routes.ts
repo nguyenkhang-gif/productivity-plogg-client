@@ -32,6 +32,7 @@ export const routes: RouteConfig[] = [
   { path: "/epub", access: "public" },
 
   { path: "/profile", access: "private" },
+  { path: "/moderation", access: "private" },
 ];
 
 /** Default nếu path không khớp rule nào */

@@ -19,6 +19,7 @@ import { useTheme } from "next-themes";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useAuth } from "@/core/hooks/auth/useAuth";
+import { useRole } from "@/core/hooks/useRole";
 import { useGetReceivedRequests } from "@/core/services/client/friendships";
 import { useRouter, usePathname } from "next/navigation";
 import UserAvatar from "@/components/ui/UserAvatar";
@@ -38,6 +39,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { signOut } = useAuth();
   const { profile, isAuth, isLoading } = useSelector((state: RootState) => state.user);
+  const { canModerate } = useRole();
   const { data: receivedRequests } = useGetReceivedRequests();
   const pendingCount = receivedRequests?.length ?? 0;
 
@@ -82,7 +84,12 @@ export default function Navbar() {
     { href: "/upload", label: "Files" },
   ];
 
-  const navLinks = isAuth ? [...publicNavLinks, ...privateNavLinks] : publicNavLinks;
+  const moderationNavLinks =
+    isAuth && canModerate ? [{ href: "/moderation", label: "Moderation" }] : [];
+
+  const navLinks = isAuth
+    ? [...publicNavLinks, ...privateNavLinks, ...moderationNavLinks]
+    : publicNavLinks;
 
   return (
     <nav className="px-4 py-3 w-full fixed z-10 border-b bg-page/80 backdrop-blur-lg border-border text-text-primary">

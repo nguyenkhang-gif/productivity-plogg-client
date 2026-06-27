@@ -6,8 +6,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { Post } from "@/core/types/post";
 import { useFriendship } from "@/core/hooks/friendship/useFriendship";
-import { FileText, BookOpen, Users, Upload, LayoutDashboard } from "lucide-react";
+import { FileText, BookOpen, Users, Upload, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { styles } from "@/core/config/styles";
+import { useRole } from "@/core/hooks/useRole";
 import UserAvatar from "@/components/ui/UserAvatar";
 
 interface LeftSidebarProps {
@@ -26,6 +27,11 @@ export default function LeftSidebar({ posts }: LeftSidebarProps) {
   const pathname = usePathname();
   const { profile } = useSelector((state: RootState) => state.user);
   const { friends } = useFriendship();
+  const { canModerate } = useRole();
+
+  const navLinks = canModerate
+    ? [...NAV_LINKS, { href: "/moderation", label: "Moderation", icon: ShieldCheck }]
+    : NAV_LINKS;
 
   const myPostCount = profile.postCount
     ?? (posts ?? []).filter((p) => p.authorId === profile.id || p.author?.id === profile.id).length;
@@ -61,7 +67,7 @@ export default function LeftSidebar({ posts }: LeftSidebarProps) {
 
         {/* Nav links */}
         <nav className="p-2">
-          {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+          {navLinks.map(({ href, label, icon: Icon }) => {
             const active = pathname === href;
             return (
               <Link

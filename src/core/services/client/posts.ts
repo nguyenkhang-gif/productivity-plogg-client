@@ -15,6 +15,9 @@ import {
   apiUpdatePost,
   apiDeletePost,
   apiReactPost,
+  apiGetPendingPosts,
+  apiApprovePost,
+  apiRejectPost,
   CreatePostDto,
   UpdatePostDto,
 } from "../api/posts";
@@ -151,6 +154,39 @@ export const useDeletePost = () => {
         }
       );
       queryClient.removeQueries({ queryKey: [FetchQueryKeys.POST_GET_BY_ID, id] });
+    },
+  });
+};
+
+// ── Moderation queue ──
+
+export const useGetPendingPosts = (page = 1, limit = 10) =>
+  useQuery({
+    queryKey: [FetchQueryKeys.POST_MODERATION_PENDING, page],
+    queryFn: () => apiGetPendingPosts({ page, limit }),
+  });
+
+export const useApprovePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (postId: string) => apiApprovePost(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [FetchQueryKeys.POST_MODERATION_PENDING],
+      });
+    },
+  });
+};
+
+export const useRejectPost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ postId, reason }: { postId: string; reason?: string }) =>
+      apiRejectPost(postId, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [FetchQueryKeys.POST_MODERATION_PENDING],
+      });
     },
   });
 };
