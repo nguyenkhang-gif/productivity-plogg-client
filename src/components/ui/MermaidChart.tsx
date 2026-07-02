@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import mermaid from "mermaid";
 
-mermaid.initialize({
+const MERMAID_CONFIG = {
   startOnLoad: false,
   theme: "dark",
   themeVariables: {
@@ -21,7 +20,7 @@ mermaid.initialize({
     edgeLabelBackground: "#1e293b",
     fontFamily: "ui-monospace, monospace",
   },
-});
+} as const;
 
 let idCounter = 0;
 
@@ -35,6 +34,8 @@ export default function MermaidChart({ chart }: { chart: string }) {
     let cancelled = false;
     async function render() {
       try {
+        const mermaid = (await import("mermaid")).default;
+        mermaid.initialize(MERMAID_CONFIG);
         const { svg: rendered } = await mermaid.render(id.current, chart.trim());
         if (!cancelled) setSvg(rendered);
       } catch (e) {

@@ -1,5 +1,3 @@
-import JSZip from "jszip";
-
 export interface EpubBuildOptions {
   title: string;
   author: string;
@@ -154,6 +152,7 @@ export async function buildEpub(options: EpubBuildOptions): Promise<Blob> {
   const uid = `epub-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const meta = { title, author, language, uid };
 
+  const JSZip = (await import("jszip")).default;
   const zip = new JSZip();
 
   // mimetype MUST be first and MUST NOT be compressed (EPUB spec requirement)
