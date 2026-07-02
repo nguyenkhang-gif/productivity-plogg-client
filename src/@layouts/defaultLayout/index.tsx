@@ -13,7 +13,7 @@ export default function DefaultLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { hideNav, isAuthPage, isMeetingRoom, isGuestLanding } = useLayoutVisibility();
+  const { hideNav } = useLayoutVisibility();
 
   return (
     <RouteGuard>
