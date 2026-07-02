@@ -12,8 +12,7 @@ import {
 } from "@/core/services/client/storyContexts";
 import type { CreateStoryContextDto } from "@/core/services/api/storyContexts";
 
-import { FileDropZone } from "../shared/FileDropZone";
-import { PasteTextSection } from "../shared/PasteTextSection";
+import { InputTabs } from "../shared/InputTabs";
 import { RunControls } from "../shared/RunControls";
 import { StatusBadge } from "../shared/StatusBadge";
 import { StreamingPanel } from "../shared/StreamingPanel";
@@ -117,11 +116,10 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
         )}
       </div>
 
-      <FileDropZone
+      <InputTabs
         accept=".txt"
         multiple
         isLoading={isLoading}
-        label="Drop .txt files here"
         sublabel="Multiple files — sorted automatically by filename"
         stats={files.length > 0 ? (
           <>
@@ -130,9 +128,8 @@ export function ContextMode({ pendingChapters = [], onPendingConsumed }: Context
           </>
         ) : undefined}
         onFiles={loadFiles}
+        addChapters={addChapters}
       />
-
-      <PasteTextSection addChapters={addChapters} />
 
       {files.length > 0 && (
         <div className="grid grid-cols-[320px_1fr] gap-4 items-start">

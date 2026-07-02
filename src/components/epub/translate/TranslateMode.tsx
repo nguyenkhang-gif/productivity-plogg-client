@@ -9,8 +9,7 @@ import type { ExtractedChapter } from "@/core/lib/epub/extractChapters";
 import { downloadFile } from "@/core/lib/epub/downloadFile";
 import { useGetStoryContexts } from "@/core/services/client/storyContexts";
 
-import { FileDropZone } from "../shared/FileDropZone";
-import { PasteTextSection } from "../shared/PasteTextSection";
+import { InputTabs } from "../shared/InputTabs";
 import { RunControls } from "../shared/RunControls";
 import { StreamingPanel } from "../shared/StreamingPanel";
 import { TranslateQueue } from "./TranslateQueue";
@@ -107,12 +106,11 @@ export function TranslateMode({ pendingChapters = [], onPendingConsumed }: Trans
           )}
         </div>
 
-        <FileDropZone
+        <InputTabs
           accept=".txt"
           multiple
           isLoading={isLoading}
-          label="Drop .txt files here"
-          sublabel="Mỗi file = 1 API call riêng lẻ"
+          sublabel="Each file = 1 separate API call"
           stats={files.length > 0 ? (
             <>
               <p className="text-sm font-medium text-text-primary">{files.length} files</p>
@@ -120,9 +118,8 @@ export function TranslateMode({ pendingChapters = [], onPendingConsumed }: Trans
             </>
           ) : undefined}
           onFiles={loadFiles}
+          addChapters={addChapters}
         />
-
-        <PasteTextSection addChapters={addChapters} />
 
         {files.length > 0 && (
           <div className="grid grid-cols-[280px_1fr] gap-4 items-start">
