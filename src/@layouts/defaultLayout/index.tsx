@@ -4,7 +4,7 @@ import Navbar from "@/components/layouts/Navbar";
 import RouteGuard from "@/components/layouts/RouteGuard";
 import TitleManager from "@/components/layouts/TitleManager";
 import { useLayoutVisibility } from "@/components/layouts/useLayoutVisibility";
-import UserChatBubble from "@/components/chat/UserChatBubble";
+// import UserChatBubble from "@/components/chat/UserChatBubble"; // temporarily disabled
 import { cn } from "@/core/lib/utils";
 import React from "react";
 
@@ -22,7 +22,7 @@ export default function DefaultLayout({
       <div className={cn("h-full", { "pt-14": !hideNav, "pt-0": hideNav })}>
         {children}
       </div>
-      {!isAuthPage && !isMeetingRoom && !isGuestLanding && <UserChatBubble />}
+      {/* <UserChatBubble /> temporarily disabled */}
     </RouteGuard>
   );
 }
