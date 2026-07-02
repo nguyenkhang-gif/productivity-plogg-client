@@ -83,6 +83,8 @@ const PortfolioUserOverview = ({ user }: PortfolioUserOverviewProps) => {
           <Image
             src={user.avatar}
             alt={user.name}
+            width={224}
+            height={224}
             className="object-cover w-full h-full"
           />
         </div>
