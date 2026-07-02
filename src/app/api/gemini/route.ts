@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import redis from "@/core/lib/redis";
 
 const BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models";
 const MODEL = "gemma-4-31b-it";
-const LIMIT = 20;
-const WINDOW_SECONDS = 86400; // 24h
-const REDIS_KEY_PREFIX = "fe:rl:gemini";
-
-// Lua script: INCR + EXPIRE atomic — chỉ set TTL khi key mới tạo
-const INCR_SCRIPT = `
-  local count = redis.call('INCR', KEYS[1])
-  if count == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end
-  return count
-`;
 
 async function extractUserId(req: NextRequest): Promise<string | null> {
   const authHeader = req.headers.get("authorization");
@@ -28,32 +17,6 @@ async function extractUserId(req: NextRequest): Promise<string | null> {
     return profile.id as string;
   } catch {
     return null;
-  }
-}
-
-async function checkRateLimit(userId: string): Promise<{
-  allowed: boolean;
-  count: number;
-  remaining: number;
-  resetAt: string;
-} | null> {
-  try {
-    const key = `${REDIS_KEY_PREFIX}:${userId}`;
-    const count = (await redis.eval(
-      INCR_SCRIPT,
-      1,
-      key,
-      String(WINDOW_SECONDS)
-    )) as number;
-
-    const ttl = await redis.ttl(key);
-    const resetAt = new Date(Date.now() + ttl * 1000).toISOString();
-    const remaining = Math.max(0, LIMIT - count);
-
-    return { allowed: count <= LIMIT, count, remaining, resetAt };
-  } catch (err) {
-    console.warn("[gemini] Redis error — fail open:", (err as Error).message);
-    return null; // fail open
   }
 }
 
@@ -169,7 +132,6 @@ export async function POST(req: NextRequest) {
 
     const call = stream ? callGeminiStream : callGemini;
 
-    // --- Chế độ 1: User có key riêng → dùng thẳng, không rate limit ---
     if (apiKey) {
       const result = await call(prompt, apiKey, systemInstruction);
       if (!stream && "error" in (result as object)) {
@@ -178,7 +140,6 @@ export async function POST(req: NextRequest) {
       return result as Response;
     }
 
-    // --- Chế độ 2: Dùng server key → cần rate limit ---
     const serverKey = process.env.GEMINI_API_KEY;
     if (!serverKey) {
       return NextResponse.json(
@@ -190,14 +151,6 @@ export async function POST(req: NextRequest) {
     const userId = await extractUserId(req);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const rl = await checkRateLimit(userId);
-    if (rl && !rl.allowed) {
-      return NextResponse.json(
-        { error: "Rate limit exceeded", limit: LIMIT, remaining: 0, resetAt: rl.resetAt },
-        { status: 429 }
-      );
     }
 
     const result = await call(prompt, serverKey, systemInstruction);
