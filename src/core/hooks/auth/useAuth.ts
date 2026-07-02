@@ -42,7 +42,7 @@ export const useAuth = () => {
         // Dùng axios thuần để tránh vòng lặp với interceptor của instance
         const { data } = await axios.post(`${BASE_URL}/auth/refresh`, {
           refresh_token: refreshToken,
-        });
+        }, { timeout: 5000 });
         tokenStore.save(data.access_token, data.refresh_token);
 
         const { data: profile } = await axiosInstance.get("/auth/profile");
