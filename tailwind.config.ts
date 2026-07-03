@@ -31,6 +31,11 @@ export default {
 			border:           'var(--color-border)',
 			'border-muted':   'var(--color-border-muted)',
 
+			// Coffee Focus drink tokens
+			coffee:           'var(--color-coffee)',
+			'coffee-deep':    'var(--color-coffee-deep)',
+			'coffee-foam':    'var(--color-coffee-foam)',
+
 			dark:{
 				1:"#1C1F2E",
 				2:"#161925"

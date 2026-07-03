@@ -53,6 +53,11 @@ body,
     --color-avatar-bg-from: #3b82f6;
     --color-avatar-bg-to:   #4f46e5;
     --color-avatar-text:    #ffffff;
+
+    /* Coffee Focus drink colors */
+    --color-coffee:         #8B5E3C;
+    --color-coffee-deep:    #5C3A21;
+    --color-coffee-foam:    #D9C7A7;
   }
 
   html.light {
@@ -82,6 +87,11 @@ body,
     --color-avatar-bg-from: #3b82f6;
     --color-avatar-bg-to:   #4f46e5;
     --color-avatar-text:    #ffffff;
+
+    /* Coffee Focus drink colors */
+    --color-coffee:         #6F4E37;
+    --color-coffee-deep:    #4A3123;
+    --color-coffee-foam:    #C9B08E;
   }
 
   html.sepia {
@@ -113,6 +123,11 @@ body,
     --color-avatar-bg-from: #E8BFCF;
     --color-avatar-bg-to:   #D4A0B5;
     --color-avatar-text:    #6B3D54;
+
+    /* Coffee Focus drink colors */
+    --color-coffee:         #7A4A38;
+    --color-coffee-deep:    #532F23;
+    --color-coffee-foam:    #D6BBA4;
   }
 }
 
