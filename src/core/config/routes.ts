@@ -24,6 +24,7 @@ export const routes: RouteConfig[] = [
   { path: "/portfolio", access: "public" },
   { path: "/projects", access: "public" },
   { path: "/buttons", access: "public" },
+  { path: "/focusCoffe", access: "public" },
 
   // Private: phải login
   { path: "/", access: "public", exact: true },

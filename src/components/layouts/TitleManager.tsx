@@ -15,6 +15,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/auth": "Login",
   "/cbz": "CBZ",
   "/projects": "Projects",
+  "/focusCoffe": "Coffee Focus",
 };
 
 export default function TitleManager() {
