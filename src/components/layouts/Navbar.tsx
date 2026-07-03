@@ -23,6 +23,7 @@ import { useRole } from "@/core/hooks/useRole";
 import { useGetReceivedRequests } from "@/core/services/client/friendships";
 import { useRouter, usePathname } from "next/navigation";
 import UserAvatar from "@/components/ui/UserAvatar";
+import { useNavVisibility } from "@/components/layouts/NavVisibilityContext";
 
 const THEMES = [
   { id: "dark",  label: "Dark",  icon: Moon },
@@ -42,6 +43,7 @@ export default function Navbar() {
   const { canModerate } = useRole();
   const { data: receivedRequests } = useGetReceivedRequests();
   const pendingCount = receivedRequests?.length ?? 0;
+  const { navHidden } = useNavVisibility();
 
   const activeTheme = THEMES.find((t) => t.id === theme) ?? THEMES[0];
   const ThemeIcon = activeTheme.icon;
@@ -77,6 +79,7 @@ export default function Navbar() {
     { href: "/epub", label: "Epub Gen" },
     { href: "/projects", label: "Projects" },
     { href: "/portfolio", label: "Portfolio" },
+    { href: "/focusCoffe", label: "Coffee Focus" },
   ];
 
   const privateNavLinks = [
@@ -92,7 +95,11 @@ export default function Navbar() {
     : publicNavLinks;
 
   return (
-    <nav className="px-4 py-3 w-full fixed z-10 border-b bg-page/80 backdrop-blur-lg border-border text-text-primary">
+    <nav
+      className={`px-4 py-3 w-full fixed z-10 border-b bg-page/80 backdrop-blur-lg border-border text-text-primary transition-transform duration-300 ease-in-out ${
+        navHidden ? "-translate-y-full" : "translate-y-0"
+      }`}
+    >
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold hover:opacity-80 transition-opacity">
