@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   DEFAULT_CONFIG,
   PomodoroConfig,
@@ -12,9 +12,39 @@ import {
   saveActiveSession,
   saveConfig,
 } from "@/core/lib/pomodoro/coffeeFocusStore";
+import {
+  requestNotifyPermission,
+  useCompletionSignal,
+} from "./useCompletionSignal";
 
 export type TimerPhase = "focus" | "shortBreak" | "longBreak";
 export type TimerStatus = "idle" | "running" | "paused" | "finished";
+
+/** Per-phase identity — label, tab emoji, accent token. Single source of truth
+ *  for the switcher pill, cup colors, tab title and favicon. */
+export const PHASE_META: Record<
+  TimerPhase,
+  { label: string; emoji: string; accent: "coffee" | "tea" }
+> = {
+  focus: { label: "Focus", emoji: "☕", accent: "coffee" },
+  shortBreak: { label: "Short break", emoji: "🍵", accent: "tea" },
+  longBreak: { label: "Long break", emoji: "🌿", accent: "tea" },
+};
+
+/**
+ * Resolve the current phase to a generic drink palette, exposed as CSS custom
+ * properties. Drink visuals (and any phase-tinted UI) must only ever use
+ * `var(--drink)`, `var(--drink-deep)`, `var(--drink-foam)` — never phase logic
+ * or hardcoded colors. Swapping designs/palettes then never touches components.
+ */
+export function drinkPaletteStyle(phase: TimerPhase): CSSProperties {
+  const accent = PHASE_META[phase].accent;
+  return {
+    "--drink": `var(--color-${accent})`,
+    "--drink-deep": `var(--color-${accent}-deep)`,
+    "--drink-foam": `var(--color-${accent}-foam)`,
+  } as CSSProperties;
+}
 
 const BASE_TITLE = "Coffee Focus | KPro";
 // Render trigger only — remaining time is always wall-clock math off endAt,
@@ -30,6 +60,37 @@ function durationMs(config: PomodoroConfig, phase: TimerPhase): number {
     case "longBreak":
       return config.longBreakMin * 60_000;
   }
+}
+
+function emojiFavicon(emoji: string): string {
+  return `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">${emoji}</text></svg>`
+  )}`;
+}
+
+/** Swap the favicon to the phase emoji while mounted; restore on unmount. */
+function usePhaseFavicon(phase: TimerPhase) {
+  useEffect(() => {
+    let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    const created = !link;
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    const original = created ? null : link.href;
+    link.href = emojiFavicon(PHASE_META[phase].emoji);
+
+    return () => {
+      if (!link) return;
+      if (original) {
+        link.href = original;
+      } else {
+        // We created it — point back at the default app icon
+        link.href = "/favicon.ico";
+      }
+    };
+  }, [phase]);
 }
 
 export function formatRemaining(ms: number): string {
@@ -85,6 +146,7 @@ export function usePomodoroTimer() {
   /** Begin a fresh session in the given phase (defaults to the current one). */
   const beginPhase = useCallback(
     (next: TimerPhase, cfg: PomodoroConfig) => {
+      requestNotifyPermission(); // user gesture — the only acceptable moment to ask
       const total = durationMs(cfg, next);
       endAtRef.current = Date.now() + total;
       setPhase(next);
@@ -206,18 +268,22 @@ export function usePomodoroTimer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Tab title: live countdown while running, "done" marker when finished,
-  // base title otherwise. TitleManager owns the title on other routes; this
-  // effect owns it while the page is mounted and restores it on unmount.
+  // Tab title: live countdown + phase emoji/label while running, "done" marker
+  // when finished, base title otherwise. TitleManager owns the title on other
+  // routes; this effect owns it while the page is mounted, restored on unmount.
   useEffect(() => {
+    const { emoji, label } = PHASE_META[phase];
     if (status === "running") {
-      document.title = `${formatRemaining(remainingMs)} ☕ | KPro`;
+      document.title = `${formatRemaining(remainingMs)} ${emoji} ${label} | KPro`;
     } else if (status === "finished") {
-      document.title = `Done! ☕ | KPro`;
+      document.title = `Done! ${emoji} | KPro`;
     } else {
       document.title = BASE_TITLE;
     }
-  }, [status, remainingMs]);
+  }, [status, remainingMs, phase]);
+
+  usePhaseFavicon(phase);
+  useCompletionSignal(status, phase, config.soundOn);
 
   useEffect(() => {
     return () => {

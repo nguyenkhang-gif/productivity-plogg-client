@@ -14,7 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import type { PomodoroConfig } from "@/core/lib/pomodoro/coffeeFocusStore";
 
-const FIELDS: { key: keyof PomodoroConfig; label: string; min: number; max: number }[] = [
+type NumericConfigKey = Exclude<keyof PomodoroConfig, "soundOn">;
+
+const FIELDS: { key: NumericConfigKey; label: string; min: number; max: number }[] = [
   { key: "focusMin", label: "Focus (minutes)", min: 1, max: 120 },
   { key: "shortBreakMin", label: "Short break (minutes)", min: 1, max: 60 },
   { key: "longBreakMin", label: "Long break (minutes)", min: 1, max: 60 },
@@ -87,6 +89,21 @@ export default function SettingsPanel({ config, isActive, onSave }: SettingsPane
               />
             </div>
           ))}
+
+          <div className="flex items-center justify-between gap-4">
+            <Label htmlFor="cfg-sound" className="text-sm text-text-secondary">
+              Completion sound
+            </Label>
+            <input
+              id="cfg-sound"
+              type="checkbox"
+              checked={draft.soundOn}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, soundOn: e.target.checked }))
+              }
+              className="h-4 w-4 accent-[var(--color-coffee)] cursor-pointer"
+            />
+          </div>
 
           {isActive && (
             <p className="text-xs text-text-muted">

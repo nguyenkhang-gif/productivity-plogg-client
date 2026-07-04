@@ -9,6 +9,7 @@ export interface PomodoroConfig {
   shortBreakMin: number;
   longBreakMin: number;
   sessionsPerCycle: number;
+  soundOn: boolean;
 }
 
 export const DEFAULT_CONFIG: PomodoroConfig = {
@@ -16,6 +17,7 @@ export const DEFAULT_CONFIG: PomodoroConfig = {
   shortBreakMin: 5,
   longBreakMin: 15,
   sessionsPerCycle: 4,
+  soundOn: true,
 };
 
 export interface ActiveSession {
@@ -104,6 +106,35 @@ export function recordCompletedFocus(): number {
 
   writeJson(KEY_SESSIONS, sessions);
   return completed;
+}
+
+// ---------- notes (distraction pad) ----------
+
+export interface PomodoroNote {
+  id: string;
+  text: string;
+  done: boolean;
+  createdAt: number;
+}
+
+const KEY_NOTES = "coffeeFocus:notes";
+const MAX_NOTES = 100;
+
+export function getNotes(): PomodoroNote[] {
+  const stored = readJson<PomodoroNote[]>(KEY_NOTES);
+  return Array.isArray(stored) ? stored : [];
+}
+
+export function saveNotes(notes: PomodoroNote[]) {
+  // Cap to keep localStorage tidy — drop the oldest done items first, then oldest
+  let trimmed = notes;
+  if (notes.length > MAX_NOTES) {
+    const byAge = [...notes].sort((a, b) => b.createdAt - a.createdAt);
+    const active = byAge.filter((n) => !n.done);
+    const done = byAge.filter((n) => n.done);
+    trimmed = [...active, ...done].slice(0, MAX_NOTES);
+  }
+  writeJson(KEY_NOTES, trimmed);
 }
 
 // ---------- active session (reload recovery) ----------

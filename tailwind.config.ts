@@ -35,6 +35,9 @@ export default {
 			coffee:           'var(--color-coffee)',
 			'coffee-deep':    'var(--color-coffee-deep)',
 			'coffee-foam':    'var(--color-coffee-foam)',
+			tea:              'var(--color-tea)',
+			'tea-deep':       'var(--color-tea-deep)',
+			'tea-foam':       'var(--color-tea-foam)',
 
 			dark:{
 				1:"#1C1F2E",

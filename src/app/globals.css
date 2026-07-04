@@ -58,6 +58,9 @@ body,
     --color-coffee:         #8B5E3C;
     --color-coffee-deep:    #5C3A21;
     --color-coffee-foam:    #D9C7A7;
+    --color-tea:            #6B9B6E;
+    --color-tea-deep:       #43683F;
+    --color-tea-foam:       #C9DCC0;
   }
 
   html.light {
@@ -92,6 +95,9 @@ body,
     --color-coffee:         #6F4E37;
     --color-coffee-deep:    #4A3123;
     --color-coffee-foam:    #C9B08E;
+    --color-tea:            #4F7D52;
+    --color-tea-deep:       #35572F;
+    --color-tea-foam:       #A9C9A0;
   }
 
   html.sepia {
@@ -128,6 +134,9 @@ body,
     --color-coffee:         #7A4A38;
     --color-coffee-deep:    #532F23;
     --color-coffee-foam:    #D6BBA4;
+    --color-tea:            #6E8F5E;   /* warm matcha for sepia */
+    --color-tea-deep:       #4C6640;
+    --color-tea-foam:       #C6D6AF;
   }
 }
 
@@ -135,6 +144,17 @@ body,
   .text-default {
     @apply text-gray-600 dark:text-[#D1D5DB];
   }
+}
+
+/* Coffee Focus — steam wisps rising off the cup */
+@keyframes cf-steam {
+  0%   { transform: translateY(0);     opacity: 0; }
+  25%  { opacity: 0.55; }
+  75%  { opacity: 0.25; }
+  100% { transform: translateY(-14px); opacity: 0; }
+}
+.cf-steam {
+  animation: cf-steam 2.6s ease-out infinite;
 }
 
 /* Sakura petal decorations — only visible in sepia theme */

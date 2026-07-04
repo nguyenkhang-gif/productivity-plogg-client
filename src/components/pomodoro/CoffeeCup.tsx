@@ -3,6 +3,11 @@
 /**
  * Shared contract for every drink visual — Phase 5 formalizes this in a drinks
  * registry with unlockable drinks (docs/coffeFocus/phase-5-progression.md).
+ *
+ * Color convention: visuals never contain phase logic or hardcoded colors.
+ * Liquid uses `var(--drink)` / `var(--drink-deep)` / `var(--drink-foam)` —
+ * the parent sets these via `drinkPaletteStyle(phase)` (usePomodoroTimer.ts).
+ * The only other rule: something must scale with `progress`.
  */
 export interface DrinkVisualProps {
   /** 0–1 remaining time; 1 = full cup */
@@ -36,6 +41,25 @@ export default function CoffeeCup({ progress, status, phase }: DrinkVisualProps)
           <rect x={CUP_X} y={CUP_Y} width={CUP_W} height={CUP_H} rx={6} />
         </clipPath>
       </defs>
+
+      {/* steam — rises while the drink is hot (not paused, not empty) */}
+      {!empty && status !== "paused" && (
+        <g
+          stroke="var(--drink-foam)"
+          strokeWidth={2.5}
+          strokeLinecap="round"
+          fill="none"
+        >
+          {[44, 56, 68].map((x, i) => (
+            <path
+              key={x}
+              d={`M ${x} 26 c 2 -4, -2 -8, 1 -12`}
+              className="cf-steam"
+              style={{ animationDelay: `${i * 0.6}s` }}
+            />
+          ))}
+        </g>
+      )}
 
       {/* saucer */}
       <ellipse
@@ -76,8 +100,8 @@ export default function CoffeeCup({ progress, status, phase }: DrinkVisualProps)
           y={liquidY}
           width={CUP_W}
           height={liquidH}
-          fill="var(--color-coffee)"
-          style={{ transition: "y 0.5s linear, height 0.5s linear" }}
+          fill="var(--drink)"
+          style={{ transition: "y 0.5s linear, height 0.5s linear, fill 0.6s ease" }}
         />
         {/* liquid depth shading at the bottom */}
         <rect
@@ -85,9 +109,9 @@ export default function CoffeeCup({ progress, status, phase }: DrinkVisualProps)
           y={CUP_Y + CUP_H - 8}
           width={CUP_W}
           height={8}
-          fill="var(--color-coffee-deep)"
+          fill="var(--drink-deep)"
           opacity={empty ? 0 : 0.6}
-          style={{ transition: "opacity 0.5s linear" }}
+          style={{ transition: "opacity 0.5s linear, fill 0.6s ease" }}
         />
         {/* crema line riding the surface */}
         {!empty && (
@@ -96,9 +120,9 @@ export default function CoffeeCup({ progress, status, phase }: DrinkVisualProps)
             y={liquidY}
             width={CUP_W}
             height={3}
-            fill="var(--color-coffee-foam)"
+            fill="var(--drink-foam)"
             opacity={0.9}
-            style={{ transition: "y 0.5s linear" }}
+            style={{ transition: "y 0.5s linear, fill 0.6s ease" }}
           />
         )}
       </g>
