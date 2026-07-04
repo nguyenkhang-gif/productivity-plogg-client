@@ -49,11 +49,38 @@ export function usePomodoroNotes() {
     [notes, update]
   );
 
-  // Active first (newest on top), done sink to the bottom
-  const sorted = [
-    ...notes.filter((n) => !n.done),
-    ...notes.filter((n) => n.done),
-  ];
+  /** Edit a task's text. Empty result keeps the old text (delete is explicit). */
+  const editNote = useCallback(
+    (id: string, text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+      update(notes.map((n) => (n.id === id ? { ...n, text: trimmed } : n)));
+    },
+    [notes, update]
+  );
 
-  return { notes: sorted, addNote, toggleNote, removeNote };
+  /** Move an ongoing task within the ongoing group (drag & drop). Finished
+   *  tasks keep their own order at the bottom. */
+  const reorderActive = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      const active = notes.filter((n) => !n.done);
+      const done = notes.filter((n) => n.done);
+      if (
+        fromIndex < 0 || fromIndex >= active.length ||
+        toIndex < 0 || toIndex >= active.length
+      ) {
+        return;
+      }
+      const [moved] = active.splice(fromIndex, 1);
+      active.splice(toIndex, 0, moved);
+      update([...active, ...done]);
+    },
+    [notes, update]
+  );
+
+  // Ongoing first (user-ordered via drag), done sink to the bottom
+  const ongoing = notes.filter((n) => !n.done);
+  const finished = notes.filter((n) => n.done);
+
+  return { ongoing, finished, addNote, toggleNote, removeNote, editNote, reorderActive };
 }
