@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import type { PomodoroConfig } from "@/core/lib/pomodoro/coffeeFocusStore";
 
-type NumericConfigKey = Exclude<keyof PomodoroConfig, "soundOn">;
+type NumericConfigKey = Exclude<keyof PomodoroConfig, "soundOn" | "drinkId">;
 
 const FIELDS: { key: NumericConfigKey; label: string; min: number; max: number }[] = [
   { key: "focusMin", label: "Focus (minutes)", min: 1, max: 120 },
@@ -65,7 +65,7 @@ export default function SettingsPanel({ config, isActive, onSave }: SettingsPane
           <Settings className="h-4 w-4" />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-sm bg-card border-border text-text-primary">
+      <DialogContent className="max-w-sm max-h-[85vh] overflow-y-auto bg-card border-border text-text-primary">
         <DialogHeader>
           <DialogTitle className="text-text-primary">Timer settings</DialogTitle>
         </DialogHeader>

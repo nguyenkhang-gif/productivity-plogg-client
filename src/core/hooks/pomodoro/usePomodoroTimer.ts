@@ -11,8 +11,22 @@ import {
   recordCompletedFocus,
   saveActiveSession,
   saveConfig,
+  addProgress,
+  getProgress,
+  type Progress,
 } from "@/core/lib/pomodoro/coffeeFocusStore";
 import {
+  CYCLE_BONUS_XP,
+  type DrinkAccent,
+  drinksUnlockedBetween,
+  getDrinkDef,
+  levelFromXp,
+  xpForLevel,
+} from "@/core/lib/pomodoro/progression";
+import { toast } from "@/core/hooks/use-toast";
+import {
+  playClick,
+  preloadSounds,
   requestNotifyPermission,
   useCompletionSignal,
 } from "./useCompletionSignal";
@@ -37,8 +51,12 @@ export const PHASE_META: Record<
  * `var(--drink)`, `var(--drink-deep)`, `var(--drink-foam)` — never phase logic
  * or hardcoded colors. Swapping designs/palettes then never touches components.
  */
-export function drinkPaletteStyle(phase: TimerPhase): CSSProperties {
-  const accent = PHASE_META[phase].accent;
+export function drinkPaletteStyle(
+  phase: TimerPhase,
+  focusAccent: DrinkAccent = "coffee"
+): CSSProperties {
+  // Focus shows the selected drink's palette; breaks are always calm tea green
+  const accent = phase === "focus" ? focusAccent : "tea";
   return {
     "--drink": `var(--color-${accent})`,
     "--drink-deep": `var(--color-${accent}-deep)`,
@@ -68,29 +86,59 @@ function emojiFavicon(emoji: string): string {
   )}`;
 }
 
-/** Swap the favicon to the phase emoji while mounted; restore on unmount. */
-function usePhaseFavicon(phase: TimerPhase) {
+/** Swap the favicon to the given emoji while mounted; restore on unmount.
+ *
+ *  React 19 / Next 15 MANAGE head <link> tags — a one-shot mutation gets
+ *  overwritten when React re-renders the head. So: apply, then keep a
+ *  MutationObserver on <head> that re-applies whenever React re-asserts
+ *  the original icon. The `href !== ours` guard prevents observer loops. */
+function usePhaseFavicon(emoji: string) {
   useEffect(() => {
-    let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
-    const created = !link;
-    if (!link) {
-      link = document.createElement("link");
-      link.rel = "icon";
-      document.head.appendChild(link);
-    }
-    const original = created ? null : link.href;
-    link.href = emojiFavicon(PHASE_META[phase].emoji);
+    const href = emojiFavicon(emoji);
 
-    return () => {
-      if (!link) return;
-      if (original) {
-        link.href = original;
-      } else {
-        // We created it — point back at the default app icon
-        link.href = "/favicon.ico";
+    const apply = () => {
+      const links = document.querySelectorAll<HTMLLinkElement>(
+        'link[rel="icon"], link[rel="shortcut icon"]'
+      );
+      if (links.length === 0) {
+        const el = document.createElement("link");
+        el.rel = "icon";
+        el.type = "image/svg+xml";
+        el.href = href;
+        el.dataset.pomodoroFavicon = "true";
+        document.head.appendChild(el);
+        return;
+      }
+      for (const el of links) {
+        if (el.href !== href) {
+          el.type = "image/svg+xml";
+          el.href = href;
+        }
       }
     };
-  }, [phase]);
+
+    apply();
+    const observer = new MutationObserver(apply);
+    observer.observe(document.head, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["href"],
+    });
+
+    return () => {
+      observer.disconnect();
+      document
+        .querySelectorAll<HTMLLinkElement>("link[data-pomodoro-favicon]")
+        .forEach((el) => el.remove());
+      for (const el of document.querySelectorAll<HTMLLinkElement>(
+        'link[rel="icon"], link[rel="shortcut icon"]'
+      )) {
+        el.removeAttribute("type");
+        el.href = "/favicon.ico";
+      }
+    };
+  }, [emoji]);
 }
 
 export function formatRemaining(ms: number): string {
@@ -109,12 +157,46 @@ export function usePomodoroTimer() {
   const [totalMs, setTotalMs] = useState(durationMs(DEFAULT_CONFIG, "focus"));
   const [remainingMs, setRemainingMs] = useState(totalMs);
   const [todayCount, setTodayCount] = useState(0);
+  const [progress, setProgress] = useState<Progress>({ totalXp: 0, totalFocusMin: 0 });
+  const [lastLevelUp, setLastLevelUp] = useState<number | null>(null);
 
   const endAtRef = useRef<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const levelUpTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Refs mirror state the interval callback needs — avoids stale closures.
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
+  const totalMsRef = useRef(totalMs);
+  totalMsRef.current = totalMs;
+  const configRef = useRef(config);
+  configRef.current = config;
+
+  /** XP: 1/min of the completed session + cycle bonus on the Nth of the day.
+   *  Level derived from XP; crossing a threshold fires the toast + badge glow. */
+  const awardFocusXp = useCallback(
+    (sessionMs: number, completedToday: number, sessionsPerCycle: number) => {
+      const minutes = Math.max(1, Math.round(sessionMs / 60_000));
+      const bonus = completedToday % sessionsPerCycle === 0 ? CYCLE_BONUS_XP : 0;
+      const beforeLevel = levelFromXp(getProgress().totalXp);
+      const next = addProgress(minutes + bonus, minutes);
+      setProgress(next);
+
+      const afterLevel = levelFromXp(next.totalXp);
+      if (afterLevel > beforeLevel) {
+        const unlocked = drinksUnlockedBetween(beforeLevel, afterLevel);
+        toast({
+          title: `Level ${afterLevel}! 🎉`,
+          description: unlocked.length
+            ? `New drink unlocked: ${unlocked.map((d) => d.name).join(", ")}`
+            : `${xpForLevel(afterLevel + 1) - next.totalXp} XP to the next level`,
+        });
+        setLastLevelUp(afterLevel);
+        if (levelUpTimerRef.current) clearTimeout(levelUpTimerRef.current);
+        levelUpTimerRef.current = setTimeout(() => setLastLevelUp(null), 4000);
+      }
+    },
+    []
+  );
 
   const clearTick = useCallback(() => {
     if (intervalRef.current) {
@@ -128,10 +210,12 @@ export function usePomodoroTimer() {
     endAtRef.current = null;
     clearActiveSession();
     if (phaseRef.current === "focus") {
-      setTodayCount(recordCompletedFocus());
+      const completed = recordCompletedFocus();
+      setTodayCount(completed);
+      awardFocusXp(totalMsRef.current, completed, configRef.current.sessionsPerCycle);
     }
     setStatus("finished");
-  }, [clearTick]);
+  }, [clearTick, awardFocusXp]);
 
   const startTick = useCallback(() => {
     clearTick();
@@ -147,6 +231,7 @@ export function usePomodoroTimer() {
   const beginPhase = useCallback(
     (next: TimerPhase, cfg: PomodoroConfig) => {
       requestNotifyPermission(); // user gesture — the only acceptable moment to ask
+      if (cfg.soundOn) playClick();
       const total = durationMs(cfg, next);
       endAtRef.current = Date.now() + total;
       setPhase(next);
@@ -173,6 +258,7 @@ export function usePomodoroTimer() {
 
   const pause = useCallback(() => {
     if (endAtRef.current === null) return;
+    if (configRef.current.soundOn) playClick();
     const remaining = Math.max(0, endAtRef.current - Date.now());
     setRemainingMs(remaining);
     endAtRef.current = null;
@@ -187,6 +273,7 @@ export function usePomodoroTimer() {
   }, [clearTick, totalMs]);
 
   const resume = useCallback(() => {
+    if (configRef.current.soundOn) playClick();
     endAtRef.current = Date.now() + remainingMs;
     setStatus("running");
     saveActiveSession({
@@ -213,7 +300,8 @@ export function usePomodoroTimer() {
     [clearTick, config]
   );
 
-  const reset = useCallback(() => switchPhase("focus"), [switchPhase]);
+  /** Reset the CURRENT phase's timer — stays in the same mode. */
+  const reset = useCallback(() => switchPhase(phase), [switchPhase, phase]);
   const skipBreak = useCallback(() => switchPhase("focus"), [switchPhase]);
 
   /** Persist config changes. A running/paused session keeps its original timing —
@@ -231,11 +319,13 @@ export function usePomodoroTimer() {
     [status, phase]
   );
 
-  // Mount: load config + today's count, then restore an interrupted session.
+  // Mount: load config + today's count + progress, restore interrupted session.
   useEffect(() => {
     const cfg = getConfig();
     setConfigState(cfg);
     setTodayCount(getTodayCompleted());
+    setProgress(getProgress());
+    if (cfg.soundOn) preloadSounds();
 
     const active = getActiveSession();
     if (!active) {
@@ -257,10 +347,12 @@ export function usePomodoroTimer() {
       setStatus("running");
       startTick();
     } else {
-      // Finished while the page was closed — still counts.
+      // Finished while the page was closed — still counts (XP included).
       clearActiveSession();
       if (active.phase === "focus") {
-        setTodayCount(recordCompletedFocus());
+        const completed = recordCompletedFocus();
+        setTodayCount(completed);
+        awardFocusXp(active.totalMs, completed, cfg.sessionsPerCycle);
       }
       setRemainingMs(0);
       setStatus("finished");
@@ -271,18 +363,25 @@ export function usePomodoroTimer() {
   // Tab title: live countdown + phase emoji/label while running, "done" marker
   // when finished, base title otherwise. TitleManager owns the title on other
   // routes; this effect owns it while the page is mounted, restored on unmount.
-  useEffect(() => {
-    const { emoji, label } = PHASE_META[phase];
-    if (status === "running") {
-      document.title = `${formatRemaining(remainingMs)} ${emoji} ${label} | KPro`;
-    } else if (status === "finished") {
-      document.title = `Done! ${emoji} | KPro`;
-    } else {
-      document.title = BASE_TITLE;
-    }
-  }, [status, remainingMs, phase]);
+  // Focus shows the selected drink's emoji; breaks keep their phase emoji
+  const activeEmoji =
+    phase === "focus" ? getDrinkDef(config.drinkId).emoji : PHASE_META[phase].emoji;
 
-  usePhaseFavicon(phase);
+  useEffect(() => {
+    const { label } = PHASE_META[phase];
+    if (status === "running") {
+      document.title = `${formatRemaining(remainingMs)} ${activeEmoji} ${label} | KPro`;
+    } else if (status === "finished") {
+      document.title = `Done! ${activeEmoji} | KPro`;
+    } else if (status === "paused") {
+      document.title = `⏸ ${formatRemaining(remainingMs)} ${activeEmoji} ${label} | KPro`;
+    } else {
+      // idle — still show which mode is selected
+      document.title = `${activeEmoji} ${label} | KPro`;
+    }
+  }, [status, remainingMs, phase, activeEmoji]);
+
+  usePhaseFavicon(activeEmoji);
   useCompletionSignal(status, phase, config.soundOn);
 
   useEffect(() => {
@@ -298,6 +397,21 @@ export function usePomodoroTimer() {
       ? "longBreak"
       : "shortBreak";
 
+  // Auto-transition after completion (2s pause so the "Done!" moment + signals
+  // register): focus → the appropriate break starts by itself; break → back to
+  // focus, idle. Starting work stays a deliberate click.
+  useEffect(() => {
+    if (status !== "finished") return;
+    const t = setTimeout(() => {
+      if (phaseRef.current === "focus") {
+        beginPhase(nextBreakKind, configRef.current);
+      } else {
+        switchPhase("focus");
+      }
+    }, 2000);
+    return () => clearTimeout(t);
+  }, [status, nextBreakKind, beginPhase, switchPhase]);
+
   return {
     phase,
     status,
@@ -307,6 +421,9 @@ export function usePomodoroTimer() {
     config,
     todayCount,
     nextBreakKind,
+    xp: progress,
+    level: levelFromXp(progress.totalXp),
+    lastLevelUp,
     start,
     pause,
     resume,

@@ -1,8 +1,35 @@
 "use client";
 
-import { Play, Pause, RotateCcw, Coffee, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import type { TimerPhase, TimerStatus } from "@/core/hooks/pomodoro/usePomodoroTimer";
+
+// pomofocus.io-style action button: white, bold uppercase label in the drink
+// color, resting on a hard 6px bottom shadow. Pressed = sunk 6px, no shadow.
+const BASE =
+  "h-14 min-w-44 px-8 rounded-md bg-white text-xl font-bold uppercase tracking-wider transition-all duration-150 select-none";
+const RAISED =
+  "shadow-[0_6px_0_rgba(0,0,0,0.35)] active:shadow-none active:translate-y-1.5";
+const PRESSED = "shadow-none translate-y-1.5";
+
+function ActionButton({
+  pressed = false,
+  onClick,
+  children,
+}: {
+  pressed?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`${BASE} ${pressed ? PRESSED : RAISED}`}
+      style={{ color: "var(--drink)" }}
+    >
+      {children}
+    </button>
+  );
+}
 
 interface TimerControlsProps {
   status: TimerStatus;
@@ -26,19 +53,17 @@ export default function TimerControls({
     return (
       <div className="flex items-center gap-3">
         {isBreak ? (
-          <Button size="lg" onClick={onSkipBreak} className="bg-accent hover:bg-accent/90 h-12 px-6 font-semibold">
-            <ArrowRight className="h-4 w-4 mr-2" />
-            Back to focus
-          </Button>
+          <ActionButton onClick={onSkipBreak}>Focus</ActionButton>
         ) : (
           <>
-            <Button size="lg" onClick={onStartBreak} className="bg-coffee hover:bg-coffee-deep h-12 px-6 text-white font-semibold">
-              <Coffee className="h-4 w-4 mr-2" />
-              Take a break
-            </Button>
-            <Button size="lg" variant="ghost" onClick={onReset} className="text-text-muted hover:text-text-primary h-12 font-semibold">
-              Skip
-            </Button>
+            <ActionButton onClick={onStartBreak}>Break</ActionButton>
+            <button
+              onClick={onReset}
+              className="h-14 px-4 text-text-muted hover:text-text-primary font-semibold transition-colors"
+              aria-label="Skip break"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </button>
           </>
         )}
       </div>
@@ -47,37 +72,14 @@ export default function TimerControls({
 
   return (
     <div className="flex items-center gap-3">
-      {status === "idle" && (
-        <Button size="lg" onClick={onStart} className="bg-accent hover:bg-accent/90 h-12 px-8 font-semibold">
-          <Play className="h-4 w-4 mr-2" />
-          Start
-        </Button>
-      )}
-
+      {status === "idle" && <ActionButton onClick={onStart}>Start</ActionButton>}
       {status === "running" && (
-        <Button size="lg" onClick={onPause} variant="outline" className="border-border h-12 px-8 font-semibold">
-          <Pause className="h-4 w-4 mr-2" />
+        <ActionButton pressed onClick={onPause}>
           Pause
-        </Button>
+        </ActionButton>
       )}
-
       {status === "paused" && (
-        <Button size="lg" onClick={onResume} className="bg-accent hover:bg-accent/90 h-12 px-8 font-semibold">
-          <Play className="h-4 w-4 mr-2" />
-          Resume
-        </Button>
-      )}
-
-      {status !== "idle" && (
-        <Button
-          size="lg"
-          variant="ghost"
-          onClick={isBreak ? onSkipBreak : onReset}
-          className="text-text-muted hover:text-text-primary h-12 font-semibold"
-        >
-          <RotateCcw className="h-4 w-4 mr-2" />
-          Reset
-        </Button>
+        <ActionButton onClick={onResume}>Resume</ActionButton>
       )}
     </div>
   );

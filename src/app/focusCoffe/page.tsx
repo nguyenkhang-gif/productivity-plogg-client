@@ -3,12 +3,15 @@
 import { useEffect } from "react";
 import { PanelTopClose, PanelTopOpen } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import CoffeeCup from "@/components/pomodoro/CoffeeCup";
 import PhaseSwitcher from "@/components/pomodoro/PhaseSwitcher";
+import ProgressDialog from "@/components/pomodoro/ProgressDialog";
+import { getDrinkComponent } from "@/components/pomodoro/drinkComponents";
+import { getDrinkDef } from "@/core/lib/pomodoro/progression";
 import SettingsPanel from "@/components/pomodoro/SettingsPanel";
 import TimerControls from "@/components/pomodoro/TimerControls";
 import NotesSection from "@/components/pomodoro/NotesSection";
 import { useNavVisibility } from "@/components/layouts/NavVisibilityContext";
+import { useMediaQuery, MOBILE_LANDSCAPE } from "@/core/hooks/useMediaQuery";
 import {
   usePomodoroTimer,
   formatRemaining,
@@ -18,25 +21,26 @@ import {
 
 export default function FocusCoffePage() {
   const {
-    phase, status, remainingMs, progress, config, todayCount, nextBreakKind,
+    phase, status, remainingMs, progress, config, todayCount,
+    nextBreakKind, xp, level, lastLevelUp,
     start, pause, resume, reset, startBreak, skipBreak, switchPhase, updateConfig,
   } = usePomodoroTimer();
   const { navHidden, toggleNav, setNavHidden } = useNavVisibility();
 
+  const drinkDef = getDrinkDef(config.drinkId);
+  const DrinkVisual = getDrinkComponent(drinkDef.id);
+
   // Mobile landscape (short viewport) → hide the nav by default; rotating back
   // to portrait restores it. Manual toggle still works until the next rotation.
+  const isMobileLandscape = useMediaQuery(MOBILE_LANDSCAPE);
   useEffect(() => {
-    const mq = window.matchMedia("(orientation: landscape) and (max-height: 500px)");
-    const apply = () => setNavHidden(mq.matches);
-    apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
-  }, [setNavHidden]);
+    setNavHidden(isMobileLandscape);
+  }, [isMobileLandscape, setNavHidden]);
 
   return (
     <div
       className="relative min-h-[calc(100vh-3.5rem)] bg-page flex items-center justify-center px-4 py-6 md:py-10"
-      style={drinkPaletteStyle(phase)}
+      style={drinkPaletteStyle(phase, drinkDef.accent)}
     >
       {/* nav visibility toggle */}
       <button
@@ -73,7 +77,7 @@ export default function FocusCoffePage() {
               </p>
             </div>
 
-            <CoffeeCup progress={progress} status={status} phase={phase} />
+            <DrinkVisual progress={progress} status={status} phase={phase} />
           </div>
 
           {/* right half (landscape) / bottom (portrait): all the buttons */}
@@ -87,28 +91,35 @@ export default function FocusCoffePage() {
               {formatRemaining(remainingMs)}
             </p>
 
-            <div className="flex items-center gap-2">
-              <TimerControls
-                status={status}
-                phase={phase}
-                onStart={start}
-                onPause={pause}
-                onResume={resume}
-                onReset={reset}
-                onStartBreak={() => startBreak(nextBreakKind)}
-                onSkipBreak={skipBreak}
-              />
+            <TimerControls
+              status={status}
+              phase={phase}
+              onStart={start}
+              onPause={pause}
+              onResume={resume}
+              onReset={reset}
+              onStartBreak={() => startBreak(nextBreakKind)}
+              onSkipBreak={skipBreak}
+            />
+
+            {/* daily counter + settings/progress */}
+            <div className="flex items-center gap-1">
+              <p className="text-sm font-semibold text-text-muted mr-2">
+                {todayCount} ☕ today
+              </p>
               <SettingsPanel
                 config={config}
                 isActive={status === "running" || status === "paused"}
                 onSave={updateConfig}
               />
+              <ProgressDialog
+                xp={xp}
+                level={level}
+                lastLevelUp={lastLevelUp}
+                selectedDrinkId={drinkDef.id}
+                onSelectDrink={(id) => updateConfig({ drinkId: id })}
+              />
             </div>
-
-            {/* daily counter — option C */}
-            <p className="text-sm font-semibold text-text-muted">
-              {todayCount} ☕ today
-            </p>
           </div>
           </div>
 

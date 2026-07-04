@@ -10,6 +10,7 @@ export interface PomodoroConfig {
   longBreakMin: number;
   sessionsPerCycle: number;
   soundOn: boolean;
+  drinkId: string;
 }
 
 export const DEFAULT_CONFIG: PomodoroConfig = {
@@ -18,6 +19,7 @@ export const DEFAULT_CONFIG: PomodoroConfig = {
   longBreakMin: 15,
   sessionsPerCycle: 4,
   soundOn: true,
+  drinkId: "coffee",
 };
 
 export interface ActiveSession {
@@ -106,6 +108,33 @@ export function recordCompletedFocus(): number {
 
   writeJson(KEY_SESSIONS, sessions);
   return completed;
+}
+
+// ---------- lifetime progression (XP) ----------
+
+export interface Progress {
+  totalXp: number;
+  totalFocusMin: number;
+}
+
+const KEY_PROGRESS = "coffeeFocus:progress";
+
+export function getProgress(): Progress {
+  const stored = readJson<Progress>(KEY_PROGRESS);
+  return stored && typeof stored.totalXp === "number"
+    ? { totalXp: stored.totalXp, totalFocusMin: stored.totalFocusMin ?? 0 }
+    : { totalXp: 0, totalFocusMin: 0 };
+}
+
+/** Lifetime aggregate — survives the 30-day pruning of daily sessions. */
+export function addProgress(xp: number, focusMin: number): Progress {
+  const current = getProgress();
+  const next = {
+    totalXp: current.totalXp + xp,
+    totalFocusMin: current.totalFocusMin + focusMin,
+  };
+  writeJson(KEY_PROGRESS, next);
+  return next;
 }
 
 // ---------- notes (distraction pad) ----------
