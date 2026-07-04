@@ -68,10 +68,15 @@ export default function Navbar() {
 
   const isActive = (href: string) => pathname === href;
 
+  // Focus mode: on the pomodoro page, make every other tab less appealing
+  const focusMode = pathname === "/focusCoffe";
+
   const navLinkClass = (href: string) =>
     isActive(href)
-      ? "text-text-primary border-b-2 border-accent pb-0.5 transition-colors"
-      : "text-text-muted hover:text-text-primary transition-colors";
+      ? "text-text-primary border-b-2 border-accent pb-0.5 transition-all"
+      : focusMode
+      ? "text-text-muted opacity-40 hover:opacity-100 hover:text-text-primary transition-all duration-300"
+      : "text-text-muted hover:text-text-primary transition-all";
 
   if (isLoading) return null;
 
