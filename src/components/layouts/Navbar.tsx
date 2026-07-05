@@ -69,7 +69,7 @@ export default function Navbar() {
   const isActive = (href: string) => pathname === href;
 
   // Focus mode: on the pomodoro page, make every other tab less appealing
-  const focusMode = pathname === "/focusCoffe";
+  const focusMode = pathname === "/focusCoffee";
 
   const navLinkClass = (href: string) =>
     isActive(href)
@@ -84,7 +84,7 @@ export default function Navbar() {
     { href: "/epub", label: "Epub Gen" },
     { href: "/projects", label: "Projects" },
     { href: "/portfolio", label: "Portfolio" },
-    { href: "/focusCoffe", label: "Coffee Focus" },
+    { href: "/focusCoffee", label: "Coffee Focus" },
   ];
 
   const privateNavLinks = [
