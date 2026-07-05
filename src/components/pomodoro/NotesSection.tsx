@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { Plus, X, Circle, CheckCircle2, GripVertical } from "lucide-react";
+import {
+  Plus, X, Circle, CheckCircle2, GripVertical,
+  ChevronUp, ChevronDown, Trash2,
+} from "lucide-react";
 import {
   DndContext,
   DragOverlay,
@@ -24,27 +27,151 @@ import { CSS } from "@dnd-kit/utilities";
 import { usePomodoroNotes } from "@/core/hooks/pomodoro/usePomodoroNotes";
 import type { PomodoroNote } from "@/core/lib/pomodoro/coffeeFocusStore";
 
+// ---------- edit panel ----------
+
+interface EditPanelProps {
+  note: PomodoroNote;
+  onSave: (patch: Partial<PomodoroNote>) => void;
+  onCancel: () => void;
+  onDelete: () => void;
+}
+
+function TaskEditPanel({ note, onSave, onCancel, onDelete }: EditPanelProps) {
+  const [text, setText] = useState(note.text);
+  const [est, setEst] = useState(note.estPomodoros ?? 1);
+  const [noteText, setNoteText] = useState(note.noteText ?? "");
+  const [project, setProject] = useState(note.project ?? "");
+  const [showNote, setShowNote] = useState(!!note.noteText);
+  const [showProject, setShowProject] = useState(!!note.project);
+
+  const handleSave = () => {
+    if (!text.trim()) return;
+    onSave({
+      text: text.trim(),
+      estPomodoros: est,
+      noteText: noteText.trim() || undefined,
+      project: project.trim() || undefined,
+    });
+  };
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-4 shadow-lg flex flex-col gap-3">
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSave(); } }}
+        autoFocus
+        rows={2}
+        className="w-full text-base font-semibold text-text-primary bg-transparent resize-none focus:outline-none leading-snug"
+      />
+
+      {/* pomodoro counter */}
+      <div>
+        <p className="text-xs font-bold text-text-muted mb-1.5 uppercase tracking-wide">
+          Act / Est Pomodoros
+        </p>
+        <div className="flex items-center gap-2">
+          <span className="w-14 text-center text-sm font-semibold text-text-muted bg-surface rounded px-2 py-1.5 border border-border">
+            0
+          </span>
+          <span className="text-text-muted font-semibold">/</span>
+          <span className="w-14 text-center text-sm font-semibold text-text-primary bg-surface rounded px-2 py-1.5 border border-border">
+            {est}
+          </span>
+          <div className="flex flex-col gap-0.5">
+            <button
+              onClick={() => setEst((v) => v + 1)}
+              className="p-0.5 rounded text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
+              aria-label="Increase estimate"
+            >
+              <ChevronUp className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setEst((v) => Math.max(1, v - 1))}
+              className="p-0.5 rounded text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
+              aria-label="Decrease estimate"
+            >
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* optional note */}
+      {showNote ? (
+        <textarea
+          value={noteText}
+          onChange={(e) => setNoteText(e.target.value)}
+          placeholder="Add a note…"
+          rows={2}
+          className="w-full text-sm text-text-primary bg-surface border border-border rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-coffee"
+        />
+      ) : (
+        <button
+          onClick={() => setShowNote(true)}
+          className="text-sm font-semibold text-text-muted hover:text-coffee transition-colors text-left"
+        >
+          + Add Note
+        </button>
+      )}
+
+      {/* optional project */}
+      {showProject ? (
+        <input
+          value={project}
+          onChange={(e) => setProject(e.target.value)}
+          placeholder="Project name…"
+          className="w-full text-sm text-text-primary bg-surface border border-border rounded-lg px-3 py-2 focus:outline-none focus:border-coffee"
+        />
+      ) : (
+        <button
+          onClick={() => setShowProject(true)}
+          className="text-sm font-semibold text-text-muted hover:text-coffee transition-colors text-left"
+        >
+          + Add Project
+        </button>
+      )}
+
+      {/* actions */}
+      <div className="flex items-center justify-between pt-1 border-t border-border">
+        <button
+          onClick={onDelete}
+          aria-label="Delete task"
+          className="p-1.5 rounded text-text-muted hover:text-red-400 hover:bg-surface-raised transition-colors"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onCancel}
+            className="px-4 py-1.5 rounded-lg text-sm font-semibold text-text-muted hover:bg-surface-raised transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-1.5 rounded-lg text-sm font-bold bg-text-primary text-page hover:opacity-90 transition-opacity"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- task row ----------
+
 interface TaskRowProps {
   note: PomodoroNote;
   sortable: boolean;
   onToggle: (id: string) => void;
   onRemove: (id: string) => void;
-  onEdit: (id: string, text: string) => void;
+  onSaveFull: (id: string, patch: Partial<PomodoroNote>) => void;
 }
 
-function TaskRow({ note, sortable, onToggle, onRemove, onEdit }: TaskRowProps) {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(note.text);
-
-  const startEdit = () => {
-    setDraft(note.text);
-    setEditing(true);
-  };
-
-  const commitEdit = () => {
-    setEditing(false);
-    if (draft.trim() && draft.trim() !== note.text) onEdit(note.id, draft);
-  };
+function TaskRow({ note, sortable, onToggle, onRemove, onSaveFull }: TaskRowProps) {
+  const [isEditing, setIsEditing] = useState(false);
 
   const {
     attributes,
@@ -53,7 +180,20 @@ function TaskRow({ note, sortable, onToggle, onRemove, onEdit }: TaskRowProps) {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: note.id, disabled: !sortable || editing });
+  } = useSortable({ id: note.id, disabled: !sortable || isEditing });
+
+  if (isEditing) {
+    return (
+      <li ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }}>
+        <TaskEditPanel
+          note={note}
+          onSave={(patch) => { onSaveFull(note.id, patch); setIsEditing(false); }}
+          onCancel={() => setIsEditing(false)}
+          onDelete={() => { onRemove(note.id); setIsEditing(false); }}
+        />
+      </li>
+    );
+  }
 
   return (
     <li
@@ -75,6 +215,7 @@ function TaskRow({ note, sortable, onToggle, onRemove, onEdit }: TaskRowProps) {
       ) : (
         <span className="w-6 shrink-0" />
       )}
+
       <button
         onClick={() => onToggle(note.id)}
         aria-label={note.done ? "Mark as not done" : "Mark as done"}
@@ -86,29 +227,22 @@ function TaskRow({ note, sortable, onToggle, onRemove, onEdit }: TaskRowProps) {
           <Circle className="h-5 w-5" />
         )}
       </button>
-      {editing ? (
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={commitEdit}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") commitEdit();
-            if (e.key === "Escape") setEditing(false);
-          }}
-          autoFocus
-          className="flex-1 bg-surface border border-border rounded px-2 py-1 text-sm font-semibold text-text-primary focus:outline-none focus:border-coffee"
-        />
-      ) : (
-        <span
-          onClick={startEdit}
-          title="Click to edit"
-          className={`flex-1 text-sm font-semibold break-words cursor-text ${
-            note.done ? "line-through text-text-muted" : "text-text-primary"
-          }`}
-        >
-          {note.text}
-        </span>
-      )}
+
+      <span
+        onClick={() => setIsEditing(true)}
+        title="Click to edit"
+        className={`flex-1 text-base font-semibold break-words cursor-text leading-snug ${
+          note.done ? "line-through text-text-muted" : "text-text-primary"
+        }`}
+      >
+        {note.text}
+        {note.estPomodoros && (
+          <span className="ml-2 text-xs font-semibold text-text-muted">
+            0/{note.estPomodoros} 🍅
+          </span>
+        )}
+      </span>
+
       <button
         onClick={() => onRemove(note.id)}
         aria-label="Delete task"
@@ -120,8 +254,7 @@ function TaskRow({ note, sortable, onToggle, onRemove, onEdit }: TaskRowProps) {
   );
 }
 
-/** Non-interactive copy of a task row — rendered inside the DragOverlay portal
- *  so the dragged card escapes the list's overflow clipping. */
+/** Non-interactive drag ghost */
 function TaskRowGhost({ note }: { note: PomodoroNote }) {
   return (
     <li className="flex items-center gap-2 bg-surface-raised rounded-lg px-2 py-3 border-l-4 border-l-coffee shadow-xl list-none cursor-grabbing">
@@ -129,21 +262,22 @@ function TaskRowGhost({ note }: { note: PomodoroNote }) {
         <GripVertical className="h-4 w-4" />
       </span>
       <Circle className="h-5 w-5 text-text-muted shrink-0" />
-      <span className="flex-1 text-sm font-semibold text-text-primary break-words">
+      <span className="flex-1 text-base font-semibold text-text-primary break-words">
         {note.text}
       </span>
     </li>
   );
 }
 
+// ---------- main section ----------
+
 export default function NotesSection() {
-  const { ongoing, finished, addNote, toggleNote, removeNote, editNote, reorderActive } =
+  const { ongoing, finished, addNote, toggleNote, removeNote, editNoteFull, reorderActive } =
     usePomodoroNotes();
   const [text, setText] = useState("");
   const [draggedNote, setDraggedNote] = useState<PomodoroNote | null>(null);
 
   const sensors = useSensors(
-    // distance threshold keeps taps on the handle from hijacking scrolls/clicks
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
@@ -183,9 +317,8 @@ export default function NotesSection() {
         )}
       </div>
 
-      {/* task cards — ongoing are drag-sortable, finished pinned below */}
       {total > 0 && (
-        <ul className="max-h-48 overflow-y-auto flex flex-col gap-2 pr-0.5">
+        <ul className="max-h-[28rem] overflow-y-auto flex flex-col gap-2 pr-0.5">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -203,12 +336,11 @@ export default function NotesSection() {
                   note={note}
                   sortable
                   onToggle={toggleNote}
-                  onEdit={editNote}
                   onRemove={removeNote}
+                  onSaveFull={editNoteFull}
                 />
               ))}
             </SortableContext>
-            {/* portal to body — the drag preview escapes the list's overflow clip */}
             {typeof document !== "undefined" &&
               createPortal(
                 <DragOverlay>
@@ -223,14 +355,14 @@ export default function NotesSection() {
               note={note}
               sortable={false}
               onToggle={toggleNote}
-                  onEdit={editNote}
               onRemove={removeNote}
+              onSaveFull={editNoteFull}
             />
           ))}
         </ul>
       )}
 
-      {/* dashed add row — capturing a thought must never touch the timer */}
+      {/* add row */}
       <div className="flex items-center gap-2 border-2 border-dashed border-border rounded-lg px-3 py-2.5 focus-within:border-coffee transition-colors">
         <Plus className="h-4 w-4 text-text-muted shrink-0" />
         <input

@@ -59,6 +59,20 @@ export function usePomodoroNotes() {
     [notes, update]
   );
 
+  /** Full edit — update any combination of fields at once. */
+  const editNoteFull = useCallback(
+    (id: string, patch: Partial<Omit<PomodoroNote, "id" | "createdAt">>) => {
+      const trimmed = patch.text?.trim();
+      if (trimmed === "") return;
+      update(
+        notes.map((n) =>
+          n.id === id ? { ...n, ...patch, ...(trimmed ? { text: trimmed } : {}) } : n
+        )
+      );
+    },
+    [notes, update]
+  );
+
   /** Move an ongoing task within the ongoing group (drag & drop). Finished
    *  tasks keep their own order at the bottom. */
   const reorderActive = useCallback(
@@ -82,5 +96,5 @@ export function usePomodoroNotes() {
   const ongoing = notes.filter((n) => !n.done);
   const finished = notes.filter((n) => n.done);
 
-  return { ongoing, finished, addNote, toggleNote, removeNote, editNote, reorderActive };
+  return { ongoing, finished, addNote, toggleNote, removeNote, editNote, editNoteFull, reorderActive };
 }

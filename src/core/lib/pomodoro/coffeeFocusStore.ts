@@ -144,6 +144,9 @@ export interface PomodoroNote {
   text: string;
   done: boolean;
   createdAt: number;
+  estPomodoros?: number;
+  noteText?: string;
+  project?: string;
 }
 
 const KEY_NOTES = "coffeeFocus:notes";
