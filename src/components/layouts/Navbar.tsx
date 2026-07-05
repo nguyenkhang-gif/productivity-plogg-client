@@ -93,7 +93,7 @@ export default function Navbar() {
   ];
 
   const moderationNavLinks =
-    isAuth && canModerate ? [{ href: "/moderation", label: "Moderation" }] : [];
+    isAuth && canModerate ? [{ href: "/admin/posts", label: "Admin" }] : [];
 
   const navLinks = isAuth
     ? [...publicNavLinks, ...privateNavLinks, ...moderationNavLinks]

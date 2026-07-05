@@ -101,6 +101,39 @@ export const apiGetTrending = (): Promise<Post[]> =>
 export const apiGetMyStats = (): Promise<MyStats> =>
   axiosInstance.get(Endpoints.POST_MY_STATS).then((r) => r.data);
 
+// ── Admin ──
+
+export interface AdminPostsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  authorId?: string;
+  moderationStatus?: string;
+  visibility?: string;
+}
+
+export const apiGetAdminPosts = async (
+  params: AdminPostsParams = {}
+): Promise<PaginatedResponse<Post>> => {
+  const { data } = await axiosInstance.get(Endpoints.ADMIN_POST_GET_ALL, {
+    params,
+  });
+  return data;
+};
+
+export const apiAdminGetPostById = async (postId: string): Promise<Post> => {
+  const { data } = await axiosInstance.get(
+    Endpoints.ADMIN_POST_GET_BY_ID.replace(":id", postId)
+  );
+  return data;
+};
+
+export const apiAdminDeletePost = async (postId: string): Promise<void> => {
+  await axiosInstance.delete(
+    Endpoints.ADMIN_POST_DELETE.replace(":id", postId)
+  );
+};
+
 // ── Moderation (moderator/admin only) ──
 
 export interface ModerationQueueParams {

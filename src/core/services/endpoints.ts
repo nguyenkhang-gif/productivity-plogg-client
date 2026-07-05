@@ -23,7 +23,12 @@ export enum Endpoints {
   POST_MODERATION_PENDING = "/posts/moderation/pending",
   POST_APPROVE = "/posts/:id/approve",
   POST_REJECT = "/posts/:id/reject",
+  ADMIN_POST_GET_ALL = "/admin/posts",
+  ADMIN_POST_GET_BY_ID = "/admin/posts/:id",
+  ADMIN_POST_DELETE = "/admin/posts/:id",
   USER_CHANGE_ROLE = "/users/:id/role",
+  USER_GET_ALL = "/users",
+  ADMIN_USER_GET_ALL = "/admin/users",
 
   COMMENT_GET_BY_POST = "/posts/:postId/comments",
   COMMENT_CREATE = "/posts/:postId/comments",
@@ -42,6 +47,10 @@ export enum FetchQueryKeys {
   POST_TRENDING = "POST_TRENDING",
   POST_MY_STATS = "POST_MY_STATS",
   POST_MODERATION_PENDING = "POST_MODERATION_PENDING",
+  ADMIN_POST_GET_ALL = "ADMIN_POST_GET_ALL",
+  ADMIN_POST_GET_BY_ID = "ADMIN_POST_GET_BY_ID",
+  USER_GET_ALL = "USER_GET_ALL",
+  ADMIN_USER_GET_ALL = "ADMIN_USER_GET_ALL",
 
   COMMENT_GET_BY_POST = "COMMENT_GET_BY_POST",
 

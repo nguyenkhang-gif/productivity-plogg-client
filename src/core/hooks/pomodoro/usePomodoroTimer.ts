@@ -24,6 +24,7 @@ import {
   xpForLevel,
 } from "@/core/lib/pomodoro/progression";
 import { toast } from "@/core/hooks/use-toast";
+import { useWakeLock } from "@/core/hooks/useWakeLock";
 import {
   playClick,
   preloadSounds,
@@ -383,6 +384,8 @@ export function usePomodoroTimer() {
 
   usePhaseFavicon(activeEmoji);
   useCompletionSignal(status, phase, config.soundOn);
+  // Keep the phone screen awake while a session is counting down
+  useWakeLock(status === "running");
 
   useEffect(() => {
     return () => {
@@ -397,20 +400,16 @@ export function usePomodoroTimer() {
       ? "longBreak"
       : "shortBreak";
 
-  // Auto-transition after completion (2s pause so the "Done!" moment + signals
-  // register): focus → the appropriate break starts by itself; break → back to
-  // focus, idle. Starting work stays a deliberate click.
+  // Auto-switch MODE after completion (2s pause so the "Done!" moment + signals
+  // register): focus → the appropriate break tab, break → focus tab. The timer
+  // itself never auto-starts — beginning any countdown is a deliberate click.
   useEffect(() => {
     if (status !== "finished") return;
     const t = setTimeout(() => {
-      if (phaseRef.current === "focus") {
-        beginPhase(nextBreakKind, configRef.current);
-      } else {
-        switchPhase("focus");
-      }
+      switchPhase(phaseRef.current === "focus" ? nextBreakKind : "focus");
     }, 2000);
     return () => clearTimeout(t);
-  }, [status, nextBreakKind, beginPhase, switchPhase]);
+  }, [status, nextBreakKind, switchPhase]);
 
   return {
     phase,

@@ -30,7 +30,7 @@ export default function LeftSidebar({ posts }: LeftSidebarProps) {
   const { canModerate } = useRole();
 
   const navLinks = canModerate
-    ? [...NAV_LINKS, { href: "/moderation", label: "Moderation", icon: ShieldCheck }]
+    ? [...NAV_LINKS, { href: "/admin/posts", label: "Admin", icon: ShieldCheck }]
     : NAV_LINKS;
 
   const myPostCount = profile.postCount

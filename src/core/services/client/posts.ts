@@ -18,6 +18,10 @@ import {
   apiGetPendingPosts,
   apiApprovePost,
   apiRejectPost,
+  apiGetAdminPosts,
+  apiAdminGetPostById,
+  apiAdminDeletePost,
+  AdminPostsParams,
   CreatePostDto,
   UpdatePostDto,
 } from "../api/posts";
@@ -186,6 +190,33 @@ export const useRejectPost = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [FetchQueryKeys.POST_MODERATION_PENDING],
+      });
+    },
+  });
+};
+
+// ── Admin ──
+
+export const useGetAdminPostById = (postId: string | null) =>
+  useQuery({
+    queryKey: [FetchQueryKeys.ADMIN_POST_GET_BY_ID, postId],
+    queryFn: () => apiAdminGetPostById(postId!),
+    enabled: !!postId,
+  });
+
+export const useGetAdminPosts = (params: AdminPostsParams) =>
+  useQuery({
+    queryKey: [FetchQueryKeys.ADMIN_POST_GET_ALL, params],
+    queryFn: () => apiGetAdminPosts(params),
+  });
+
+export const useAdminDeletePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (postId: string) => apiAdminDeletePost(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [FetchQueryKeys.ADMIN_POST_GET_ALL],
       });
     },
   });
