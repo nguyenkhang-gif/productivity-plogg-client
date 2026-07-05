@@ -39,7 +39,7 @@ export default function FocusCoffePage() {
 
   return (
     <div
-      className="relative min-h-[calc(100vh-3.5rem)] bg-page flex items-center justify-center px-4 py-6 md:py-10"
+      className="relative min-h-[calc(100vh-3.5rem)] bg-page flex flex-col items-center px-4 py-6 md:py-10 gap-6"
       style={drinkPaletteStyle(phase, drinkDef.accent)}
     >
       {/* nav visibility toggle */}
@@ -123,10 +123,13 @@ export default function FocusCoffePage() {
           </div>
           </div>
 
-          {/* distraction pad — full width under both halves */}
-          <NotesSection />
         </CardContent>
       </Card>
+
+      {/* tasks section — outside the card, full width below */}
+      <div className="w-full max-w-md landscape:max-w-3xl">
+        <NotesSection />
+      </div>
     </div>
   );
 }
