@@ -30,6 +30,8 @@ export interface ActiveSession {
   pausedRemainingMs: number | null;
   /** session duration at start — keeps cup progress stable if config changes */
   totalMs: number;
+  /** stable UUID for idempotent server flush — same id must be used on retry */
+  clientSessionId?: string;
 }
 
 type SessionsByDay = Record<string, { completed: number }>;

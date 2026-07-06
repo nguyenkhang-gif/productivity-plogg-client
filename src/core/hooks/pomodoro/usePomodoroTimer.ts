@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/core/redux/store";
 import {
   DEFAULT_CONFIG,
   PomodoroConfig,
@@ -31,6 +33,12 @@ import {
   requestNotifyPermission,
   useCompletionSignal,
 } from "./useCompletionSignal";
+import {
+  useFocusProgress,
+  useFlushSession,
+  useSyncConfig,
+  useDrainPendingFlush,
+} from "@/core/services/client/useFocusSync";
 
 export type TimerPhase = "focus" | "shortBreak" | "longBreak";
 export type TimerStatus = "idle" | "running" | "paused" | "finished";
@@ -172,6 +180,25 @@ export function usePomodoroTimer() {
   const configRef = useRef(config);
   configRef.current = config;
 
+  // ---------- API sync (logged-in only) ----------
+  const { isAuth } = useSelector((state: RootState) => state.user);
+  const isAuthRef = useRef(isAuth);
+  isAuthRef.current = isAuth;
+
+  const { data: serverProgress } = useFocusProgress();
+  const flushSession = useFlushSession();
+  const syncConfig = useSyncConfig();
+  useDrainPendingFlush();
+
+  // Stable refs so callbacks don't need these in their dep arrays.
+  const flushRef = useRef(flushSession.mutate);
+  flushRef.current = flushSession.mutate;
+  const syncConfigRef = useRef(syncConfig.mutate);
+  syncConfigRef.current = syncConfig.mutate;
+
+  // UUID generated at session start, reused on retry (idempotency §4).
+  const sessionIdRef = useRef<string | null>(null);
+
   /** XP: 1/min of the completed session + cycle bonus on the Nth of the day.
    *  Level derived from XP; crossing a threshold fires the toast + badge glow. */
   const awardFocusXp = useCallback(
@@ -214,6 +241,15 @@ export function usePomodoroTimer() {
       const completed = recordCompletedFocus();
       setTodayCount(completed);
       awardFocusXp(totalMsRef.current, completed, configRef.current.sessionsPerCycle);
+
+      if (isAuthRef.current) {
+        flushRef.current({
+          clientSessionId: sessionIdRef.current ?? crypto.randomUUID(),
+          durationMin: Math.max(1, Math.round(totalMsRef.current / 60_000)),
+          tzOffset: -new Date().getTimezoneOffset(),
+        });
+      }
+      sessionIdRef.current = null;
     }
     setStatus("finished");
   }, [clearTick, awardFocusXp]);
@@ -235,6 +271,9 @@ export function usePomodoroTimer() {
       if (cfg.soundOn) playClick();
       const total = durationMs(cfg, next);
       endAtRef.current = Date.now() + total;
+      // Generate UUID once per session start — reused on any retry (§4 idempotency).
+      const clientSessionId = next === "focus" ? crypto.randomUUID() : undefined;
+      if (clientSessionId) sessionIdRef.current = clientSessionId;
       setPhase(next);
       setTotalMs(total);
       setRemainingMs(total);
@@ -244,6 +283,7 @@ export function usePomodoroTimer() {
         endAt: endAtRef.current,
         pausedRemainingMs: null,
         totalMs: total,
+        clientSessionId,
       });
       startTick();
     },
@@ -316,6 +356,12 @@ export function usePomodoroTimer() {
         setTotalMs(total);
         setRemainingMs(total);
       }
+      if (isAuthRef.current && partial.drinkId) {
+        syncConfigRef.current({
+          drinkId: merged.drinkId,
+          tzOffset: -new Date().getTimezoneOffset(),
+        });
+      }
     },
     [status, phase]
   );
@@ -340,9 +386,12 @@ export function usePomodoroTimer() {
     setTotalMs(active.totalMs);
 
     if (active.pausedRemainingMs !== null) {
+      // Restore the session UUID so a resumed → completed session still flushes correctly.
+      if (active.clientSessionId) sessionIdRef.current = active.clientSessionId;
       setRemainingMs(active.pausedRemainingMs);
       setStatus("paused");
     } else if (active.endAt > Date.now()) {
+      if (active.clientSessionId) sessionIdRef.current = active.clientSessionId;
       endAtRef.current = active.endAt;
       setRemainingMs(active.endAt - Date.now());
       setStatus("running");
@@ -354,12 +403,27 @@ export function usePomodoroTimer() {
         const completed = recordCompletedFocus();
         setTodayCount(completed);
         awardFocusXp(active.totalMs, completed, cfg.sessionsPerCycle);
+        if (isAuthRef.current) {
+          flushRef.current({
+            clientSessionId: active.clientSessionId ?? crypto.randomUUID(),
+            durationMin: Math.max(1, Math.round(active.totalMs / 60_000)),
+            tzOffset: -new Date().getTimezoneOffset(),
+          });
+        }
       }
       setRemainingMs(0);
       setStatus("finished");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Server hydration — overwrite local XP / todayCount with authoritative server
+  // values. Runs once when GET /progress resolves; guests never reach this.
+  useEffect(() => {
+    if (!serverProgress) return;
+    setProgress({ totalXp: serverProgress.totalXp, totalFocusMin: serverProgress.totalFocusMin });
+    setTodayCount(serverProgress.todayCount);
+  }, [serverProgress]);
 
   // Tab title: live countdown + phase emoji/label while running, "done" marker
   // when finished, base title otherwise. TitleManager owns the title on other
