@@ -9,7 +9,11 @@ import SetPinModal from "./SetPinModal";
 import UnlockPinModal from "./UnlockPinModal";
 import WipeConfirmModal from "./WipeConfirmModal";
 
-export default function VaultTaskList() {
+interface Props {
+  onSkip?: () => void;
+}
+
+export default function VaultTaskList({ onSkip }: Props) {
   const { status, tasks, nearLimit, addTask, updateTask, deleteTask, lock } = useVault();
   const [text, setText] = useState("");
   const [showWipe, setShowWipe] = useState(false);
@@ -34,7 +38,7 @@ export default function VaultTaskList() {
 
   // ---------- PIN modals (rendered over everything) ----------
 
-  if (status === "no-vault") return <SetPinModal />;
+  if (status === "no-vault") return <SetPinModal onSkip={onSkip} />;
 
   if (status === "locked") {
     if (showWipe) return <WipeConfirmModal onCancel={() => setShowWipe(false)} />;

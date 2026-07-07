@@ -4,7 +4,11 @@ import { useState, useRef } from "react";
 import { KeyRound, Loader2, AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { useVault } from "@/core/lib/vault/vaultStore";
 
-export default function SetPinModal() {
+interface Props {
+  onSkip?: () => void;
+}
+
+export default function SetPinModal({ onSkip }: Props) {
   const { setupVault } = useVault();
   const [pin, setPin] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -120,6 +124,18 @@ export default function SetPinModal() {
               <><KeyRound size={14} />Create vault</>
             )}
           </button>
+
+          {onSkip && (
+            <button
+              type="button"
+              onClick={onSkip}
+              disabled={loading}
+              className="w-full py-2 text-xs text-text-muted hover:text-text-secondary transition-colors disabled:opacity-40"
+            >
+              Skip — use local notes instead
+            </button>
+          )}
+
         </form>
       </div>
     </div>
