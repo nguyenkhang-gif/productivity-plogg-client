@@ -10,6 +10,7 @@ import {
 } from "@/components/layouts/NavVisibilityContext";
 // import UserChatBubble from "@/components/chat/UserChatBubble"; // temporarily disabled
 import { cn } from "@/core/lib/utils";
+import VaultLogoutWatcher from "@/components/vault/VaultLogoutWatcher";
 import React from "react";
 
 function LayoutFrame({
@@ -24,6 +25,7 @@ function LayoutFrame({
   return (
     <RouteGuard>
       <TitleManager />
+      <VaultLogoutWatcher />
       {!hideNav && <Navbar />}
       <div
         className={cn("h-full transition-[padding] duration-300 ease-in-out", {

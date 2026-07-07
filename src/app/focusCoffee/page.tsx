@@ -9,7 +9,7 @@ import { getDrinkComponent } from "@/components/pomodoro/drinkComponents";
 import { getDrinkDef } from "@/core/lib/pomodoro/progression";
 import SettingsPanel from "@/components/pomodoro/SettingsPanel";
 import TimerControls from "@/components/pomodoro/TimerControls";
-import NotesSection from "@/components/pomodoro/NotesSection";
+import TasksArea from "@/components/vault/TasksArea";
 import { useNavVisibility } from "@/components/layouts/NavVisibilityContext";
 import { useMediaQuery, MOBILE_LANDSCAPE } from "@/core/hooks/useMediaQuery";
 import {
@@ -128,7 +128,7 @@ export default function FocusCoffePage() {
 
       {/* tasks section — outside the card, full width below */}
       <div className="w-full max-w-md landscape:max-w-3xl">
-        <NotesSection />
+        <TasksArea />
       </div>
     </div>
   );

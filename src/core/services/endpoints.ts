@@ -60,4 +60,6 @@ export enum FetchQueryKeys {
 
   FOCUS_PROGRESS = "FOCUS_PROGRESS",
   FOCUS_REPORT = "FOCUS_REPORT",
+
+  VAULT = "VAULT",
 }
