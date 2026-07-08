@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-  Plus, X, Circle, CheckCircle2, Lock, LockOpen, AlertTriangle,
+  Plus, X, Circle, CheckCircle2, Lock, LockOpen, AlertTriangle, RefreshCw,
 } from "lucide-react";
 import { useVault } from "@/core/lib/vault/vaultStore";
 import SetPinModal from "./SetPinModal";
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function VaultTaskList({ onSkip }: Props) {
-  const { status, tasks, nearLimit, addTask, updateTask, deleteTask, lock } = useVault();
+  const { status, tasks, nearLimit, isRefreshing, addTask, updateTask, deleteTask, lock, refresh } = useVault();
   const [text, setText] = useState("");
   const [showWipe, setShowWipe] = useState(false);
 
@@ -79,6 +79,15 @@ export default function VaultTaskList({ onSkip }: Props) {
                 {finished.length} done
               </span>
             )}
+            <button
+              onClick={() => refresh()}
+              disabled={isRefreshing}
+              title="Refresh from server"
+              aria-label="Refresh tasks"
+              className="p-1 rounded text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors disabled:opacity-40"
+            >
+              <RefreshCw size={13} className={isRefreshing ? "animate-spin" : ""} />
+            </button>
             <button
               onClick={() => lock()}
               title="Lock vault"

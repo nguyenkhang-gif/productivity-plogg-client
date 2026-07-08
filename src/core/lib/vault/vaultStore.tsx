@@ -104,6 +104,7 @@ export interface VaultContextValue {
   status: VaultStatus;
   tasks: VaultTask[];
   nearLimit: boolean;
+  isRefreshing: boolean;
   /** Decrypt the vault with PIN. Throws on wrong PIN — caller shows error. */
   unlock: (pin: string) => Promise<void>;
   /** First-time setup: generate DK, encrypt empty list, PUT to server. */
@@ -115,6 +116,8 @@ export interface VaultContextValue {
   wipe: () => void;
   /** Clear DK from memory + IndexedDB without deleting server vault. */
   lock: () => Promise<void>;
+  /** Pull latest blob from server and re-decrypt if unlocked. */
+  refresh: () => Promise<void>;
 }
 
 const VaultContext = createContext<VaultContextValue | null>(null);
@@ -132,7 +135,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   const stateRef = useRef(state);
   stateRef.current = state;
 
-  const { data: serverBlob } = useGetVault();
+  const { data: serverBlob, refetch, isFetching } = useGetVault();
   const { mutate: putVault } = usePutVault(handleConflict);
   const { mutate: deleteVault } = useDeleteVault();
 
@@ -350,12 +353,34 @@ export function VaultProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_STATUS", status: "locked" });
   }, []);
 
+  const refresh = useCallback(async () => {
+    const result = await refetch();
+    const fresh = result.data;
+    if (!fresh || !dkRef.current) return;
+    try {
+      const tasks = await decryptTasks(fresh, dkRef.current);
+      dispatch({
+        type: "UNLOCK",
+        tasks,
+        version: fresh.version,
+        wrappedKey: fresh.wrappedKey,
+        kdf: fresh.kdf,
+      });
+    } catch {
+      // DK mismatch — stale cache; ask for PIN again
+      await clearCachedDK();
+      dkRef.current = null;
+      dispatch({ type: "SET_STATUS", status: "locked" });
+    }
+  }, [refetch]);
+
   return (
     <VaultContext.Provider
       value={{
         status: state.status,
         tasks: state.tasks,
         nearLimit: state.nearLimit,
+        isRefreshing: isFetching,
         unlock,
         setupVault,
         addTask,
@@ -363,6 +388,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         deleteTask,
         wipe,
         lock,
+        refresh,
       }}
     >
       {children}
