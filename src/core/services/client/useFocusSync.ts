@@ -71,7 +71,7 @@ export function useFlushSession() {
       queryClient.invalidateQueries({ queryKey: [FetchQueryKeys.FOCUS_REPORT] });
     },
 
-    onError: (_err, payload, _ctx) => {
+    onError: (_err, payload) => {
       pushToQueue(payload);
     },
   });
