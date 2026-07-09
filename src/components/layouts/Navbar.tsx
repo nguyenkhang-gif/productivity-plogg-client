@@ -14,6 +14,7 @@ import {
   Moon,
   BookOpen,
   Users,
+  ChevronDown,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useSelector } from "react-redux";
@@ -35,6 +36,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
   const { theme = "dark", setTheme } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
@@ -52,6 +54,7 @@ export default function Navbar() {
     setIsOpen(!isOpen);
     setIsDropdownOpen(false);
     setIsThemeOpen(false);
+    setIsToolsOpen(false);
   };
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
@@ -81,23 +84,24 @@ export default function Navbar() {
   if (isLoading) return null;
 
   const publicNavLinks = [
-    { href: "/epub", label: "Epub Gen" },
+    { href: "/", label: "Home" },
     { href: "/projects", label: "Projects" },
     { href: "/portfolio", label: "Portfolio" },
-    { href: "/focusCoffee", label: "Coffee Focus" },
   ];
 
-  const privateNavLinks = [
-    { href: "/posts", label: "Posts" },
-    { href: "/upload", label: "Files" },
-  ];
+  const privateNavLinks = isAuth ? [{ href: "/posts", label: "Posts" }] : [];
 
   const moderationNavLinks =
     isAuth && canModerate ? [{ href: "/admin/posts", label: "Admin" }] : [];
 
-  const navLinks = isAuth
-    ? [...publicNavLinks, ...privateNavLinks, ...moderationNavLinks]
-    : publicNavLinks;
+  const navLinks = [...publicNavLinks, ...privateNavLinks, ...moderationNavLinks];
+
+  const toolsLinks = [
+    { href: "/epub", label: "Epub Gen" },
+    { href: "/focusCoffee", label: "Coffee Focus" },
+    ...(isAuth ? [{ href: "/upload", label: "Files" }] : []),
+  ];
+  const isToolsActive = toolsLinks.some(({ href }) => isActive(href));
 
   return (
     <nav
@@ -127,6 +131,41 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
+
+          {/* Tools dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setIsToolsOpen((o) => !o)}
+              className={`flex items-center gap-1 ${
+                isToolsActive
+                  ? "text-text-primary border-b-2 border-accent pb-0.5 transition-all"
+                  : focusMode
+                  ? "text-text-muted opacity-40 hover:opacity-100 hover:text-text-primary transition-all duration-300"
+                  : "text-text-muted hover:text-text-primary transition-all"
+              }`}
+            >
+              Tools
+              <ChevronDown className={`w-4 h-4 transition-transform ${isToolsOpen ? "rotate-180" : ""}`} />
+            </button>
+            {isToolsOpen && (
+              <div className="absolute left-0 mt-2 w-40 rounded-md shadow-lg z-20 bg-modal border border-border py-1">
+                {toolsLinks.map(({ href, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`block px-3 py-2 text-sm transition-colors ${
+                      isActive(href)
+                        ? "text-accent-text bg-accent-subtle"
+                        : "text-text-primary hover:bg-surface-raised"
+                    }`}
+                    onClick={() => setIsToolsOpen(false)}
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right cluster: social icons + theme toggle + user — Desktop */}
@@ -240,6 +279,36 @@ export default function Navbar() {
                 {label}
               </Link>
             ))}
+
+            {/* Tools group */}
+            <div>
+              <button
+                onClick={() => setIsToolsOpen((o) => !o)}
+                className={`flex items-center gap-1 ${
+                  isToolsActive
+                    ? "text-text-primary"
+                    : "text-text-muted hover:text-text-primary transition-all"
+                }`}
+              >
+                Tools
+                <ChevronDown className={`w-4 h-4 transition-transform ${isToolsOpen ? "rotate-180" : ""}`} />
+              </button>
+              {isToolsOpen && (
+                <div className="mt-2 flex flex-col space-y-3 pl-3 border-l border-border">
+                  {toolsLinks.map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={navLinkClass(href)}
+                      onClick={toggleMenu}
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {isAuth ? (
               <div className="relative">
                 <button
