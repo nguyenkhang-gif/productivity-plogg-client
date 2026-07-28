@@ -8,7 +8,7 @@ import {
   useRejectPost,
   useAdminDeletePost,
 } from "@/core/services/client/posts";
-import { PostModerationStatus, PostVisibility } from "@/core/enums";
+import { PostModerationStatus } from "@/core/enums";
 import { ShieldCheck, Trash2 } from "lucide-react";
 import { styles } from "@/core/config/styles";
 import { useTableState } from "@/core/hooks/useTableState";
@@ -17,34 +17,13 @@ import AdminPostDetailDialog from "@/components/admin/AdminPostDetailDialog";
 import PostRowActions from "@/components/admin/PostRowActions";
 import { AppDataTable, AppFilterBar, ColumnConfig } from "@/components/ui/data-table";
 import type { Post } from "@/core/types/post";
-
-const MODERATION_OPTIONS = [
-  { label: "All status", value: "" },
-  { label: "Pending", value: PostModerationStatus.Pending },
-  { label: "Approved", value: PostModerationStatus.Approved },
-  { label: "Rejected", value: PostModerationStatus.Rejected },
-];
-
-const VISIBILITY_OPTIONS = [
-  { label: "All visibility", value: "" },
-  { label: "Public", value: PostVisibility.Public },
-  { label: "Friends", value: PostVisibility.Friends },
-  { label: "Private", value: PostVisibility.Private },
-];
-
-const LIMIT_OPTIONS = [10, 20, 50, 100];
-
-const statusBadge: Record<string, string> = {
-  [PostModerationStatus.Approved]: "bg-emerald-500/15 text-emerald-400",
-  [PostModerationStatus.Pending]: "bg-yellow-500/15 text-yellow-400",
-  [PostModerationStatus.Rejected]: "bg-red-500/15 text-red-400",
-};
-
-const visibilityBadge: Record<string, string> = {
-  [PostVisibility.Public]: "bg-blue-500/15 text-blue-400",
-  [PostVisibility.Friends]: "bg-purple-500/15 text-purple-400",
-  [PostVisibility.Private]: "bg-zinc-500/15 text-zinc-400",
-};
+import {
+  ADMIN_LIMIT_OPTIONS as LIMIT_OPTIONS,
+  POST_MODERATION_OPTIONS as MODERATION_OPTIONS,
+  POST_VISIBILITY_OPTIONS as VISIBILITY_OPTIONS,
+  POST_STATUS_BADGE as statusBadge,
+  POST_VISIBILITY_BADGE as visibilityBadge,
+} from "@/core/config/adminConstants";
 
 export default function AdminPostsPage() {
   const { toast } = useToast();

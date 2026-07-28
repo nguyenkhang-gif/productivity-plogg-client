@@ -20,34 +20,13 @@ import {
 } from "lucide-react";
 import { styles } from "@/core/config/styles";
 import { useDebounce } from "@/core/hooks/useDebounce";
-
-const ROLE_OPTIONS = [
-  { label: "All roles", value: "" },
-  { label: "User", value: UserRole.User },
-  { label: "Moderator", value: UserRole.Moderator },
-  { label: "Admin", value: UserRole.Admin },
-];
-
-const MEMBERSHIP_OPTIONS = [
-  { label: "All plans", value: "" },
-  { label: "Basic", value: "basic" },
-  { label: "Advance", value: "advance" },
-  { label: "Premium", value: "premium" },
-];
-
-const LIMIT_OPTIONS = [10, 20, 50, 100];
-
-const ROLE_BADGE: Record<string, string> = {
-  [UserRole.Admin]: "bg-red-500/15 text-red-400",
-  [UserRole.Moderator]: "bg-amber-500/15 text-amber-400",
-  [UserRole.User]: "bg-white/10 text-text-secondary",
-};
-
-const MEMBERSHIP_BADGE: Record<string, string> = {
-  premium: "bg-yellow-500/15 text-yellow-400",
-  advance: "bg-blue-500/15 text-blue-400",
-  basic: "bg-white/10 text-text-muted",
-};
+import {
+  ADMIN_LIMIT_OPTIONS as LIMIT_OPTIONS,
+  USER_ROLE_OPTIONS as ROLE_OPTIONS,
+  MEMBERSHIP_OPTIONS,
+  ROLE_BADGE,
+  MEMBERSHIP_BADGE,
+} from "@/core/config/adminConstants";
 
 const selectCls =
   "text-sm bg-white/5 border border-border rounded-lg px-3 py-1.5 text-text-primary focus:outline-none focus:border-accent";

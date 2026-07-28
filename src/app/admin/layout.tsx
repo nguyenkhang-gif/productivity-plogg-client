@@ -3,13 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/core/hooks/useRole";
-import { ShieldCheck, Users } from "lucide-react";
 import { styles } from "@/core/config/styles";
-
-const TABS = [
-  { href: "/admin/posts", label: "Posts", icon: ShieldCheck, adminOnly: false },
-  { href: "/admin/users", label: "Users", icon: Users, adminOnly: true },
-];
+import { ADMIN_TABS } from "@/core/config/adminConstants";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { canModerate, isAdmin } = useRole();
@@ -23,7 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  const tabs = TABS.filter((t) => !t.adminOnly || isAdmin);
+  const tabs = ADMIN_TABS.filter((t) => !t.adminOnly || isAdmin);
 
   return (
     <div className="w-[70%] mx-auto py-8 px-4 space-y-4">

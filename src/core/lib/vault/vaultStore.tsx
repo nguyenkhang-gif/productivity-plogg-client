@@ -38,6 +38,9 @@ export interface VaultTask {
   text: string;
   done: boolean;
   updatedAt: number;
+  estPomodoros?: number;
+  noteText?: string;
+  project?: string;
 }
 
 // ---------- state ----------
@@ -110,8 +113,13 @@ export interface VaultContextValue {
   /** First-time setup: generate DK, encrypt empty list, PUT to server. */
   setupVault: (pin: string) => Promise<void>;
   addTask: (text: string) => void;
-  updateTask: (id: string, patch: Partial<Pick<VaultTask, "text" | "done">>) => void;
+  updateTask: (
+    id: string,
+    patch: Partial<Pick<VaultTask, "text" | "done" | "estPomodoros" | "noteText" | "project">>
+  ) => void;
   deleteTask: (id: string) => void;
+  /** Move an ongoing task within the ongoing group (drag & drop). */
+  reorderTasks: (fromIndex: number, toIndex: number) => void;
   /** DELETE vault + clear IndexedDB DK. Irreversible. */
   wipe: () => void;
   /** Clear DK from memory + IndexedDB without deleting server vault. */
@@ -311,7 +319,10 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   );
 
   const updateTask = useCallback(
-    (id: string, patch: Partial<Pick<VaultTask, "text" | "done">>) => {
+    (
+      id: string,
+      patch: Partial<Pick<VaultTask, "text" | "done" | "estPomodoros" | "noteText" | "project">>
+    ) => {
       const { tasks, version, wrappedKey, kdf } = stateRef.current;
       const next = tasks.map((t) =>
         t.id === id ? { ...t, ...patch, updatedAt: Date.now() } : t
@@ -330,6 +341,27 @@ export function VaultProvider({ children }: { children: ReactNode }) {
       const next = tasks.filter((t) => t.id !== id);
       const { nearLimit } = checkBlobSize(JSON.stringify(next));
       dispatch({ type: "SET_TASKS", tasks: next, nearLimit });
+      scheduleSync(next, version, wrappedKey, kdf);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [syncNow]
+  );
+
+  const reorderTasks = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      const { tasks, version, wrappedKey, kdf } = stateRef.current;
+      const active = tasks.filter((t) => !t.done);
+      const done = tasks.filter((t) => t.done);
+      if (
+        fromIndex < 0 || fromIndex >= active.length ||
+        toIndex < 0 || toIndex >= active.length
+      ) {
+        return;
+      }
+      const [moved] = active.splice(fromIndex, 1);
+      active.splice(toIndex, 0, moved);
+      const next = [...active, ...done];
+      dispatch({ type: "SET_TASKS", tasks: next, nearLimit: stateRef.current.nearLimit });
       scheduleSync(next, version, wrappedKey, kdf);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -386,6 +418,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
         addTask,
         updateTask,
         deleteTask,
+        reorderTasks,
         wipe,
         lock,
         refresh,
