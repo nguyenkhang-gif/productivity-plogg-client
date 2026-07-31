@@ -47,7 +47,7 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
       socket.off("connect_error", onConnectError);
       socket.off("exception", onException);
     };
-  });
+  }, [token]);
 
   useEffect(() => {
     const socket = socketRef.current;
@@ -155,7 +155,7 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
       socket.off("reaction_updated", onReaction);
       socket.off("typing_update", onTyping);
     };
-  });
+  }, [channelId]);
 
   const sendMessage = useCallback(
     (content: string, replyToId?: string) => {

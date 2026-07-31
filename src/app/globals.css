@@ -144,6 +144,29 @@ body,
   .text-default {
     @apply text-gray-600 dark:text-[#D1D5DB];
   }
+
+  /* Thanh scroll mảnh, theme-aware — dùng cho vùng cuộn (chat, sidebar...) */
+  .scrollbar-thin {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--color-border) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-text-muted);
+    background-clip: content-box;
+  }
 }
 
 /* Coffee Focus — steam wisps rising off the cup */

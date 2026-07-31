@@ -28,15 +28,18 @@ export default function ChatPane({
   const [text, setText] = useState("");
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [hasNewBelow, setHasNewBelow] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null); // gắn vào div cuộn message
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const prevLenRef = useRef(0);
   const lastIdRef = useRef<string | null>(null);
+  const loadingRef = useRef(false); 
 
   // CALLBACKS
   const loadOlder = useCallback(async () => {
-    if (loadingOlder || !hasMore || messages.length === 0) return;
+    if (loadingRef.current || !hasMore || messages.length === 0) return;
+    loadingRef.current = true; // khóa đồng bộ ngay, chống race scroll
     const el = scrollRef.current;
     const prevHeight = el?.scrollHeight ?? 0;
     setLoadingOlder(true);
@@ -45,27 +48,57 @@ export default function ChatPane({
       const older = await guildApi.getMessages(channelId, cursor);
       if (older.length < 30) setHasMore(false); // < limit → hết
       if (older.length > 0) {
-        // API trả "mới nhất trước" → reverse để cũ→mới rồi prepend
-        setMessages((prev) => [...older.slice().reverse(), ...prev]);
+        setMessages((prev) => {
+          const seen = new Set(prev.map((m) => m.id)); // dedupe an toàn
+          const fresh = older
+            .slice()
+            .reverse()
+            .filter((m) => !seen.has(m.id));
+          return fresh.length ? [...fresh, ...prev] : prev;
+        });
         requestAnimationFrame(() => {
           if (el) el.scrollTop = el.scrollHeight - prevHeight;
         });
       }
     } finally {
+      loadingRef.current = false; // mở khóa
       setLoadingOlder(false);
     }
-  }, [channelId, messages, loadingOlder, hasMore, setMessages]);
+  }, [channelId, messages, hasMore, setMessages]);
 
   // auto-scroll xuống cuối khi có tin mới (append), KHÔNG scroll khi prepend tin cũ.
   // Phân biệt bằng id tin cuối: prepend → tin cuối không đổi; append → tin cuối đổi.
+  // Chỉ auto-scroll nếu user đang ở gần đáy; nếu đang đọc tin cũ → hiện nút "tin mới".
   useEffect(() => {
+    const el = scrollRef.current;
     const last = messages[messages.length - 1];
-    const appendedAtBottom =
+    const wasEmpty = prevLenRef.current === 0; // load đầu / vừa đổi channel
+    const isAppend =
       messages.length > prevLenRef.current && last?.id !== lastIdRef.current;
     prevLenRef.current = messages.length;
     lastIdRef.current = last?.id ?? null;
-    if (appendedAtBottom) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+
+    if (!isAppend || !el) return;
+
+    // Load đầu / đổi channel → luôn nhảy xuống đáy (không animation).
+    if (wasEmpty) {
+      requestAnimationFrame(() => bottomRef.current?.scrollIntoView());
+      return;
+    }
+
+    // Tin mới đến khi đang chạy: chỉ cuộn nếu user đang gần đáy.
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+    if (nearBottom) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      setHasNewBelow(true);
+    }
   }, [messages]);
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    setHasNewBelow(false);
+  };
 
   // reset pagination khi đổi channel (hook đã reset messages)
   useEffect(() => {
@@ -82,11 +115,16 @@ export default function ChatPane({
   // FUNTIONCS
   const handleScroll = () => {
     const el = scrollRef.current;
-    if (el && el.scrollTop < 80) loadOlder(); // gần đỉnh (80px)
+    if (!el) return;
+    if (el.scrollTop < 80) loadOlder(); // gần đỉnh (80px) → load tin cũ
+    // user tự cuộn lại gần đáy → ẩn nút "tin mới"
+    if (el.scrollHeight - el.scrollTop - el.clientHeight < 120) {
+      setHasNewBelow(false);
+    }
   };
 
   return (
-    <div className="flex flex-1 flex-col min-w-0 min-h-0 bg-page">
+    <div className="relative flex flex-1 flex-col min-w-0 min-h-0 bg-page">
       {/* trạng thái kết nối */}
       {authError && (
         <div className="px-4 py-2 text-xs text-red-400 bg-red-500/10 border-b border-border">
@@ -98,7 +136,7 @@ export default function ChatPane({
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3"
+        className="flex-1 overflow-y-auto scrollbar-thin px-4 py-3 flex flex-col gap-3"
       >
         {loadingOlder && (
           <p className="text-center text-xs text-text-muted py-1">Đang tải…</p>
@@ -146,6 +184,16 @@ export default function ChatPane({
         )}
         <div ref={bottomRef} />
       </div>
+
+      {/* nút "tin nhắn mới" — hiện khi có tin mới lúc user đang đọc tin cũ */}
+      {hasNewBelow && (
+        <button
+          onClick={scrollToBottom}
+          className="absolute bottom-20 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-accent text-white text-xs font-medium shadow-lg hover:bg-blue-500 transition-colors"
+        >
+          ↓ Tin nhắn mới
+        </button>
+      )}
 
       {/* typing indicator */}
       {typingUsers.length > 0 && (
