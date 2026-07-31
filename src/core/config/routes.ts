@@ -35,6 +35,8 @@ export const routes: RouteConfig[] = [
   { path: "/profile", access: "private" },
   { path: "/moderation", access: "private" },
   { path: "/admin", access: "private" },
+  { path: "/guilds", access: "private" },
+
 ];
 
 /** Default nếu path không khớp rule nào */
