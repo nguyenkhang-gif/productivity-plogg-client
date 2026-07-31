@@ -4,7 +4,7 @@ import chapterReducer from "./epub";
 import aiChatReducer from "./aiChat";
 import chatReducer from "./chat";
 import uploadReducer from "./upload";
-
+import guildReducer from "./guild";
 const store = configureStore({
   reducer: {
     user: userReducer,
@@ -12,6 +12,7 @@ const store = configureStore({
     aiChat: aiChatReducer,
     chat: chatReducer,
     upload: uploadReducer,
+    guild: guildReducer,
   },
 });
 
