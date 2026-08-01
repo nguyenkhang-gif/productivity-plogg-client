@@ -18,6 +18,16 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
   const socketRef = useRef<ReturnType<typeof getGuildSocket> | null>(null);
 
+  // Ref giữ id mới nhất để onConnect (đóng băng trong closure [token]) luôn re-join đúng.
+  const guildIdRef = useRef(guildId);
+  const channelIdRef = useRef(channelId);
+  useEffect(() => {
+    guildIdRef.current = guildId;
+  }, [guildId]);
+  useEffect(() => {
+    channelIdRef.current = channelId;
+  }, [channelId]);
+
   useEffect(() => {
     if (!token) return;
     const socket = getGuildSocket(token);
@@ -26,6 +36,13 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
     const onConnect = () => {
       setConnected(true);
       setAuthError(null);
+      // Re-join mỗi lần (re)connect — kể cả sau reconnect, khi `connected`
+      // không toggle nên effect join không tự chạy lại. Đọc id qua ref để
+      // luôn lấy giá trị mới nhất (onConnect bị đóng băng trong closure [token]).
+      if (guildIdRef.current)
+        socket.emit("join_guild", { guildId: guildIdRef.current });
+      if (channelIdRef.current)
+        socket.emit("join_channel", { channelId: channelIdRef.current });
     };
     const onDisconnect = () => setConnected(false);
     const onConnectError = (err: Error) => {
@@ -51,22 +68,20 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
 
   useEffect(() => {
     const socket = socketRef.current;
-    if (!socket || !connected || !guildId) return;
-    socket.emit("join_guild", { guildId });
-  }, [connected, guildId]);
-
-  useEffect(() => {
-    const socket = socketRef.current;
     if (!socket || !connected || !channelId) return;
+    let cancelled = false;
     setMessages([]);
     socket.emit(
       "join_channel",
       { channelId },
       (res: { status: string; data?: { messages: Message[] } }) => {
+        if (cancelled) return;
         if (res?.data?.messages) setMessages(res.data.messages);
       },
     );
+
     return () => {
+      cancelled = true;
       socket.emit("leave_channel", { channelId });
     };
   }, [connected, channelId]);
@@ -155,7 +170,8 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
       socket.off("reaction_updated", onReaction);
       socket.off("typing_update", onTyping);
     };
-  }, [channelId]);
+    // `connected` để bind lại listener khi socket được tạo muộn (token đến sau). (Bug #6)
+  }, [channelId, connected]);
 
   const sendMessage = useCallback(
     (content: string, replyToId?: string) => {

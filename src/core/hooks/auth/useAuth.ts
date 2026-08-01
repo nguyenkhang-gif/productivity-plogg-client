@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from "@/core/redux/store";
 import { setCredentials, setAuthLoading, logout } from "@/core/redux/user";
 import { tokenStore } from "@/core/auth/token-store";
 import axiosInstance from "@/core/lib/axiosInstance";
+import { disconnectGuildSocket } from "@/core/services/socket/guildSocket";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
@@ -26,6 +27,7 @@ export const useAuth = () => {
     } finally {
       tokenStore.clear();
       dispatch(logout());
+      disconnectGuildSocket(); // ranh giới đổi identity → login sau tạo socket mới
       router.push("/auth");
     }
   }, [dispatch, router]);
@@ -50,6 +52,7 @@ export const useAuth = () => {
       } catch {
         tokenStore.clear();
         dispatch(logout());
+        disconnectGuildSocket();
       }
     };
 

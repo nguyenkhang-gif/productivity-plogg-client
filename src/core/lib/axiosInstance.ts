@@ -2,6 +2,10 @@ import axios, { AxiosRequestConfig } from "axios";
 import { tokenStore } from "@/core/auth/token-store";
 import store from "@/core/redux/store";
 import { updateToken, logout } from "@/core/redux/user";
+import {
+  updateGuildSocketToken,
+  disconnectGuildSocket,
+} from "@/core/services/socket/guildSocket";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
@@ -73,6 +77,8 @@ axiosInstance.interceptors.response.use(
 
       tokenStore.save(data.access_token, data.refresh_token);
       store.dispatch(updateToken(data.access_token));
+      // Cập nhật auth cho guild socket (không tái tạo) → reconnect sau dùng token mới
+      updateGuildSocketToken(data.access_token);
 
       flushQueue(data.access_token);
       original.headers = {
@@ -84,6 +90,7 @@ axiosInstance.interceptors.response.use(
       flushQueue(null, err);
       tokenStore.clear();
       store.dispatch(logout());
+      disconnectGuildSocket(); // hủy socket khi session chết → login sau tạo socket mới đúng identity
       if (typeof window !== "undefined") window.location.href = "/auth";
       return Promise.reject(err);
     } finally {

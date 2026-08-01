@@ -6,19 +6,13 @@ const GUILD_URL =
   "http://localhost:8000";
 
 let socket: Socket | null = null;
-let currentToken: string | null = null;
 
+// Giữ MỘT socket cho suốt phiên. KHÔNG tái tạo khi token đổi (refresh cùng user):
+// backend chỉ verify token 1 lần lúc handshake nên tái tạo là vô nghĩa + gây mất room.
+// Chỉ hủy socket ở ranh giới đổi identity (logout) qua disconnectGuildSocket().
 export function getGuildSocket(token: string): Socket {
-  if (socket && currentToken === token) return socket;
+  if (socket) return socket;
 
-  // Dicconnect
-  if (socket) {
-    socket.removeAllListeners();
-    socket.disconnect();
-    socket = null;
-  }
-
-  currentToken = token;
   socket = io(`${GUILD_URL}/guild`, {
     auth: { token },
     autoConnect: true,
@@ -28,6 +22,12 @@ export function getGuildSocket(token: string): Socket {
   });
 
   return socket;
+}
+
+// Cập nhật token cho lần reconnect kế tiếp (refresh token) mà KHÔNG tái tạo socket.
+// socket.io lưu auth lúc tạo → nếu không update, reconnect sau sẽ handshake bằng token cũ (đã hết hạn).
+export function updateGuildSocketToken(token: string) {
+  if (socket) socket.auth = { token };
 }
 
 export function disconnectGuildSocket() {
