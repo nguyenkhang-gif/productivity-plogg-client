@@ -99,6 +99,24 @@ export const useGetChannels = (guildId: string) => {
   });
 };
 
+export const useCreateChannel = (guildId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      name: string;
+      type?: "TEXT" | "CATEGORY";
+      parentId?: string;
+      topic?: string;
+    }) => guildApi.createChannel(guildId, body),
+    onSuccess: () => {
+      // refetch channel list (useGetChannels sẽ dispatch setChannels lại)
+      qc.invalidateQueries({
+        queryKey: [FetchQueryKeys.GUILD_CHANNELS, guildId],
+      });
+    },
+  });
+};
+
 // ---- Roles ----
 export const useGetRoles = (guildId: string) => {
   const dispatch = useDispatch();

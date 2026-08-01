@@ -11,6 +11,9 @@ import { Channel } from "@/core/types/guild";
 import { styles } from "@/core/config/styles";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
+import { usePermissions } from "@/core/hooks/guild/usePermissions";
+import { PERMISSIONS } from "@/core/config/permissions";
+import CreateChannelDialog from "./CreateChannelDialog";
 
 export default function ChannelSidebar({ guildId }: { guildId: string }) {
   const { data: channels, isLoading } = useGetChannels(guildId);
@@ -19,6 +22,8 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
   const guild = useSelector((s: RootState) =>
     s.guild.guilds.find((g) => g.id === guildId),
   );
+  const { can } = usePermissions(guildId);
+  const canManageChannels = can(PERMISSIONS.MANAGE_CHANNELS);
 
   if (isLoading) {
     return (
@@ -70,6 +75,11 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
         <h2 className="font-semibold text-text-primary truncate">
           {guild?.name ?? "…"}
         </h2>
+        {canManageChannels && (
+          <span className="ml-auto shrink-0">
+            <CreateChannelDialog guildId={guildId} />
+          </span>
+        )}
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin py-3">
