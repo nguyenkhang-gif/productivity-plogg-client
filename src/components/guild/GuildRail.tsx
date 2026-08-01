@@ -4,6 +4,7 @@ import { styles } from "@/core/config/styles";
 import { useGetGuild } from "@/core/services/client/guild";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import CreateGuildDialog from "./CreateGuildDialog";
 
 
 export default function GuildRail() {
@@ -64,6 +65,9 @@ export default function GuildRail() {
           </Link>
         );
       })}
+
+      {/* nút tạo server */}
+      <CreateGuildDialog />
     </nav>
   );
 }
