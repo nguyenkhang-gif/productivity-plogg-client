@@ -76,7 +76,10 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
       { channelId },
       (res: { status: string; data?: { messages: Message[] } }) => {
         if (cancelled) return;
-        if (res?.data?.messages) setMessages(res.data.messages);
+        // API trả desc (mới→cũ) → reverse thành cũ→mới cho khớp
+        // loadOlder (prepend tin cũ) và onNew (append tin mới xuống đáy).
+        if (res?.data?.messages)
+          setMessages(res.data.messages.slice().reverse());
       },
     );
 
