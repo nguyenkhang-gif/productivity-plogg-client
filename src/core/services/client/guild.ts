@@ -34,6 +34,21 @@ export const useGetGuild = () => {
   });
 };
 
+// Chi tiết 1 guild — chỉ endpoint này trả `myPermissions`. Merge vào Redux qua upsertGuild.
+export const useGetGuildDetail = (guildId: string) => {
+  const dispatch = useDispatch();
+  return useQuery({
+    queryKey: [FetchQueryKeys.GUILDS, guildId],
+    queryFn: async () => {
+      const data = await guildApi.getGuild(guildId);
+      dispatch(upsertGuild(data));
+      return data;
+    },
+    enabled: !!guildId,
+    staleTime: STALE_TIME.MEDIUM,
+  });
+};
+
 export const useCreateGuild = () => {
   const dispatch = useDispatch();
   const qc = useQueryClient();

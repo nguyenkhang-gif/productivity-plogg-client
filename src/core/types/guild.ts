@@ -5,6 +5,8 @@ export interface Guild {
   ownerId: string;
   createdAt: string; // ISO
   updatedAt: string;
+  // quyền (bitmask string) của user hiện tại trong guild — chỉ có ở GET /guilds/:id
+  myPermissions?: string;
   // các field lồng chỉ có ở 1 số response:
   channels?: Channel[];
   members?: GuildMember[];

@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Hash } from "lucide-react";
-import { useGetChannels } from "@/core/services/client/guild";
+import {
+  useGetChannels,
+  useGetGuildDetail,
+} from "@/core/services/client/guild";
 import { Channel } from "@/core/types/guild";
 import { styles } from "@/core/config/styles";
 import { useSelector } from "react-redux";
@@ -11,6 +14,7 @@ import { RootState } from "@/core/redux/store";
 
 export default function ChannelSidebar({ guildId }: { guildId: string }) {
   const { data: channels, isLoading } = useGetChannels(guildId);
+  useGetGuildDetail(guildId); // nạp guild detail (myPermissions) vào Redux khi mở guild
   const pathname = usePathname();
   const guild = useSelector((s: RootState) =>
     s.guild.guilds.find((g) => g.id === guildId),

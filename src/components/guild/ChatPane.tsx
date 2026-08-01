@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { Send, Loader2, MessagesSquare, Pencil, Trash2 } from "lucide-react";
 import { useGuildSocket } from "@/core/hooks/guild/useGuildSocket";
+import { usePermissions } from "@/core/hooks/guild/usePermissions";
+import { PERMISSIONS } from "@/core/config/permissions";
 import { formatTime } from "@/core/lib/datetime";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/ui/UserAvatar";
@@ -33,6 +35,8 @@ export default function ChatPane({
   } = useGuildSocket(guildId, channelId);
 
   const myId = useSelector((s: RootState) => s.user.profile?.id);
+  const { can } = usePermissions(guildId);
+  const canManageMessages = can(PERMISSIONS.MANAGE_MESSAGES);
 
   const [text, setText] = useState("");
   const [loadingOlder, setLoadingOlder] = useState(false);
@@ -279,23 +283,25 @@ export default function ChatPane({
                   >
                     👍
                   </button>
+                  {/* Sửa: chỉ tin của mình */}
                   {isOwn && (
-                    <>
-                      <button
-                        onClick={() => startEdit(m)}
-                        title="Sửa"
-                        className="p-1 text-text-muted hover:text-text-primary"
-                      >
-                        <Pencil size={14} />
-                      </button>
-                      <button
-                        onClick={() => deleteMessage(m.id)}
-                        title="Xóa"
-                        className="p-1 text-text-muted hover:text-red-400"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </>
+                    <button
+                      onClick={() => startEdit(m)}
+                      title="Sửa"
+                      className="p-1 text-text-muted hover:text-text-primary"
+                    >
+                      <Pencil size={14} />
+                    </button>
+                  )}
+                  {/* Xóa: tin của mình HOẶC có quyền MANAGE_MESSAGES */}
+                  {(isOwn || canManageMessages) && (
+                    <button
+                      onClick={() => deleteMessage(m.id)}
+                      title="Xóa"
+                      className="p-1 text-text-muted hover:text-red-400"
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   )}
                 </div>
               )}
