@@ -2,12 +2,12 @@
 
 import { guildApi } from "@/core/services/api/guild";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Send } from "lucide-react";
+import { Send, Loader2, MessagesSquare } from "lucide-react";
 import { useGuildSocket } from "@/core/hooks/guild/useGuildSocket";
 import { formatTime } from "@/core/lib/datetime";
-import { styles } from "@/core/config/styles";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/ui/UserAvatar";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export default function ChatPane({
   guildId,
@@ -177,11 +177,21 @@ export default function ChatPane({
           </div>
         ))}
 
-        {messages.length === 0 && (
-          <p className={`${styles.muted} text-sm text-center mt-8`}>
-            Chưa có tin nhắn. Hãy bắt đầu cuộc trò chuyện.
-          </p>
-        )}
+        {messages.length === 0 &&
+          (!connected ? (
+            <EmptyState
+              icon={Loader2}
+              title="Đang kết nối…"
+              className="flex-1 [&_svg]:animate-spin"
+            />
+          ) : (
+            <EmptyState
+              icon={MessagesSquare}
+              title="Chưa có tin nhắn"
+              description="Hãy bắt đầu cuộc trò chuyện."
+              className="flex-1"
+            />
+          ))}
         <div ref={bottomRef} />
       </div>
 
