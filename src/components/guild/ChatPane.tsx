@@ -2,12 +2,15 @@
 
 import { guildApi } from "@/core/services/api/guild";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Send, Loader2, MessagesSquare } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/core/redux/store";
+import { Send, Loader2, MessagesSquare, Pencil, Trash2 } from "lucide-react";
 import { useGuildSocket } from "@/core/hooks/guild/useGuildSocket";
 import { formatTime } from "@/core/lib/datetime";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { EmptyState } from "@/components/ui/EmptyState";
+import type { Message } from "@/core/types/guild";
 
 export default function ChatPane({
   guildId,
@@ -22,19 +25,29 @@ export default function ChatPane({
     messages,
     typingUsers,
     sendMessage,
+    editMessage,
+    deleteMessage,
+    addReaction,
     setMessages,
+    sendTyping,
   } = useGuildSocket(guildId, channelId);
+
+  const myId = useSelector((s: RootState) => s.user.profile?.id);
 
   const [text, setText] = useState("");
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [hasNewBelow, setHasNewBelow] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null); // gắn vào div cuộn message
+  const typingRef = useRef(false);
+  const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const prevLenRef = useRef(0);
   const lastIdRef = useRef<string | null>(null);
-  const loadingRef = useRef(false); 
+  const loadingRef = useRef(false);
 
   // CALLBACKS
   const loadOlder = useCallback(async () => {
@@ -100,9 +113,18 @@ export default function ChatPane({
     setHasNewBelow(false);
   };
 
-  // reset pagination khi đổi channel (hook đã reset messages)
+  // reset pagination + hủy trạng thái edit khi đổi channel (hook đã reset messages)
   useEffect(() => {
     setHasMore(true);
+    setEditingId(null);
+  }, [channelId]);
+
+  // cleanup typing timer khi đổi channel / unmount (chống bắn "stop" sai channel + leak)
+  useEffect(() => {
+    return () => {
+      if (typingTimer.current) clearTimeout(typingTimer.current);
+      typingRef.current = false;
+    };
   }, [channelId]);
 
   const handleSend = () => {
@@ -110,9 +132,11 @@ export default function ChatPane({
     if (!content) return;
     sendMessage(content);
     setText("");
+    if (typingTimer.current) clearTimeout(typingTimer.current);
+    typingRef.current = false;
+    sendTyping("stop");
   };
 
-  // FUNTIONCS
   const handleScroll = () => {
     const el = scrollRef.current;
     if (!el) return;
@@ -121,6 +145,31 @@ export default function ChatPane({
     if (el.scrollHeight - el.scrollTop - el.clientHeight < 120) {
       setHasNewBelow(false);
     }
+  };
+
+  const handleTyping = () => {
+    // báo "start" 1 lần khi bắt đầu
+    if (!typingRef.current) {
+      typingRef.current = true;
+      sendTyping("start");
+    }
+    // reset timer: mỗi lần gõ đẩy lùi thời điểm "stop"
+    if (typingTimer.current) clearTimeout(typingTimer.current);
+    typingTimer.current = setTimeout(() => {
+      typingRef.current = false;
+      sendTyping("stop");
+    }, 2000); // ngừng gõ 2s → stop
+  };
+
+  // ---- message actions (2.3) ----
+  const startEdit = (m: Message) => {
+    setEditingId(m.id);
+    setEditText(m.content);
+  };
+  const submitEdit = () => {
+    const content = editText.trim();
+    if (content && editingId) editMessage(editingId, content);
+    setEditingId(null);
   };
 
   return (
@@ -147,35 +196,112 @@ export default function ChatPane({
           </p>
         )}
 
-        {messages.map((m) => (
-          <div key={m.id} className="flex gap-2.5">
-            <UserAvatar
-              name={m.senderName}
-              src={m.senderAvatar}
-              size="sm"
-              className="mt-0.5"
-            />
-            <div className="flex flex-col gap-0.5 min-w-0">
-              <div className="flex items-baseline gap-2">
-                <span className="text-sm font-semibold text-text-primary">
-                  {m.senderName}
-                </span>
-                <span className="text-[11px] text-text-muted">
-                  {formatTime(m.createdAt)}
-                </span>
-              </div>
-              <p className="text-sm text-text-secondary break-words">
-                {m.isDeleted ? (
-                  <span className="italic text-text-muted">
-                    Tin nhắn đã xóa
+        {messages.map((m) => {
+          const isOwn = !!myId && m.senderId === myId;
+          const isEditing = editingId === m.id;
+          // gom reaction theo emoji → đếm
+          const reactionGroups = (m.reactions ?? []).reduce<Record<string, number>>(
+            (acc, r) => {
+              acc[r.emoji] = (acc[r.emoji] ?? 0) + 1;
+              return acc;
+            },
+            {},
+          );
+
+          return (
+            <div key={m.id} className="group relative flex gap-2.5">
+              <UserAvatar
+                name={m.senderName}
+                src={m.senderAvatar}
+                size="sm"
+                className="mt-0.5"
+              />
+              <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm font-semibold text-text-primary">
+                    {m.senderName}
                   </span>
+                  <span className="text-[11px] text-text-muted">
+                    {formatTime(m.createdAt)}
+                  </span>
+                  {m.editedAt && !m.isDeleted && (
+                    <span className="text-[10px] italic text-text-muted">
+                      (đã sửa)
+                    </span>
+                  )}
+                </div>
+
+                {m.isDeleted ? (
+                  <p className="text-sm italic text-text-muted">Tin nhắn đã xóa</p>
+                ) : isEditing ? (
+                  <input
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        submitEdit();
+                      }
+                      if (e.key === "Escape") setEditingId(null);
+                    }}
+                    autoFocus
+                    className="text-sm bg-card border border-border rounded px-2 py-1 text-text-primary focus:outline-none focus:border-accent"
+                  />
                 ) : (
-                  m.content
+                  <p className="text-sm text-text-secondary break-words">
+                    {m.content}
+                  </p>
                 )}
-              </p>
+
+                {/* reactions */}
+                {Object.keys(reactionGroups).length > 0 && (
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {Object.entries(reactionGroups).map(([emoji, count]) => (
+                      <button
+                        key={emoji}
+                        onClick={() => addReaction(m.id, emoji)}
+                        className="rounded-full border border-border bg-surface px-1.5 py-0.5 text-xs hover:border-accent transition-colors"
+                      >
+                        {emoji} {count}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* action bar — hiện khi hover */}
+              {!m.isDeleted && !isEditing && (
+                <div className="absolute right-0 top-0 flex items-center gap-0.5 rounded-md border border-border bg-card px-1 py-0.5 opacity-0 shadow transition-opacity group-hover:opacity-100">
+                  <button
+                    onClick={() => addReaction(m.id, "👍")}
+                    title="Thích"
+                    className="p-1 text-sm leading-none text-text-muted hover:text-text-primary"
+                  >
+                    👍
+                  </button>
+                  {isOwn && (
+                    <>
+                      <button
+                        onClick={() => startEdit(m)}
+                        title="Sửa"
+                        className="p-1 text-text-muted hover:text-text-primary"
+                      >
+                        <Pencil size={14} />
+                      </button>
+                      <button
+                        onClick={() => deleteMessage(m.id)}
+                        title="Xóa"
+                        className="p-1 text-text-muted hover:text-red-400"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {messages.length === 0 &&
           (!connected ? (
@@ -217,7 +343,10 @@ export default function ChatPane({
         <div className="flex items-center gap-2 bg-card border border-border rounded-xl px-3 py-2 focus-within:border-accent transition-colors">
           <input
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => {
+              setText(e.target.value);
+              handleTyping();
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();

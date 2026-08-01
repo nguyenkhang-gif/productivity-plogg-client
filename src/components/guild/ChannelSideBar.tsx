@@ -6,10 +6,15 @@ import { Hash } from "lucide-react";
 import { useGetChannels } from "@/core/services/client/guild";
 import { Channel } from "@/core/types/guild";
 import { styles } from "@/core/config/styles";
+import { useSelector } from "react-redux";
+import { RootState } from "@/core/redux/store";
 
 export default function ChannelSidebar({ guildId }: { guildId: string }) {
   const { data: channels, isLoading } = useGetChannels(guildId);
   const pathname = usePathname();
+  const guild = useSelector((s: RootState) =>
+    s.guild.guilds.find((g) => g.id === guildId),
+  );
 
   if (isLoading) {
     return (
@@ -55,35 +60,44 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
   };
 
   return (
-    <aside className="w-60 shrink-0 bg-card border-r border-border flex flex-col overflow-y-auto py-3">
-      {/* text channel không thuộc category */}
-      {uncategorized.length > 0 && (
-        <div className="px-2 flex flex-col gap-0.5 mb-2">
-          {uncategorized.map((ch) => (
-            <ChannelLink key={ch.id} ch={ch} />
-          ))}
-        </div>
-      )}
+    <aside className="w-60 shrink-0 bg-card border-r border-border flex flex-col py-3">
+      <div className="px-3 py-3 border-b border-border flex items-center gap-2 shrink-0">
+        <span className="text-lg">{guild?.icon}</span>
+        <h2 className="font-semibold text-text-primary truncate">
+          {guild?.name ?? "…"}
+        </h2>
+      </div>
 
-      {/* các category + channel con */}
-      {categories.map((cat) => (
-        <div key={cat.id} className="px-2 mb-2">
-          <p className="px-1 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-            {cat.name}
-          </p>
-          <div className="flex flex-col gap-0.5">
-            {childrenOf(cat.id).map((ch) => (
+      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin py-3">
+        {/* text channel không thuộc category */}
+        {uncategorized.length > 0 && (
+          <div className="px-2 flex flex-col gap-0.5 mb-2">
+            {uncategorized.map((ch) => (
               <ChannelLink key={ch.id} ch={ch} />
             ))}
           </div>
-        </div>
-      ))}
+        )}
 
-      {list.length === 0 && (
-        <p className={`${styles.muted} text-sm text-center px-3 mt-4`}>
-          Chưa có channel nào.
-        </p>
-      )}
+        {/* các category + channel con */}
+        {categories.map((cat) => (
+          <div key={cat.id} className="px-2 mb-2">
+            <p className="px-1 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+              {cat.name}
+            </p>
+            <div className="flex flex-col gap-0.5">
+              {childrenOf(cat.id).map((ch) => (
+                <ChannelLink key={ch.id} ch={ch} />
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {list.length === 0 && (
+          <p className={`${styles.muted} text-sm text-center px-3 mt-4`}>
+            Chưa có channel nào.
+          </p>
+        )}
+      </div>
     </aside>
   );
 }
