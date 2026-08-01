@@ -14,6 +14,7 @@ import { RootState } from "@/core/redux/store";
 import { usePermissions } from "@/core/hooks/guild/usePermissions";
 import { PERMISSIONS } from "@/core/config/permissions";
 import CreateChannelDialog from "./CreateChannelDialog";
+import ChannelActions from "./ChannelActions";
 
 export default function ChannelSidebar({ guildId }: { guildId: string }) {
   const { data: channels, isLoading } = useGetChannels(guildId);
@@ -36,25 +37,21 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
   }
 
   const list = channels ?? [];
+  // sort theo position; tiebreaker createdAt cho ổn định khi position trùng
+  const byPos = (a: Channel, b: Channel) =>
+    a.position - b.position || a.createdAt.localeCompare(b.createdAt);
+
   // Categories (channel cha) + text channels chưa có category
-  const categories = list
-    .filter((c) => c.type === "CATEGORY")
-    .sort((a, b) => a.position - b.position);
+  const categories = list.filter((c) => c.type === "CATEGORY").sort(byPos);
   const textChannels = list.filter((c) => c.type === "TEXT");
-  const uncategorized = textChannels
-    .filter((c) => !c.parentId)
-    .sort((a, b) => a.position - b.position);
+  const uncategorized = textChannels.filter((c) => !c.parentId).sort(byPos);
   const childrenOf = (catId: string) =>
-    textChannels
-      .filter((c) => c.parentId === catId)
-      .sort((a, b) => a.position - b.position);
+    textChannels.filter((c) => c.parentId === catId).sort(byPos);
 
   const ChannelLink = ({ ch }: { ch: Channel }) => {
     const active = pathname === `/guilds/${guildId}/${ch.id}`;
     return (
-      <Link
-        href={`/guilds/${guildId}/${ch.id}`}
-        title={ch.name}
+      <div
         className={`group flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm transition-colors
           ${
             active
@@ -62,9 +59,18 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
               : "text-text-muted hover:bg-surface hover:text-text-secondary"
           }`}
       >
-        <Hash size={16} className="shrink-0" />
-        <span className="truncate">{ch.name}</span>
-      </Link>
+        <Link
+          href={`/guilds/${guildId}/${ch.id}`}
+          title={ch.name}
+          className="flex min-w-0 flex-1 items-center gap-1.5"
+        >
+          <Hash size={16} className="shrink-0" />
+          <span className="truncate">{ch.name}</span>
+        </Link>
+        {canManageChannels && ch.type === "TEXT" && (
+          <ChannelActions guildId={guildId} channel={ch} />
+        )}
+      </div>
     );
   };
 
