@@ -47,3 +47,6 @@ CLAUDE.md
 
 # Claude Code
 .claude/
+
+# Local Playwright test script (not committed)
+guild-demo.mjs
