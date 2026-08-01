@@ -25,6 +25,7 @@ export default function ChatPane({
     connected,
     authError,
     messages,
+    channelLoading,
     typingUsers,
     sendMessage,
     editMessage,
@@ -314,6 +315,12 @@ export default function ChatPane({
             <EmptyState
               icon={Loader2}
               title="Đang kết nối…"
+              className="flex-1 [&_svg]:animate-spin"
+            />
+          ) : channelLoading ? (
+            <EmptyState
+              icon={Loader2}
+              title="Đang tải tin nhắn…"
               className="flex-1 [&_svg]:animate-spin"
             />
           ) : (

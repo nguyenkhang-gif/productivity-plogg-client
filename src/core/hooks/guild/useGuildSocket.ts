@@ -16,6 +16,7 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
   const [authError, setAuthError] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
+  const [channelLoading, setChannelLoading] = useState(false); // chờ ack join_channel
   const socketRef = useRef<ReturnType<typeof getGuildSocket> | null>(null);
 
   // Ref giữ id mới nhất để onConnect (đóng băng trong closure [token]) luôn re-join đúng.
@@ -82,6 +83,7 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
     if (!socket || !connected || !channelId) return;
     let cancelled = false;
     setMessages([]);
+    setChannelLoading(true);
     socket.emit(
       "join_channel",
       { channelId },
@@ -91,6 +93,7 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
         // loadOlder (prepend tin cũ) và onNew (append tin mới xuống đáy).
         if (res?.data?.messages)
           setMessages(res.data.messages.slice().reverse());
+        setChannelLoading(false);
       },
     );
 
@@ -241,6 +244,7 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
     connected,
     authError,
     messages,
+    channelLoading,
     typingUsers,
     sendMessage,
     editMessage,
