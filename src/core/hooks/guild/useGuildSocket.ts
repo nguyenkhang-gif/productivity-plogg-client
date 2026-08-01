@@ -58,6 +58,17 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
     socket.on("connect_error", onConnectError);
     socket.on("exception", onException);
 
+    // Socket là singleton: khi ChatPane remount (rời rồi quay lại channel),
+    // socket có thể ĐÃ connected sẵn → sự kiện 'connect' KHÔNG bắn lại →
+    // onConnect không chạy → `connected` kẹt false → không join. Chủ động
+    // set connected + re-join guild để join_channel effect chạy lại.
+    if (socket.connected) {
+      setConnected(true);
+      setAuthError(null);
+      if (guildIdRef.current)
+        socket.emit("join_guild", { guildId: guildIdRef.current });
+    }
+
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
