@@ -117,6 +117,35 @@ export const useCreateChannel = (guildId: string) => {
   });
 };
 
+export const useUpdateChannel = (guildId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      channelId,
+      body,
+    }: {
+      channelId: string;
+      body: { name?: string; topic?: string };
+    }) => guildApi.updateChannel(guildId, channelId, body),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [FetchQueryKeys.GUILD_CHANNELS, guildId],
+      }),
+  });
+};
+
+export const useDeleteChannel = (guildId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (channelId: string) =>
+      guildApi.deleteChannel(guildId, channelId),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [FetchQueryKeys.GUILD_CHANNELS, guildId],
+      }),
+  });
+};
+
 // ---- Roles ----
 export const useGetRoles = (guildId: string) => {
   const dispatch = useDispatch();
