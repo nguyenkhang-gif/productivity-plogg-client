@@ -64,6 +64,7 @@ export const useCreateGuild = () => {
 
 export const useUpdateGuild = () => {
   const dispatch = useDispatch();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: ({
       id,
@@ -72,15 +73,23 @@ export const useUpdateGuild = () => {
       id: string;
       body: { name?: string; icon?: string };
     }) => guildApi.updateGuild(id, body),
-    onSuccess: (guild) => dispatch(upsertGuild(guild)),
+    onSuccess: (guild) => {
+      dispatch(upsertGuild(guild));
+      // GuildRail đọc từ React Query → invalidate để rail cập nhật icon/tên
+      qc.invalidateQueries({ queryKey: [FetchQueryKeys.GUILDS] });
+    },
   });
 };
 
 export const useDeleteGuild = () => {
   const dispatch = useDispatch();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => guildApi.deleteGuild(id),
-    onSuccess: (_, id) => dispatch(removeGuild(id)),
+    onSuccess: (_, id) => {
+      dispatch(removeGuild(id));
+      qc.invalidateQueries({ queryKey: [FetchQueryKeys.GUILDS] });
+    },
   });
 };
 
