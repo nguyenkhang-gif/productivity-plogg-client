@@ -15,6 +15,7 @@ import { usePermissions } from "@/core/hooks/guild/usePermissions";
 import { PERMISSIONS } from "@/core/config/permissions";
 import CreateChannelDialog from "./CreateChannelDialog";
 import ChannelActions from "./ChannelActions";
+import GuildActions from "./GuildActions";
 
 export default function ChannelSidebar({ guildId }: { guildId: string }) {
   const { data: channels, isLoading } = useGetChannels(guildId);
@@ -81,11 +82,10 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
         <h2 className="font-semibold text-text-primary truncate">
           {guild?.name ?? "…"}
         </h2>
-        {canManageChannels && (
-          <span className="ml-auto shrink-0">
-            <CreateChannelDialog guildId={guildId} />
-          </span>
-        )}
+        <span className="ml-auto flex shrink-0 items-center">
+          <GuildActions guildId={guildId} />
+          {canManageChannels && <CreateChannelDialog guildId={guildId} />}
+        </span>
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin py-3">
