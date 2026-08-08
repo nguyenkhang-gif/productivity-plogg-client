@@ -1,11 +1,23 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Hash } from "lucide-react";
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import {
   useGetChannels,
   useGetGuildDetail,
+  useReorderChannels,
 } from "@/core/services/client/guild";
 import { Channel } from "@/core/types/guild";
 import { styles } from "@/core/config/styles";
@@ -14,8 +26,9 @@ import { RootState } from "@/core/redux/store";
 import { usePermissions } from "@/core/hooks/guild/usePermissions";
 import { PERMISSIONS } from "@/core/config/permissions";
 import CreateChannelDialog from "./CreateChannelDialog";
-import ChannelActions from "./ChannelActions";
 import GuildActions from "./GuildActions";
+import MemberListDialog from "./MemberListDialog";
+import SortableChannelLink from "./SortableChannelLink";
 
 export default function ChannelSidebar({ guildId }: { guildId: string }) {
   const { data: channels, isLoading } = useGetChannels(guildId);
@@ -26,6 +39,12 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
   );
   const { can } = usePermissions(guildId);
   const canManageChannels = can(PERMISSIONS.MANAGE_CHANNELS);
+  const reorder = useReorderChannels(guildId);
+
+  // click phải kéo >5px mới tính drag → không phá click điều hướng
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
 
   if (isLoading) {
     return (
@@ -49,31 +68,65 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
   const childrenOf = (catId: string) =>
     textChannels.filter((c) => c.parentId === catId).sort(byPos);
 
-  const ChannelLink = ({ ch }: { ch: Channel }) => {
-    const active = pathname === `/guilds/${guildId}/${ch.id}`;
-    return (
-      <div
-        className={`group flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm transition-colors
-          ${
-            active
-              ? "bg-accent-subtle text-text-primary"
-              : "text-text-muted hover:bg-surface hover:text-text-secondary"
-          }`}
-      >
-        <Link
-          href={`/guilds/${guildId}/${ch.id}`}
-          title={ch.name}
-          className="flex min-w-0 flex-1 items-center gap-1.5"
-        >
-          <Hash size={16} className="shrink-0" />
-          <span className="truncate">{ch.name}</span>
-        </Link>
-        {canManageChannels && ch.type === "TEXT" && (
-          <ChannelActions guildId={guildId} channel={ch} />
-        )}
-      </div>
+  // orderedIds ĐẦY ĐỦ (BE yêu cầu toàn bộ channel guild): uncategorized rồi từng category + con
+  const buildFullOrder = (
+    uncat: Channel[],
+    childrenByCat: Record<string, Channel[]>,
+  ): string[] => [
+    ...uncat.map((c) => c.id),
+    ...categories.flatMap((cat) => [
+      cat.id,
+      ...(childrenByCat[cat.id] ?? childrenOf(cat.id)).map((c) => c.id),
+    ]),
+  ];
+
+  // chỉ cho reorder TRONG cùng 1 group (uncategorized hoặc con của 1 category)
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const activeId = String(active.id);
+    const overId = String(over.id);
+
+    const groupOf = (id: string): Channel[] | null => {
+      if (uncategorized.some((c) => c.id === id)) return uncategorized;
+      for (const cat of categories) {
+        const kids = childrenOf(cat.id);
+        if (kids.some((c) => c.id === id)) return kids;
+      }
+      return null;
+    };
+
+    const group = groupOf(activeId);
+    // over phải cùng group với active, không thì bỏ qua
+    if (!group || !group.some((c) => c.id === overId)) return;
+
+    const from = group.findIndex((c) => c.id === activeId);
+    const to = group.findIndex((c) => c.id === overId);
+    const newGroup = arrayMove(group, from, to);
+
+    // thay group cũ bằng group mới khi dựng lại full order
+    const isUncat = group === uncategorized;
+    const childrenByCat: Record<string, Channel[]> = {};
+    for (const cat of categories) {
+      const kids = childrenOf(cat.id);
+      childrenByCat[cat.id] = kids === group ? newGroup : kids;
+    }
+    const orderedIds = buildFullOrder(
+      isUncat ? newGroup : uncategorized,
+      childrenByCat,
     );
+    reorder.mutate(orderedIds);
   };
+
+  const renderLink = (ch: Channel) => (
+    <SortableChannelLink
+      key={ch.id}
+      guildId={guildId}
+      channel={ch}
+      active={pathname === `/guilds/${guildId}/${ch.id}`}
+      canManage={canManageChannels}
+    />
+  );
 
   return (
     <aside className="w-60 shrink-0 bg-card border-r border-border flex flex-col py-3">
@@ -83,34 +136,50 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
           {guild?.name ?? "…"}
         </h2>
         <span className="ml-auto flex shrink-0 items-center">
+          <MemberListDialog guildId={guildId} />
           <GuildActions guildId={guildId} />
           {canManageChannels && <CreateChannelDialog guildId={guildId} />}
         </span>
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin py-3">
-        {/* text channel không thuộc category */}
-        {uncategorized.length > 0 && (
-          <div className="px-2 flex flex-col gap-0.5 mb-2">
-            {uncategorized.map((ch) => (
-              <ChannelLink key={ch.id} ch={ch} />
-            ))}
-          </div>
-        )}
-
-        {/* các category + channel con */}
-        {categories.map((cat) => (
-          <div key={cat.id} className="px-2 mb-2">
-            <p className="px-1 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-              {cat.name}
-            </p>
-            <div className="flex flex-col gap-0.5">
-              {childrenOf(cat.id).map((ch) => (
-                <ChannelLink key={ch.id} ch={ch} />
-              ))}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          {/* text channel không thuộc category */}
+          {uncategorized.length > 0 && (
+            <div className="px-2 flex flex-col gap-0.5 mb-2">
+              <SortableContext
+                items={uncategorized.map((c) => c.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {uncategorized.map(renderLink)}
+              </SortableContext>
             </div>
-          </div>
-        ))}
+          )}
+
+          {/* các category + channel con */}
+          {categories.map((cat) => {
+            const kids = childrenOf(cat.id);
+            return (
+              <div key={cat.id} className="px-2 mb-2">
+                <p className="px-1 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                  {cat.name}
+                </p>
+                <div className="flex flex-col gap-0.5">
+                  <SortableContext
+                    items={kids.map((c) => c.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {kids.map(renderLink)}
+                  </SortableContext>
+                </div>
+              </div>
+            );
+          })}
+        </DndContext>
 
         {list.length === 0 && (
           <p className={`${styles.muted} text-sm text-center px-3 mt-4`}>
