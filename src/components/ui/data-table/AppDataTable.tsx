@@ -52,6 +52,7 @@ export default function AppDataTable<T>({
   renderActions,
   actionsVariant = "inline",
   emptyMessage = "No data found.",
+  dense = false,
 }: {
   columns: ColumnConfig<T>[];
   items: T[];
@@ -66,8 +67,11 @@ export default function AppDataTable<T>({
   /** "dropdown" collapses the actions cell behind a "⋮" trigger. */
   actionsVariant?: "inline" | "dropdown";
   emptyMessage?: string;
+  /** Compact rows (less vertical padding). */
+  dense?: boolean;
 }) {
   const showActionsColumn = Boolean(renderActions || (rowActions && rowActions.length > 0));
+  const cellPad = dense ? "px-4 py-1.5" : "px-4 py-3";
 
   return (
     <div className="space-y-4">
@@ -87,12 +91,12 @@ export default function AppDataTable<T>({
                   {columns.map((col) => (
                     <th
                       key={col.key}
-                      className={`px-4 py-3 font-medium ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : ""}`}
+                      className={`${cellPad} font-medium ${col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : ""}`}
                     >
                       {col.header}
                     </th>
                   ))}
-                  {showActionsColumn && <th className="px-4 py-3 font-medium">Actions</th>}
+                  {showActionsColumn && <th className={`${cellPad} font-medium`}>Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -104,7 +108,7 @@ export default function AppDataTable<T>({
                         <td
                           key={col.key}
                           onClick={col.onCellClick ? () => col.onCellClick!(row) : undefined}
-                          className={`px-4 py-3 ${col.nowrap ? "whitespace-nowrap" : ""} ${
+                          className={`${cellPad} ${col.nowrap ? "whitespace-nowrap" : ""} ${
                             col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : ""
                           } ${col.onCellClick ? "cursor-pointer hover:text-accent-text transition-colors" : ""} ${extraCls ?? ""}`}
                         >
@@ -113,7 +117,7 @@ export default function AppDataTable<T>({
                       );
                     })}
                     {showActionsColumn && (
-                      <td className="px-4 py-3">
+                      <td className={cellPad}>
                         <ActionsCell variant={actionsVariant}>
                           {renderActions
                             ? renderActions(row)
