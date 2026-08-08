@@ -219,6 +219,49 @@ export const useGetRoles = (guildId: string) => {
   });
 };
 
+export const useCreateRole = (guildId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      name: string;
+      color?: string;
+      position?: number;
+      permissions: string;
+    }) => guildApi.createRole(guildId, body),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: [FetchQueryKeys.GUILD_ROLES, guildId] }),
+  });
+};
+
+export const useUpdateRole = (guildId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      roleId,
+      body,
+    }: {
+      roleId: string;
+      body: Partial<{
+        name: string;
+        color: string;
+        position: number;
+        permissions: string;
+      }>;
+    }) => guildApi.updateRole(guildId, roleId, body),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: [FetchQueryKeys.GUILD_ROLES, guildId] }),
+  });
+};
+
+export const useDeleteRole = (guildId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (roleId: string) => guildApi.deleteRole(guildId, roleId),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: [FetchQueryKeys.GUILD_ROLES, guildId] }),
+  });
+};
+
 // ---- Members ----
 export const useKickMember = (guildId: string) => {
   const qc = useQueryClient();

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import RoleManagerDialog from "./RoleManagerDialog";
 import { usePermissions } from "@/core/hooks/guild/usePermissions";
 import { PERMISSIONS } from "@/core/config/permissions";
 import {
@@ -32,6 +33,7 @@ export default function GuildActions({ guildId }: { guildId: string }) {
   const { can } = usePermissions(guildId);
 
   const canManageGuild = can(PERMISSIONS.MANAGE_GUILD);
+  const canManageRoles = can(PERMISSIONS.MANAGE_ROLES);
   const isOwner = !!myId && guild?.ownerId === myId;
 
   const [open, setOpen] = useState(false);
@@ -113,6 +115,13 @@ export default function GuildActions({ guildId }: { guildId: string }) {
               <p className="text-sm text-text-muted">
                 Bạn không có quyền sửa thông tin server.
               </p>
+            )}
+
+            {/* quản lý role */}
+            {canManageRoles && (
+              <div className="mt-1 border-t border-border pt-3">
+                <RoleManagerDialog guildId={guildId} />
+              </div>
             )}
 
             {/* vùng nguy hiểm */}
