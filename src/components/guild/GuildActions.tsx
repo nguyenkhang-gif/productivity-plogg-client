@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Settings, Trash2 } from "lucide-react";
+import { Settings, Trash2, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
@@ -17,7 +17,11 @@ import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { usePermissions } from "@/core/hooks/guild/usePermissions";
 import { PERMISSIONS } from "@/core/config/permissions";
-import { useUpdateGuild, useDeleteGuild } from "@/core/services/client/guild";
+import {
+  useUpdateGuild,
+  useDeleteGuild,
+  useLeaveGuild,
+} from "@/core/services/client/guild";
 
 export default function GuildActions({ guildId }: { guildId: string }) {
   const router = useRouter();
@@ -32,14 +36,14 @@ export default function GuildActions({ guildId }: { guildId: string }) {
 
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [name, setName] = useState(guild?.name ?? "");
   const [icon, setIcon] = useState(guild?.icon ?? "");
 
   const updateGuild = useUpdateGuild();
   const deleteGuild = useDeleteGuild();
-
-  // không có quyền gì → không render nút
-  if (!canManageGuild && !isOwner) return null;
+  const leaveGuild = useLeaveGuild();
+  // gear luôn hiện cho mọi member (tối thiểu để "Rời server")
 
   const openDialog = () => {
     setName(guild?.name ?? "");
@@ -111,9 +115,10 @@ export default function GuildActions({ guildId }: { guildId: string }) {
               </p>
             )}
 
-            {/* vùng nguy hiểm — chỉ owner */}
-            {isOwner && (
-              <div className="mt-2 border-t border-border pt-3">
+            {/* vùng nguy hiểm */}
+            <div className="mt-2 border-t border-border pt-3">
+              {isOwner ? (
+                // owner không rời được — phải xóa server
                 <button
                   onClick={() => {
                     setOpen(false); // đóng settings để ConfirmDialog không bị Radix overlay chặn
@@ -123,8 +128,18 @@ export default function GuildActions({ guildId }: { guildId: string }) {
                 >
                   <Trash2 size={15} /> Xóa server
                 </button>
-              </div>
-            )}
+              ) : (
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    setLeaving(true);
+                  }}
+                  className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300"
+                >
+                  <LogOut size={15} /> Rời server
+                </button>
+              )}
+            </div>
           </div>
 
           {canManageGuild && (
@@ -163,6 +178,28 @@ export default function GuildActions({ guildId }: { guildId: string }) {
             })
           }
           onCancel={() => setConfirming(false)}
+        />
+      )}
+
+      {leaving && (
+        <ConfirmDialog
+          title="Rời server?"
+          subtitle={guild?.name}
+          message="Bạn sẽ không còn thấy channel và tin nhắn của server này. Có thể tham gia lại sau nếu được mời."
+          confirmLabel="Rời server"
+          icon={LogOut}
+          isLoading={leaveGuild.isPending}
+          loadingLabel="Đang rời…"
+          onConfirm={() =>
+            leaveGuild.mutate(guildId, {
+              onSuccess: () => {
+                setLeaving(false);
+                setOpen(false);
+                router.push("/guilds");
+              },
+            })
+          }
+          onCancel={() => setLeaving(false)}
         />
       )}
     </>
