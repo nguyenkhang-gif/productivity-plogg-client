@@ -39,6 +39,11 @@ export const guildApi = {
       .then((r) => r.data),
   deleteChannel: (guildId: string, channelId: string) =>
     axiosInstance.delete(`/guilds/${guildId}/channels/${channelId}`),
+  // orderedIds = TOÀN BỘ channel của guild theo thứ tự mới (BE ghi position = index)
+  reorderChannels: (guildId: string, orderedIds: string[]) =>
+    axiosInstance.patch(`/guilds/${guildId}/channels/reorder`, {
+      orderedIds,
+    }),
 
   // ---- Role (§5.3) ----
   getRoles: (guildId: string) =>
@@ -90,6 +95,10 @@ export const guildApi = {
     axiosInstance.post(`/guilds/${guildId}/members/${userId}/roles`, {
       roleId,
     }),
+  removeRole: (guildId: string, userId: string, roleId: string) =>
+    axiosInstance.delete(
+      `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
+    ),
 
   // ---- Message history (§5.5) ----
   getMessages: (channelId: string, cursor?: string) =>

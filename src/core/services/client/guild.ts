@@ -12,6 +12,7 @@ import {
   upsertGuild,
 } from "@/core/redux/guild";
 import { guildApi } from "../api/guild";
+import { Channel } from "@/core/types/guild";
 import { STALE_TIME } from "@/core/config/queryConfig";
 import {
   useMutation,
@@ -93,6 +94,19 @@ export const useDeleteGuild = () => {
   });
 };
 
+export const useLeaveGuild = () => {
+  const dispatch = useDispatch();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => guildApi.leaveGuild(id),
+    onSuccess: (_, id) => {
+      dispatch(removeGuild(id));
+      // rail đọc từ React Query → invalidate để guild biến mất
+      qc.invalidateQueries({ queryKey: [FetchQueryKeys.GUILDS] });
+    },
+  });
+};
+
 // ---- Channels ----
 export const useGetChannels = (guildId: string) => {
   const dispatch = useDispatch();
@@ -155,6 +169,41 @@ export const useDeleteChannel = (guildId: string) => {
   });
 };
 
+export const useReorderChannels = (guildId: string) => {
+  const dispatch = useDispatch();
+  const qc = useQueryClient();
+  const key = [FetchQueryKeys.GUILD_CHANNELS, guildId];
+  return useMutation({
+    mutationFn: (orderedIds: string[]) =>
+      guildApi.reorderChannels(guildId, orderedIds),
+    // optimistic: sắp lại + gán position theo index ngay trên UI
+    onMutate: async (orderedIds) => {
+      await qc.cancelQueries({ queryKey: key });
+      const prev = qc.getQueryData<Channel[]>(key);
+      if (prev) {
+        const byId = new Map(prev.map((c) => [c.id, c]));
+        const next = orderedIds
+          .map((id, i) => {
+            const c = byId.get(id);
+            return c ? { ...c, position: i } : undefined;
+          })
+          .filter((c): c is Channel => !!c);
+        qc.setQueryData(key, next);
+        dispatch(setChannels({ guildId, channels: next }));
+      }
+      return { prev };
+    },
+    onError: (_e, _vars, ctx) => {
+      if (ctx?.prev) {
+        qc.setQueryData(key, ctx.prev);
+        dispatch(setChannels({ guildId, channels: ctx.prev }));
+      }
+    },
+    // đồng bộ lại với BE (position thật)
+    onSettled: () => qc.invalidateQueries({ queryKey: key }),
+  });
+};
+
 // ---- Roles ----
 export const useGetRoles = (guildId: string) => {
   const dispatch = useDispatch();
@@ -171,6 +220,41 @@ export const useGetRoles = (guildId: string) => {
 };
 
 // ---- Members ----
+export const useKickMember = (guildId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => guildApi.kickMember(guildId, userId),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [FetchQueryKeys.GUILD_MEMBERS, guildId],
+      }),
+  });
+};
+
+export const useAssignRole = (guildId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, roleId }: { userId: string; roleId: string }) =>
+      guildApi.assignRole(guildId, userId, roleId),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [FetchQueryKeys.GUILD_MEMBERS, guildId],
+      }),
+  });
+};
+
+export const useRemoveRole = (guildId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, roleId }: { userId: string; roleId: string }) =>
+      guildApi.removeRole(guildId, userId, roleId),
+    onSuccess: () =>
+      qc.invalidateQueries({
+        queryKey: [FetchQueryKeys.GUILD_MEMBERS, guildId],
+      }),
+  });
+};
+
 export const useGetMembers = (guildId: string) => {
   const dispatch = useDispatch();
   return useQuery({

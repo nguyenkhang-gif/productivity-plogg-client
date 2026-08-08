@@ -41,7 +41,7 @@ export interface GuildMember {
   avatar?: string | null;
   nickname?: string | null;
   joinedAt: string;
-  roles?: Role[];
+  roleIds: string[]; // id role; [] nếu không có (vd owner — quyền từ ownership)
 }
 
 export interface Message {
