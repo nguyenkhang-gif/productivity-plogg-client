@@ -80,20 +80,4 @@ export const PROJECTS: Project[] = [
     image: "https://res.cloudinary.com/dsr4rajwm/image/upload/v1779000061/b05ac127-12dd-49dd-8169-1024bc9b54a2.png",
     imageAlt: "Manga Downloader web UI screenshot",
   },
-  {
-    number: "04",
-    name: "Robot Fleet Dashboard",
-    tag: "Dashboard",
-    description:
-      "An IoT-style fleet audit UI built inside KPro. Visualizes robot connectivity, battery levels, error rates, and fleet topology with interactive Mermaid diagrams. Designed for monitoring and anomaly review at a glance.",
-    highlights: [
-      "Interactive Mermaid diagrams for real-time fleet topology visualization",
-      "Per-robot audit cards showing battery, connectivity status, and error rate",
-      "Integrated directly into KPro as a standalone management module",
-    ],
-    techStack: ["Next.js", "TypeScript", "Mermaid", "Tailwind CSS"],
-    links: [{ label: "View in App →", url: "/projects", external: false }],
-    image: "https://res.cloudinary.com/dsr4rajwm/image/upload/v1780738631/1dfb7fd9-a0ad-4766-9d23-978fde54cd74_zhzg6r.jpg",
-    imageAlt: "Robot Fleet Dashboard screenshot",
-  },
 ];

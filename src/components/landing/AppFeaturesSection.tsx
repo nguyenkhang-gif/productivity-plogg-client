@@ -18,11 +18,6 @@ const FEATURES: Feature[] = [
     description: "Write, share, and explore markdown-formatted posts.",
   },
   {
-    symbol: ">_",
-    title: "Real-time Chat",
-    description: "Instant messaging between users powered by Socket.IO.",
-  },
-  {
     symbol: "[]",
     title: "EPUB Generator",
     description: "AI-powered novel and manga reader with chapter extraction.",
@@ -33,24 +28,9 @@ const FEATURES: Feature[] = [
     description: "Cloudinary and backend dual-provider file management.",
   },
   {
-    symbol: "@",
-    title: "Friend System",
-    description: "Send requests, accept connections, and manage your network.",
-  },
-  {
-    symbol: "~",
-    title: "AI Chat",
-    description: "Contextual AI assistant that remembers your conversation.",
-  },
-  {
     symbol: "▣",
     title: "CBZ Reader",
     description: "In-browser manga reader with swipe, keyboard, and webtoon modes.",
-  },
-  {
-    symbol: "⬡",
-    title: "Robot Fleet",
-    description: "IoT-style robot fleet audit and anomaly tracking dashboard.",
   },
 ];
 
