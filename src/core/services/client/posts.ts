@@ -178,6 +178,9 @@ export const useApprovePost = () => {
       queryClient.invalidateQueries({
         queryKey: [FetchQueryKeys.POST_MODERATION_PENDING],
       });
+      queryClient.invalidateQueries({
+        queryKey: [FetchQueryKeys.ADMIN_POST_GET_ALL],
+      });
     },
   });
 };
@@ -190,6 +193,9 @@ export const useRejectPost = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [FetchQueryKeys.POST_MODERATION_PENDING],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [FetchQueryKeys.ADMIN_POST_GET_ALL],
       });
     },
   });
