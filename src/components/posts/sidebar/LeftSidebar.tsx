@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { Post } from "@/core/types/post";
 import { useFriendship } from "@/core/hooks/friendship/useFriendship";
-import { FileText, BookOpen, Users, Upload, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { BookOpen, Users, Upload, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { styles } from "@/core/config/styles";
 import { useRole } from "@/core/hooks/useRole";
 import UserAvatar from "@/components/ui/UserAvatar";
@@ -19,7 +19,6 @@ const NAV_LINKS = [
   { href: "/posts",     label: "Bảng tin",  icon: LayoutDashboard },
   { href: "/epub",      label: "Epub Gen",  icon: BookOpen },
   { href: "/friends",   label: "Bạn bè",    icon: Users },
-  { href: "/portfolio", label: "Portfolio", icon: FileText },
   { href: "/upload",    label: "Files",     icon: Upload },
 ];
 

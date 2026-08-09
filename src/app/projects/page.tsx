@@ -123,14 +123,6 @@ export default function ProjectsPage() {
         <p className="text-text-secondary text-lg">
           Personal projects I&apos;ve built and maintained.
         </p>
-        <div className="mt-4">
-          <Link
-            href="/portfolio"
-            className="text-sm text-accent-text hover:underline"
-          >
-            ← Back to Portfolio
-          </Link>
-        </div>
       </div>
 
       {/* Projects list */}

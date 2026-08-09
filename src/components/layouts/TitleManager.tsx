@@ -11,7 +11,6 @@ const PAGE_TITLES: Record<string, string> = {
   "/profile": "Profile",
   "/friends": "Friends",
   "/upload": "Files",
-  "/portfolio": "Portfolio",
   "/auth": "Login",
   "/cbz": "CBZ",
   "/projects": "Projects",
