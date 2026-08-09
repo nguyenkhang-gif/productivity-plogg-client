@@ -1,7 +1,7 @@
 import { RootState } from "@/core/redux/store";
 import { getGuildSocket } from "@/core/services/socket/guildSocket";
 import { Message } from "@/core/types/guild";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 interface TypingUser {
@@ -14,7 +14,19 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
 
   const [connected, setConnected] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+
+  const [store, setStore] = useState<{
+    byId: Record<string, Message>;
+    order: string[];
+  }>({
+    byId: {},
+    order: [],
+  });
+
+  const messages = useMemo(
+    () => store.order.map((id) => store.byId[id]),
+    [store],
+  );
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
   const [channelLoading, setChannelLoading] = useState(false); // chờ ack join_channel
   const socketRef = useRef<ReturnType<typeof getGuildSocket> | null>(null);
@@ -108,9 +120,16 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
     if (!socket) return;
     const onNew = (msg: Message) => {
       if (msg.channelId !== channelId) return;
-      setMessages((prev) =>
-        prev.some((m) => m.id === msg.id) ? prev : [...prev, msg],
-      );
+      setStore((prev) => {
+        if (prev.byId[msg.id]) return prev;
+        return {
+          byId: {
+            ...prev.byId,
+            [msg.id]: msg,
+          },
+          order: [...prev.order, msg.id],
+        };
+      });
     };
 
     const onEdited = ({
@@ -122,14 +141,27 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
       content: string;
       editedAt: string;
     }) =>
-      setMessages((prev) =>
-        prev.map((m) => (m.id === messageId ? { ...m, content, editedAt } : m)),
-      );
+      setStore((prev) => {
+        const existing = prev.byId[messageId];
+        if (!existing) return prev; // tin không thuộc channel đang mở -> không đổi gì, không re-render
+        return {
+          ...prev,
+          byId: {
+            ...prev.byId,
+            [messageId]: { ...existing, content, editedAt },
+          },
+        };
+      });
 
     const onDeleted = ({ messageId }: { messageId: string }) =>
-      setMessages((prev) =>
-        prev.map((m) => (m.id === messageId ? { ...m, isDeleted: true } : m)),
-      );
+      setStore((prev) => {
+        const existing = prev.byId[messageId];
+        if (!existing) return prev; // tin không thuộc channel đang mở -> bail out
+        return {
+          ...prev,
+          byId: { ...prev.byId, [messageId]: { ...existing, isDeleted: true } },
+        };
+      });
 
     const onReaction = ({
       messageId,
@@ -140,23 +172,24 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
       emoji: string;
       userId: string;
     }) =>
-      setMessages((prev) =>
-        prev.map((m) => {
-          if (m.id !== messageId) return m;
-          const reactions = m.reactions ?? [];
-          const exists = reactions.some(
-            (r) => r.emoji === emoji && r.userId === userId,
-          );
-          return {
-            ...m,
-            reactions: exists
-              ? reactions.filter(
-                  (r) => !(r.emoji === emoji && r.userId === userId),
-                )
-              : [...reactions, { emoji, userId }],
-          };
-        }),
-      );
+      setStore((prev) => {
+        const existing = prev.byId[messageId];
+        if (!existing) return prev; // tin không thuộc channel đang mở -> bail out
+        const reactions = existing.reactions ?? [];
+        const exists = reactions.some(
+          (r) => r.emoji === emoji && r.userId === userId,
+        );
+        const nextReactions = exists
+          ? reactions.filter((r) => !(r.emoji === emoji && r.userId === userId))
+          : [...reactions, { emoji, userId }];
+        return {
+          ...prev,
+          byId: {
+            ...prev.byId,
+            [messageId]: { ...existing, reactions: nextReactions },
+          },
+        };
+      });
 
     const onTyping = ({
       userId,
@@ -200,6 +233,27 @@ export function useGuildSocket(guildId?: string, channelId?: string) {
       });
     },
     [channelId],
+  );
+
+  const setMessages = useCallback(
+    (updater: React.SetStateAction<Message[]>) => {
+      setStore((prev) => {
+        const prevArray = prev.order.map((id) => prev.byId[id]);
+        const nextArray =
+          typeof updater === "function"
+            ? (updater as (p: Message[]) => Message[])(prevArray)
+            : updater;
+
+        const byId: Record<string, Message> = {};
+        const order: string[] = [];
+        for (const m of nextArray) {
+          byId[m.id] = m;
+          order.push(m.id);
+        }
+        return { byId, order };
+      });
+    },
+    [],
   );
   const editMessage = useCallback(
     (messageId: string, content: string) => {
