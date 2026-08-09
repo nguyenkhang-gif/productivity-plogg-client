@@ -28,6 +28,7 @@ import { PERMISSIONS } from "@/core/config/permissions";
 import CreateChannelDialog from "./CreateChannelDialog";
 import GuildActions from "./GuildActions";
 import MemberListDialog from "./MemberListDialog";
+import InviteDialog from "./InviteDialog";
 import SortableChannelLink from "./SortableChannelLink";
 
 export default function ChannelSidebar({ guildId }: { guildId: string }) {
@@ -39,6 +40,7 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
   );
   const { can } = usePermissions(guildId);
   const canManageChannels = can(PERMISSIONS.MANAGE_CHANNELS);
+  const canManageGuild = can(PERMISSIONS.MANAGE_GUILD);
   const reorder = useReorderChannels(guildId);
 
   // click phải kéo >5px mới tính drag → không phá click điều hướng
@@ -136,6 +138,7 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
           {guild?.name ?? "…"}
         </h2>
         <span className="ml-auto flex shrink-0 items-center">
+          {canManageGuild && <InviteDialog guildId={guildId} />}
           <MemberListDialog guildId={guildId} />
           <GuildActions guildId={guildId} />
           {canManageChannels && <CreateChannelDialog guildId={guildId} />}

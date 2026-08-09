@@ -44,6 +44,16 @@ export interface GuildMember {
   roleIds: string[]; // id role; [] nếu không có (vd owner — quyền từ ownership)
 }
 
+export interface InvitePreview {
+  code: string;
+  guild: {
+    id: string;
+    name: string;
+    icon?: string | null;
+    memberCount: number;
+  };
+}
+
 export interface Message {
   id: string;
   channelId: string;

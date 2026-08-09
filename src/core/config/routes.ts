@@ -35,6 +35,7 @@ export const routes: RouteConfig[] = [
   { path: "/moderation", access: "private" },
   { path: "/admin", access: "private" },
   { path: "/guilds", access: "private" },
+  { path: "/invite", access: "private" }, // trang nhận lời mời (cần login)
 
 ];
 
