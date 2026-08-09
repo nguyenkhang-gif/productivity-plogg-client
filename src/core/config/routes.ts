@@ -21,7 +21,6 @@ export const routes: RouteConfig[] = [
 
   // Public: ai cũng xem được
   { path: "/auth/callback", access: "public", exact: true },
-  { path: "/projects", access: "public" },
   { path: "/buttons", access: "public" },
   { path: "/focusCoffee", access: "public" },
 

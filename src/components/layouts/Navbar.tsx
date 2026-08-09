@@ -85,7 +85,6 @@ export default function Navbar() {
 
   const publicNavLinks = [
     { href: "/", label: "Home" },
-    { href: "/projects", label: "Projects" },
   ];
 
   const privateNavLinks = isAuth ? [{ href: "/posts", label: "Posts" }] : [];
