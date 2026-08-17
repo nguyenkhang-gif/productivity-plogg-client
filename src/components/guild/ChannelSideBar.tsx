@@ -89,32 +89,37 @@ export default function ChannelSidebar({ guildId }: { guildId: string }) {
     const activeId = String(active.id);
     const overId = String(over.id);
 
-    const groupOf = (id: string): Channel[] | null => {
-      if (uncategorized.some((c) => c.id === id)) return uncategorized;
+    // Trả kèm catId: childrenOf() filter ra mảng MỚI mỗi lần gọi nên không thể
+    // so sánh group bằng tham chiếu — phải định danh group bằng id category.
+    const groupOf = (
+      id: string,
+    ): { items: Channel[]; catId: string | null } | null => {
+      if (uncategorized.some((c) => c.id === id))
+        return { items: uncategorized, catId: null };
       for (const cat of categories) {
         const kids = childrenOf(cat.id);
-        if (kids.some((c) => c.id === id)) return kids;
+        if (kids.some((c) => c.id === id))
+          return { items: kids, catId: cat.id };
       }
       return null;
     };
 
     const group = groupOf(activeId);
     // over phải cùng group với active, không thì bỏ qua
-    if (!group || !group.some((c) => c.id === overId)) return;
+    if (!group || !group.items.some((c) => c.id === overId)) return;
 
-    const from = group.findIndex((c) => c.id === activeId);
-    const to = group.findIndex((c) => c.id === overId);
-    const newGroup = arrayMove(group, from, to);
+    const from = group.items.findIndex((c) => c.id === activeId);
+    const to = group.items.findIndex((c) => c.id === overId);
+    const newGroup = arrayMove(group.items, from, to);
 
     // thay group cũ bằng group mới khi dựng lại full order
-    const isUncat = group === uncategorized;
     const childrenByCat: Record<string, Channel[]> = {};
     for (const cat of categories) {
-      const kids = childrenOf(cat.id);
-      childrenByCat[cat.id] = kids === group ? newGroup : kids;
+      childrenByCat[cat.id] =
+        cat.id === group.catId ? newGroup : childrenOf(cat.id);
     }
     const orderedIds = buildFullOrder(
-      isUncat ? newGroup : uncategorized,
+      group.catId === null ? newGroup : uncategorized,
       childrenByCat,
     );
     reorder.mutate(orderedIds);

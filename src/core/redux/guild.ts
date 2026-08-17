@@ -23,13 +23,31 @@ const guildSlice = createSlice({
   name: "guild",
   initialState,
   reducers: {
+    // `myPermissions` CHỈ có ở GET /guilds/:id — list và PATCH không trả.
+    // Ghi đè thẳng sẽ xoá quyền đã nạp từ detail → usePermissions về 0n →
+    // nút Invite/Tạo channel/Role manager biến mất. Luôn giữ lại quyền cũ
+    // khi payload không mang theo.
     setGuilds(state, action: PayloadAction<Guild[]>) {
-      state.guilds = action.payload;
+      const prevPerms = new Map(
+        state.guilds.map((g) => [g.id, g.myPermissions]),
+      );
+      state.guilds = action.payload.map((g) =>
+        g.myPermissions === undefined
+          ? { ...g, myPermissions: prevPerms.get(g.id) }
+          : g,
+      );
     },
     upsertGuild(state, action: PayloadAction<Guild>) {
-      const i = state.guilds.findIndex((g) => g.id === action.payload.id);
-      if (i !== -1) state.guilds[i] = action.payload;
-      else state.guilds.push(action.payload);
+      const next = action.payload;
+      const i = state.guilds.findIndex((g) => g.id === next.id);
+      if (i === -1) {
+        state.guilds.push(next);
+        return;
+      }
+      state.guilds[i] =
+        next.myPermissions === undefined
+          ? { ...next, myPermissions: state.guilds[i].myPermissions }
+          : next;
     },
     removeGuild(state, action: PayloadAction<string>) {
       state.guilds = state.guilds.filter((g) => g.id !== action.payload);
