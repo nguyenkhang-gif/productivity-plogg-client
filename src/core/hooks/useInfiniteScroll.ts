@@ -1,31 +1,38 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 interface Options {
   fetchNextPage: () => void;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
   threshold?: number;
+  rootMargin?: string;
 }
 
-export function useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage, threshold = 0.5 }: Options) {
-  const sentinelRef = useRef<HTMLDivElement>(null);
+export function useInfiniteScroll({
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
+  threshold = 0,
+  rootMargin = "0px",
+}: Options) {
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el) return;
+  return useCallback(
+    (node: HTMLDivElement | null) => {
+      observerRef.current?.disconnect();
+      if (!node) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage,threshold]);
-
-  return sentinelRef;
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+          }
+        },
+        { threshold, rootMargin },
+      );
+      io.observe(node);
+      observerRef.current = io;
+    },
+    [hasNextPage, isFetchingNextPage, fetchNextPage, threshold, rootMargin],
+  );
 }
