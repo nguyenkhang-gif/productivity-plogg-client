@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 
 import { RootState } from "@/core/redux/store";
+import { hasLeftSidebar } from "@/core/config/navigation";
 
 export function useLayoutVisibility() {
   const pathname = usePathname();
@@ -14,5 +15,15 @@ export function useLayoutVisibility() {
   const isGuestLanding = pathname === "/" && !isAuth;
   const hideNav = false;
 
-  return { isAuthPage, isMeetingRoom, isGuestLanding, hideNav };
+  // Sidebar cần profile + friendship nên chỉ dựng khi đã login — /epub là route
+  // public, khách vẫn dùng được nhưng không render sidebar (tránh card rỗng + 401).
+  const showLeftSidebar = isAuth && hasLeftSidebar(pathname);
+
+  return {
+    isAuthPage,
+    isMeetingRoom,
+    isGuestLanding,
+    hideNav,
+    showLeftSidebar,
+  };
 }

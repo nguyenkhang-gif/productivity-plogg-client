@@ -154,7 +154,8 @@ export function EpubExtractorMode({ onSendToContext }: EpubExtractorModeProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-[300px_1fr] gap-4 h-[calc(100vh-280px)]">
+          {/* 330px = navbar + shell pt-4/pb-8 + EpubNav + py-6 + hàng header trên */}
+          <div className="grid grid-cols-[300px_1fr] gap-4 h-[calc(100vh-330px)]">
             <div className="bg-surface-raised rounded-xl overflow-y-auto">
               {state.chapters.map((ch, i) => (
                 <div

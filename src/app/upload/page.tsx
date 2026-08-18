@@ -151,7 +151,8 @@ export default function UploadPage() {
   const { items, pagination } = data;
 
   return (
-    <div className="min-h-screen bg-page px-6 xl:px-12 py-6 w-full">
+    // nền + padding ngoài do shell trong DefaultLayout lo (config/navigation.ts)
+    <div className="w-full">
       <div className="flex items-start justify-between mb-1">
         <h1 className="text-2xl font-bold text-text-primary">File Manager</h1>
         <ProviderSelector provider={provider} onSelect={handleSelectProvider} />

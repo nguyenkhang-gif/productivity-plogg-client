@@ -19,9 +19,10 @@ export default function EpubPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-surface text-text-primary">
+    // nền + padding ngoài do shell trong DefaultLayout lo (config/navigation.ts)
+    <div className="text-text-primary">
       <EpubNav mode={mode} onModeChange={setMode} />
-      <div className="p-6 max-w-6xl mx-auto">
+      <div className="py-6">
         {mode === "epub" && <EpubExtractorMode onSendToContext={handleSendToContext} />}
         {mode === "context" && (
           <ContextMode
