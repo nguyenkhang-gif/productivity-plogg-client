@@ -3,11 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRole } from "@/core/hooks/useRole";
+import { useRouteRole } from "@/core/hooks/useNavItems";
+import { meetsRole } from "@/core/config/navigation";
 import { styles } from "@/core/config/styles";
 import { ADMIN_TABS } from "@/core/config/adminConstants";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { canModerate, isAdmin } = useRole();
+  const { canModerate } = useRole();
+  const role = useRouteRole();
   const pathname = usePathname();
 
   if (!canModerate) {
@@ -18,7 +21,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  const tabs = ADMIN_TABS.filter((t) => !t.adminOnly || isAdmin);
+  const tabs = ADMIN_TABS.filter((t) => meetsRole(role, t.href));
 
   return (
     <div className="w-[70%] mx-auto py-8 px-4 space-y-4">

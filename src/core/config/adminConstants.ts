@@ -3,9 +3,16 @@ import { ShieldCheck, Users } from "lucide-react";
 
 export const ADMIN_LIMIT_OPTIONS = [10, 20, 50, 100];
 
+/**
+ * Tab bar trong /admin. Quyền KHÔNG khai ở đây — lấy từ `role` của route
+ * tương ứng trong config/navigation.ts (lọc bằng `meetsRole`).
+ *
+ * Label giữ riêng vì đây là nav nội bộ của section: registry gọi /admin/posts
+ * là "Admin" (tên trên navbar/sidebar), còn trong tab bar phải là "Posts".
+ */
 export const ADMIN_TABS = [
-  { href: "/admin/posts", label: "Posts", icon: ShieldCheck, adminOnly: false },
-  { href: "/admin/users", label: "Users", icon: Users, adminOnly: true },
+  { href: "/admin/posts", label: "Posts", icon: ShieldCheck },
+  { href: "/admin/users", label: "Users", icon: Users },
 ];
 
 export const USER_ROLE_OPTIONS = [
