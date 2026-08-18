@@ -6,6 +6,9 @@ export default {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    // layout wrapper sống ngoài 3 thư mục trên — thiếu dòng này thì class chỉ
+    // dùng ở đây (vd lg:grid-cols-[260px_1fr]) không được sinh ra CSS
+    "./src/@layouts/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
   	extend: {
