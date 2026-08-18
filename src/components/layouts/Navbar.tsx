@@ -20,7 +20,7 @@ import { useTheme } from "next-themes";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
 import { useAuth } from "@/core/hooks/auth/useAuth";
-import { useRole } from "@/core/hooks/useRole";
+import { useNavItems } from "@/core/hooks/useNavItems";
 import { useGetReceivedRequests } from "@/core/services/client/friendships";
 import { useRouter, usePathname } from "next/navigation";
 import UserAvatar from "@/components/ui/UserAvatar";
@@ -42,7 +42,9 @@ export default function Navbar() {
   const pathname = usePathname();
   const { signOut } = useAuth();
   const { profile, isAuth, isLoading } = useSelector((state: RootState) => state.user);
-  const { canModerate } = useRole();
+  // link lấy từ registry (config/navigation.ts) — hook phải gọi trước mọi early return
+  const navLinks = useNavItems("navbar");
+  const toolsLinks = useNavItems("navbar-tools");
   const { data: receivedRequests } = useGetReceivedRequests();
   const pendingCount = receivedRequests?.length ?? 0;
   const { navHidden } = useNavVisibility();
@@ -83,23 +85,7 @@ export default function Navbar() {
 
   if (isLoading) return null;
 
-  const publicNavLinks = [
-    { href: "/", label: "Home" },
-  ];
-
-  const privateNavLinks = isAuth ? [{ href: "/posts", label: "Posts" }] : [];
-
-  const moderationNavLinks =
-    isAuth && canModerate ? [{ href: "/admin/posts", label: "Admin" }] : [];
-
-  const navLinks = [...publicNavLinks, ...privateNavLinks, ...moderationNavLinks];
-
-  const toolsLinks = [
-    { href: "/epub", label: "Epub Gen" },
-    { href: "/focusCoffee", label: "Coffee Focus" },
-    ...(isAuth ? [{ href: "/upload", label: "Files" }] : []),
-  ];
-  const isToolsActive = toolsLinks.some(({ href }) => isActive(href));
+  const isToolsActive = toolsLinks.some(({ path }) => isActive(path));
 
   return (
     <nav
@@ -124,8 +110,8 @@ export default function Navbar() {
 
         {/* Navigation Links - Desktop */}
         <div className="hidden md:flex space-x-6 items-center">
-          {navLinks.map(({ href, label }) => (
-            <Link key={href} href={href} className={navLinkClass(href)}>
+          {navLinks.map(({ path, label }) => (
+            <Link key={path} href={path} className={navLinkClass(path)}>
               {label}
             </Link>
           ))}
@@ -147,12 +133,12 @@ export default function Navbar() {
             </button>
             {isToolsOpen && (
               <div className="absolute left-0 mt-2 w-40 rounded-md shadow-lg z-20 bg-modal border border-border py-1">
-                {toolsLinks.map(({ href, label }) => (
+                {toolsLinks.map(({ path, label }) => (
                   <Link
-                    key={href}
-                    href={href}
+                    key={path}
+                    href={path}
                     className={`block px-3 py-2 text-sm transition-colors ${
-                      isActive(href)
+                      isActive(path)
                         ? "text-accent-text bg-accent-subtle"
                         : "text-text-primary hover:bg-surface-raised"
                     }`}
@@ -267,11 +253,11 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden px-4 pb-4 pt-2 text-text-primary">
           <div className="flex flex-col space-y-4">
-            {navLinks.map(({ href, label }) => (
+            {navLinks.map(({ path, label }) => (
               <Link
-                key={href}
-                href={href}
-                className={navLinkClass(href)}
+                key={path}
+                href={path}
+                className={navLinkClass(path)}
                 onClick={toggleMenu}
               >
                 {label}
@@ -293,11 +279,11 @@ export default function Navbar() {
               </button>
               {isToolsOpen && (
                 <div className="mt-2 flex flex-col space-y-3 pl-3 border-l border-border">
-                  {toolsLinks.map(({ href, label }) => (
+                  {toolsLinks.map(({ path, label }) => (
                     <Link
-                      key={href}
-                      href={href}
-                      className={navLinkClass(href)}
+                      key={path}
+                      href={path}
+                      className={navLinkClass(path)}
                       onClick={toggleMenu}
                     >
                       {label}

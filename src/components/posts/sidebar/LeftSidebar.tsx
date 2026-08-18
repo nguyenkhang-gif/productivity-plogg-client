@@ -4,36 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/core/redux/store";
-import { Post } from "@/core/types/post";
 import { useFriendship } from "@/core/hooks/friendship/useFriendship";
-import { BookOpen, Users, Upload, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { styles } from "@/core/config/styles";
-import { useRole } from "@/core/hooks/useRole";
+import { useNavItems } from "@/core/hooks/useNavItems";
 import UserAvatar from "@/components/ui/UserAvatar";
 
-interface LeftSidebarProps {
-  posts?: Post[];
-}
-
-const NAV_LINKS = [
-  { href: "/posts",     label: "Bảng tin",  icon: LayoutDashboard },
-  { href: "/epub",      label: "Epub Gen",  icon: BookOpen },
-  { href: "/friends",   label: "Bạn bè",    icon: Users },
-  { href: "/upload",    label: "Files",     icon: Upload },
-];
-
-export default function LeftSidebar({ posts }: LeftSidebarProps) {
+export default function LeftSidebar() {
   const pathname = usePathname();
   const { profile } = useSelector((state: RootState) => state.user);
   const { friends } = useFriendship();
-  const { canModerate } = useRole();
+  // link + icon lấy từ registry (config/navigation.ts), đã lọc theo quyền
+  const navLinks = useNavItems("sidebar");
 
-  const navLinks = canModerate
-    ? [...NAV_LINKS, { href: "/admin/posts", label: "Admin", icon: ShieldCheck }]
-    : NAV_LINKS;
-
-  const myPostCount = profile.postCount
-    ?? (posts ?? []).filter((p) => p.authorId === profile.id || p.author?.id === profile.id).length;
+  // Sidebar dựng ở layout nên không còn data feed để đếm tay — dựa hẳn vào API.
+  const myPostCount = profile.postCount ?? 0;
 
   const friendList = friends.map((f) => f.friendInfo).filter(Boolean).slice(0, 5);
 
@@ -66,19 +50,19 @@ export default function LeftSidebar({ posts }: LeftSidebarProps) {
 
         {/* Nav links */}
         <nav className="p-2">
-          {navLinks.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href;
+          {navLinks.map(({ path, label, icon: Icon }) => {
+            const active = pathname === path;
             return (
               <Link
-                key={href}
-                href={href}
+                key={path}
+                href={path}
                 className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-colors ${
                   active
                     ? "bg-accent-subtle text-accent-text font-medium"
                     : `${styles.muted} hover:text-text-primary hover:bg-white/[0.04]`
                 }`}
               >
-                <Icon size={15} />
+                {Icon && <Icon size={15} />}
                 {label}
               </Link>
             );
