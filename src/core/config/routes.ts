@@ -1,68 +1,52 @@
 /**
- * Route access config — tương tự Vue Router meta.
+ * Access control cho route — tương tự Vue Router meta.
  *
  * access:
  *   "private"    — phải login mới vào được, chưa login → redirect /auth
  *   "public"     — ai cũng vào được
  *   "guest-only" — chỉ dành cho chưa login (vd: /auth), đã login → redirect /
+ *
+ * Danh sách route nằm ở `config/navigation.ts` (registry chung: access + nav + layout).
+ * File này chỉ giữ phần quyết định redirect cho RouteGuard.
  */
 
-type RouteAccess = "private" | "public" | "guest-only";
+import {
+  APP_ROUTES,
+  DEFAULT_ACCESS,
+  findRoute,
+  meetsRole,
+  type RouteAccess,
+  type RouteRole,
+} from "./navigation";
 
-interface RouteConfig {
-  path: string;
-  access: RouteAccess;
-  exact?: boolean; // true = khớp chính xác, false/undefined = prefix match
-}
-
-export const routes: RouteConfig[] = [
-  // Guest-only: đã login thì redirect về /
-  { path: "/auth", access: "guest-only", exact: true },
-
-  // Public: ai cũng xem được
-  { path: "/auth/callback", access: "public", exact: true },
-  { path: "/buttons", access: "public" },
-  { path: "/focusCoffee", access: "public" },
-
-  // Private: phải login
-  { path: "/", access: "public", exact: true },
-  { path: "/create-post", access: "private" },
-  { path: "/posts", access: "private" },
-  { path: "/epub", access: "public" },
-
-  { path: "/profile", access: "private" },
-  { path: "/moderation", access: "private" },
-  { path: "/admin", access: "private" },
-  { path: "/guilds", access: "private" },
-  { path: "/invite", access: "private" }, // trang nhận lời mời (cần login)
-
-];
-
-/** Default nếu path không khớp rule nào */
-const DEFAULT_ACCESS: RouteAccess = "private";
+export type { RouteAccess };
+export { APP_ROUTES as routes };
 
 const REDIRECT_WHEN_AUTHED = "/";
 const REDIRECT_WHEN_NOT_AUTHED = "/auth";
 
 function matchRoute(pathname: string): RouteAccess {
-  for (const route of routes) {
-    const matched = route.exact
-      ? pathname === route.path
-      : pathname === route.path || pathname.startsWith(route.path + "/");
-
-    if (matched) return route.access;
-  }
-  return DEFAULT_ACCESS;
+  return findRoute(pathname)?.access ?? DEFAULT_ACCESS;
 }
 
+/**
+ * `role` là bắt buộc để không ai quên truyền rồi vô tình đá nhầm moderator ra
+ * khỏi /admin. An toàn vì `setCredentials` set profile và isLoading=false trong
+ * cùng một action — RouteGuard chỉ gọi hàm này sau khi isLoading đã false.
+ */
 export function resolveRedirect(
   pathname: string,
-  isAuth: boolean
+  isAuth: boolean,
+  role: RouteRole
 ): string | null {
   const access = matchRoute(pathname);
 
   if (access === "private" && !isAuth) return REDIRECT_WHEN_NOT_AUTHED;
   if (access === "guest-only" && isAuth) return REDIRECT_WHEN_AUTHED;
+
+  // Đã login nhưng thiếu quyền (vd user thường mở /admin) → về trang chủ.
+  // Chỉ ẩn UI; backend vẫn phải tự enforce.
+  if (isAuth && !meetsRole(role, pathname)) return REDIRECT_WHEN_AUTHED;
 
   return null; // không cần redirect
 }
