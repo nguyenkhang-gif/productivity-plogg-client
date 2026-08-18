@@ -28,9 +28,9 @@ const FEATURES: Feature[] = [
     description: "Cloudinary and backend dual-provider file management.",
   },
   {
-    symbol: "▣",
-    title: "CBZ Reader",
-    description: "In-browser manga reader with swipe, keyboard, and webtoon modes.",
+    symbol: "◷",
+    title: "Coffee Focus",
+    description: "Pomodoro timer with focus and break phases, drink themes, and session notes.",
   },
 ];
 
