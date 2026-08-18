@@ -28,11 +28,16 @@ import {
 import { Post, ReactionType } from "@/core/types/post";
 import { useConstants } from "@/core/hooks/useConstants";
 
-type PageResult = { posts: Post[]; hasMore: boolean; page: number; totalPages: number };
+type PageResult = {
+  posts: Post[];
+  hasMore: boolean;
+  page: number;
+  totalPages: number;
+};
 
 function updatePostInFeed(
   old: InfiniteData<PageResult> | undefined,
-  updater: (post: Post) => Post
+  updater: (post: Post) => Post,
 ): InfiniteData<PageResult> | undefined {
   if (!old) return old;
   return {
@@ -52,10 +57,15 @@ export const useGetPostsFeed = (sortByUpdatedAt?: 1 | -1) => {
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
       const page = pageParam as number;
-      const data = await apiGetPosts({ page, limit: PostConstants.PAGE_LIMIT, sortByUpdatedAt });
+      const data = await apiGetPosts({
+        page,
+        limit: PostConstants.PAGE_LIMIT,
+        sortByUpdatedAt,
+      });
       const posts = data.items;
       const totalPages = data.pagination.totalPages;
       const hasMore = page < totalPages;
+      // console.log("hasMore", hasMore);
       return { posts, hasMore, page, totalPages } as PageResult;
     },
     getNextPageParam: (lastPage) =>
@@ -72,7 +82,11 @@ export const useGetPostsByAuthor = (authorId: string) => {
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
       const page = pageParam as number;
-      const data = await apiGetPostsByAuthor(authorId, page, PostConstants.PAGE_LIMIT);
+      const data = await apiGetPostsByAuthor(
+        authorId,
+        page,
+        PostConstants.PAGE_LIMIT,
+      );
       const posts = data.items;
       const { total, totalPages } = data.pagination;
       const hasMore = page < totalPages;
@@ -92,9 +106,9 @@ export const useGetPostById = (id: string) => {
     queryFn: () => apiGetPostById(id),
     enabled: !!id,
     initialData: () => {
-      const feedData = queryClient.getQueryData<InfiniteData<PageResult>>(
-        [FetchQueryKeys.POST_GET_ALL]
-      );
+      const feedData = queryClient.getQueryData<InfiniteData<PageResult>>([
+        FetchQueryKeys.POST_GET_ALL,
+      ]);
       if (feedData) {
         for (const page of feedData.pages) {
           const found = page.posts.find((p) => p.id === id);
@@ -128,11 +142,14 @@ export const useUpdatePost = () => {
     onSuccess: (updatedPost: Post) => {
       queryClient.setQueryData<InfiniteData<PageResult>>(
         [FetchQueryKeys.POST_GET_ALL],
-        (old) => updatePostInFeed(old, (p) => (p.id === updatedPost.id ? updatedPost : p))
+        (old) =>
+          updatePostInFeed(old, (p) =>
+            p.id === updatedPost.id ? updatedPost : p,
+          ),
       );
       queryClient.setQueryData<Post>(
         [FetchQueryKeys.POST_GET_BY_ID, updatedPost.id],
-        updatedPost
+        updatedPost,
       );
     },
   });
@@ -155,9 +172,11 @@ export const useDeletePost = () => {
               posts: page.posts.filter((p) => p.id !== id),
             })),
           };
-        }
+        },
       );
-      queryClient.removeQueries({ queryKey: [FetchQueryKeys.POST_GET_BY_ID, id] });
+      queryClient.removeQueries({
+        queryKey: [FetchQueryKeys.POST_GET_BY_ID, id],
+      });
     },
   });
 };
@@ -236,11 +255,20 @@ export const useReactPost = () => {
       apiReactPost(postId, type),
 
     onMutate: async ({ postId, type }) => {
-      await queryClient.cancelQueries({ queryKey: [FetchQueryKeys.POST_GET_ALL] });
-      await queryClient.cancelQueries({ queryKey: [FetchQueryKeys.POST_GET_BY_ID, postId] });
+      await queryClient.cancelQueries({
+        queryKey: [FetchQueryKeys.POST_GET_ALL],
+      });
+      await queryClient.cancelQueries({
+        queryKey: [FetchQueryKeys.POST_GET_BY_ID, postId],
+      });
 
-      const feedSnapshot = queryClient.getQueryData([FetchQueryKeys.POST_GET_ALL]);
-      const postSnapshot = queryClient.getQueryData([FetchQueryKeys.POST_GET_BY_ID, postId]);
+      const feedSnapshot = queryClient.getQueryData([
+        FetchQueryKeys.POST_GET_ALL,
+      ]);
+      const postSnapshot = queryClient.getQueryData([
+        FetchQueryKeys.POST_GET_BY_ID,
+        postId,
+      ]);
 
       const applyReaction = (post: Post): Post => {
         if (post.id !== postId) return post;
@@ -251,18 +279,18 @@ export const useReactPost = () => {
           reactCount: isToggleOff
             ? Math.max(0, post.reactCount - 1)
             : post.userReaction
-            ? post.reactCount
-            : post.reactCount + 1,
+              ? post.reactCount
+              : post.reactCount + 1,
         };
       };
 
       queryClient.setQueryData<InfiniteData<PageResult>>(
         [FetchQueryKeys.POST_GET_ALL],
-        (old) => updatePostInFeed(old, applyReaction)
+        (old) => updatePostInFeed(old, applyReaction),
       );
       queryClient.setQueryData<Post>(
         [FetchQueryKeys.POST_GET_BY_ID, postId],
-        (old) => (old ? applyReaction(old) : old)
+        (old) => (old ? applyReaction(old) : old),
       );
 
       return { feedSnapshot, postSnapshot };
@@ -270,16 +298,26 @@ export const useReactPost = () => {
 
     onError: (_, { postId }, context) => {
       if (context?.feedSnapshot !== undefined) {
-        queryClient.setQueryData([FetchQueryKeys.POST_GET_ALL], context.feedSnapshot);
+        queryClient.setQueryData(
+          [FetchQueryKeys.POST_GET_ALL],
+          context.feedSnapshot,
+        );
       }
       if (context?.postSnapshot !== undefined) {
-        queryClient.setQueryData([FetchQueryKeys.POST_GET_BY_ID, postId], context.postSnapshot);
+        queryClient.setQueryData(
+          [FetchQueryKeys.POST_GET_BY_ID, postId],
+          context.postSnapshot,
+        );
       }
     },
 
     onSettled: (_, __, { postId }) => {
-      queryClient.invalidateQueries({ queryKey: [FetchQueryKeys.POST_GET_ALL] });
-      queryClient.invalidateQueries({ queryKey: [FetchQueryKeys.POST_GET_BY_ID, postId] });
+      queryClient.invalidateQueries({
+        queryKey: [FetchQueryKeys.POST_GET_ALL],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [FetchQueryKeys.POST_GET_BY_ID, postId],
+      });
     },
   });
 };
