@@ -43,6 +43,10 @@ export function sanitizeReturnTo(raw: string | null | undefined): string | null 
     return null;
   }
   if (url.origin !== PARSE_BASE) return null;
+  // Kiểm cả KẾT QUẢ, không chỉ input: URL parser gộp segment "." / ".." SAU
+  // các check ở trên, nên "/.//evil.com" hay "/x/..//evil.com" qua được hết rồi
+  // chuẩn hoá thành "//evil.com" — protocol-relative, trỏ ra ngoài.
+  if (url.pathname.startsWith("//")) return null;
   if (url.pathname === AUTH_PATH || url.pathname.startsWith(`${AUTH_PATH}/`)) {
     return null;
   }
