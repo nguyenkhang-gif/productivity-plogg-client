@@ -16,7 +16,7 @@ import { FetchQueryKeys } from "@/core/services/endpoints";
 import { PostCategoryObject, PostTag } from "@/core/types/post";
 import { timeAgo } from "@/core/lib/timeAgo";
 import CommentSection from "@/components/posts/CommentSection";
-import ReactionButton from "@/components/posts/ReactionButton";
+import UpvoteButton from "@/components/posts/UpvoteButton";
 import RelatedPostCard from "@/components/posts/RelatedPostCard";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { getHeroGradient } from "@/core/lib/heroGradient";
@@ -243,7 +243,7 @@ export default function PostDetailPage({
 
         {/* reactions */}
         <div className="mt-7 pb-10 border-b border-border">
-          <ReactionButton post={post} />
+          <UpvoteButton post={post} />
         </div>
 
         {/* comments */}

@@ -9,9 +9,10 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useConstants } from "@/core/hooks/useConstants";
 import { useToast } from "@/core/hooks/use-toast";
-import ReactionButton from "./ReactionButton";
+import UpvoteButton from "./UpvoteButton";
 import { timeAgo } from "@/core/lib/timeAgo";
 import { readingTime } from "@/core/lib/readingTime";
+import { formatCount } from "@/core/lib/formatCount";
 import { apiBookmarkPost, apiUnbookmarkPost, apiUpdatePost } from "@/core/services/api/posts";
 import { styles } from "@/core/config/styles";
 import UserAvatar from "@/components/ui/UserAvatar";
@@ -36,11 +37,6 @@ const CATEGORY_LABELS: Record<PostCategory, string> = {
   [PostCategory.Question]:    "Câu hỏi",
   [PostCategory.Tutorial]:    "Hướng dẫn",
 };
-
-function formatCount(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
-  return String(n);
-}
 
 // Backend may return tags as {id, name, slug} objects or plain strings
 function normalizeTag(tag: unknown): string {
@@ -295,7 +291,7 @@ export default function PostCard({ post, currentUserId, onDelete, onTagClick }: 
 
       {/* Footer */}
       <div className={`flex items-center gap-4 px-5 py-3 border-t ${styles.divider}`}>
-        <ReactionButton post={post} />
+        <UpvoteButton post={post} />
         <button onClick={() => router.push(`/posts/${post.id}`)} className={styles.footerAction}>
           <MessageCircle size={15} />
           <span>{post.commentCount ?? 0}</span>
