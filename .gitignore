@@ -50,3 +50,4 @@ CLAUDE.md
 
 # Local Playwright E2E scripts (not committed)
 /e2e/
+!.env.example
