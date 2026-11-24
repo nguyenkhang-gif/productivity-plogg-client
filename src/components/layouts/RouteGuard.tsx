@@ -17,7 +17,9 @@ export default function RouteGuard({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     if (isLoading) return; // chờ auth check xong
 
-    const redirect = resolveRedirect(pathname, isAuth, role);
+    // Đọc search trực tiếp thay vì useSearchParams — tránh bắt mọi page bọc Suspense.
+    // Cần search để giữ query của link gốc và đọc ?redirect= khi đang ở /auth (#8)
+    const redirect = resolveRedirect(pathname, isAuth, role, window.location.search);
     if (redirect) router.replace(redirect);
   }, [isAuth, isLoading, pathname, role, router]);
 

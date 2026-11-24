@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2, User, Lock } from "lucide-react";
 
 import { useLoginWithPasswordEmail } from "@/core/hooks/auth/useSignInWithPasswordEmail";
+import { readReturnToFromSearch, saveReturnTo } from "@/core/auth/return-to";
 
 export const SignInCard = () => {
   const router = useRouter();
@@ -21,6 +22,9 @@ export const SignInCard = () => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage(null);
+    // Chốt đích ngay lúc submit: setCredentials làm RouteGuard đổi URL trước khi
+    // onSuccess chạy, đọc lúc đó có thể mất ?redirect= rồi đè về /posts
+    const returnTo = readReturnToFromSearch(window.location.search);
 
     // Lưu ý: Tên hàm login từ hook có thể vẫn giữ là login(email, password) 
     // nhưng ta truyền identifier vào tham số đầu tiên.
@@ -31,7 +35,9 @@ export const SignInCard = () => {
       },
       onSuccess: () => {
         setIsLoading(false);
-        router.replace("/posts");
+        // Phải cùng đích với RouteGuard (rule guest-only) — nếu không 2 bên giành nhau
+        saveReturnTo(null); // dọn bản OAuth cũ (nếu từng bấm Google rồi bỏ dở)
+        router.replace(returnTo ?? "/posts");
       },
     });
   };
@@ -134,6 +140,9 @@ export const SignInCard = () => {
       <div className="flex gap-3">
         <a
           href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}
+          // OAuth rời site, backend quay về /auth/callback cố định → ?redirect= mất,
+          // nên lưu vào sessionStorage trước khi đi (không có thì xoá bản cũ)
+          onClick={() => saveReturnTo(readReturnToFromSearch(window.location.search))}
           className="flex-1 h-11 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm font-medium hover:bg-white/10 hover:border-white/20 transition-all flex items-center justify-center gap-2"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">

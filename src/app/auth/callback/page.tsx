@@ -8,6 +8,7 @@ import axiosInstance from "@/core/lib/axiosInstance";
 import { setCredentials } from "@/core/redux/user";
 import { AppDispatch } from "@/core/redux/store";
 import { tokenStore } from "@/core/auth/token-store";
+import { buildLoginUrl, consumeReturnTo, peekReturnTo } from "@/core/auth/return-to";
 
 const CallbackContent = () => {
   const searchParams = useSearchParams();
@@ -23,7 +24,7 @@ const CallbackContent = () => {
     const refreshToken = searchParams.get("refresh_token");
 
     if (!accessToken || !refreshToken) {
-      router.replace("/auth");
+      router.replace(buildLoginUrl(peekReturnTo() ?? ""));
       return;
     }
 
@@ -37,10 +38,12 @@ const CallbackContent = () => {
         const { data: profile } = await axiosInstance.get("/auth/profile");
         dispatch(setCredentials({ profile, token: accessToken }));
 
-        router.replace("/posts");
+        // Đích đã lưu trước khi sang Google (#8), không có thì về /posts như cũ
+        router.replace(consumeReturnTo() ?? "/posts");
       } catch {
         tokenStore.clear();
-        router.replace("/auth");
+        // Giữ lại đích để lần login tiếp theo vẫn quay về đúng trang
+        router.replace(buildLoginUrl(peekReturnTo() ?? ""));
       }
     };
 

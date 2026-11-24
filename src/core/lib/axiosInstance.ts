@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { tokenStore } from "@/core/auth/token-store";
+import { buildLoginUrl } from "@/core/auth/return-to";
 import store from "@/core/redux/store";
 import { updateToken, logout } from "@/core/redux/user";
 import {
@@ -91,7 +92,10 @@ axiosInstance.interceptors.response.use(
       tokenStore.clear();
       store.dispatch(logout());
       disconnectGuildSocket(); // hủy socket khi session chết → login sau tạo socket mới đúng identity
-      if (typeof window !== "undefined") window.location.href = "/auth";
+      // Giữ trang hiện tại để login lại xong quay về (#8)
+      if (typeof window !== "undefined") {
+        window.location.href = buildLoginUrl(window.location.pathname + window.location.search);
+      }
       return Promise.reject(err);
     } finally {
       isRefreshing = false;
